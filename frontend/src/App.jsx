@@ -753,6 +753,7 @@ function App() {
                           <option value="PTZ">PTZ</option>
                           <option value="BULLET">Bullet</option>
                           <option value="DOME">Dome</option>
+                          <option value="ANPR">ANPR (Number Plate)</option>
                           <option value="THERMAL">Thermal</option>
                         </select>
                       </div>

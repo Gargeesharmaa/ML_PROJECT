@@ -14,7 +14,7 @@ class CameraBase(BaseModel):
     rtsp_url: Optional[str] = None
     latitude: Optional[float] = Field(default=None, ge=-90, le=90)
     longitude: Optional[float] = Field(default=None, ge=-180, le=180)
-    camera_type: Optional[str] = Field(default="FIXED", pattern="^(PTZ|BULLET|DOME|THERMAL|FIXED)$")
+    camera_type: Optional[str] = Field(default="FIXED", pattern="^(PTZ|BULLET|DOME|THERMAL|FIXED|ANPR)$")
     status: Optional[str] = Field(default="OFFLINE", pattern="^(ONLINE|OFFLINE|MAINTENANCE)$")
     ageing: Optional[float] = 0.0
 

@@ -53,5 +53,35 @@
     "id": "f6d62ba4-c289-404e-9eef-40b1bbbc9aae",
     "dept_name": "Police Headquarters",
     "zone_code": "ZONE-POL"
+  },
+  {
+    "id": "d3346ed5-c5e1-4a45-8956-984e7db959db",
+    "dept_name": "Rajkot Urban Development Authority",
+    "zone_code": "ZONE-RAJ"
+  },
+  {
+    "id": "87866977-5445-4a7c-833e-64cebb8d7cd8",
+    "dept_name": "Jamnagar Municipal Corporation",
+    "zone_code": "ZONE-JAM"
+  },
+  {
+    "id": "b4ea5e03-6a19-4ac5-b955-6e501bd64a86",
+    "dept_name": "Bhavnagar Municipal Corporation",
+    "zone_code": "ZONE-BHA"
+  },
+  {
+    "id": "fa26d575-ab95-4974-b42d-a6e2bd86ccae",
+    "dept_name": "Junagadh Municipal Corporation",
+    "zone_code": "ZONE-JUN"
+  },
+  {
+    "id": "7458f832-a86f-4d46-90fe-083c69dd4aa0",
+    "dept_name": "Gandhinagar Smart City Development",
+    "zone_code": "ZONE-GAN"
+  },
+  {
+    "id": "cdb90c28-4ccb-45a1-a64e-2333d47270cf",
+    "dept_name": "Anand Municipal Corporation",
+    "zone_code": "ZONE-ANA"
   }
 ]

@@ -146,7 +146,7 @@ async def clear_all_cameras(db: Optional[asyncpg.Pool] = Depends(get_optional_po
 
 CSV_SAMPLE_TEMPLATE = """camera_code,dept_name,camera_type,make_model,source_type,ip_address,rtsp_url,latitude,longitude,status,ageing
 CAM-AHM-SG01,Ahmedabad Municipal Corporation,PTZ,Hikvision DS-2DE4225IW-DE,NETWORK_CCTV,103.250.160.189,rtsp://yashrathore2574@gmail.com:EXTL-F2F7-S7KT@103.250.160.189:8554/stream/cam01,23.0305,72.5076,ONLINE,0.5
-CAM-SRT-RING02,Surat Traffic Police,BULLET,Dahua IPC-HFW2431S-S-S2,NETWORK_CCTV,192.168.1.120,rtsp://admin:pass123@192.168.1.120:554/live,21.1702,72.8311,ONLINE,1.0
+CAM-SRT-RING02,Surat Traffic Police,ANPR,Dahua ITC437-PW6M-IZ-VF,NETWORK_CCTV,192.168.1.120,rtsp://admin:pass123@192.168.1.120:554/live,21.1702,72.8311,ONLINE,1.0
 CAM-VAD-STN03,Vadodara Municipal Corporation,DOME,CP Plus CP-UNC-DA41L3-MD,NETWORK_CCTV,192.168.2.55,rtsp://admin:pass123@192.168.2.55:554/ch1,22.3072,73.1812,OFFLINE,2.0
 """
 
@@ -184,7 +184,7 @@ def validate_csv_records(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     valid_count = 0
     invalid_count = 0
 
-    valid_types = {"PTZ", "BULLET", "DOME", "THERMAL", "FIXED"}
+    valid_types = {"PTZ", "BULLET", "DOME", "THERMAL", "FIXED", "ANPR"}
     valid_statuses = {"ONLINE", "OFFLINE", "MAINTENANCE"}
 
     for idx, raw in enumerate(records, start=1):

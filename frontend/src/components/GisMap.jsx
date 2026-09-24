@@ -659,10 +659,12 @@ export default function GisMap({ onSwitchToOnboarding }) {
               onChange={(e) => setTypeFilter(e.target.value)}
             >
               <option value="ALL">All Types</option>
+              <option value="ANPR">ANPR</option>
               <option value="BULLET">Bullet</option>
               <option value="PTZ">PTZ</option>
               <option value="DOME">Dome</option>
               <option value="FIXED">Fixed</option>
+              <option value="THERMAL">Thermal</option>
             </select>
           </div>
 
