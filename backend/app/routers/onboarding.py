@@ -6,7 +6,7 @@ import ipaddress
 from uuid import UUID
 from typing import Optional, List, Dict, Any
 from app.db import get_optional_pool
-from app.schemas.cameras import CameraCreate
+from app.schemas.cameras import CameraCreate, BulkImportJsonPayload, ValidateRecordsPayload
 from app.store import memory_registry
 import asyncpg
 
@@ -318,26 +318,61 @@ async def bulk_import_csv(file: UploadFile = File(...), db: Optional[asyncpg.Poo
         raise HTTPException(status_code=400, detail="The uploaded CSV file contains no data rows.")
 
     validation_result = validate_csv_records(raw_rows)
+    return await execute_bulk_import_records(
+        valid_rows=[r for r in validation_result["rows"] if r["is_valid"]],
+        invalid_rows=[r for r in validation_result["rows"] if not r["is_valid"]],
+        total_rows=validation_result["total_rows"],
+        db=db
+    )
+
+@router.post("/validate-records")
+async def validate_records_endpoint(payload: ValidateRecordsPayload):
+    """Validate a batch of edited camera records on the fly."""
+    if not payload.records:
+        raise HTTPException(status_code=400, detail="No records provided.")
+    return validate_csv_records(payload.records)
+
+@router.post("/bulk-import-json", status_code=status.HTTP_201_CREATED)
+async def bulk_import_json(payload: BulkImportJsonPayload, db: Optional[asyncpg.Pool] = Depends(get_optional_pool)):
+    """Bulk Import edited cameras from JSON payload into registry."""
+    if not payload.cameras:
+        raise HTTPException(status_code=400, detail="No cameras provided in payload.")
+
+    validation_result = validate_csv_records(payload.cameras)
     valid_rows = [r for r in validation_result["rows"] if r["is_valid"]]
     invalid_rows = [r for r in validation_result["rows"] if not r["is_valid"]]
 
+    return await execute_bulk_import_records(
+        valid_rows=valid_rows,
+        invalid_rows=invalid_rows,
+        total_rows=validation_result["total_rows"],
+        db=db
+    )
+
+async def execute_bulk_import_records(
+    valid_rows: List[Dict[str, Any]],
+    invalid_rows: List[Dict[str, Any]],
+    total_rows: int,
+    db: Optional[asyncpg.Pool]
+) -> Dict[str, Any]:
+    """Helper to commit validated camera records to either PostGIS DB or persistent disk store."""
     if not valid_rows:
         return {
             "message": "No valid camera records found to import.",
-            "total_rows": validation_result["total_rows"],
+            "total_rows": total_rows,
             "imported_count": 0,
             "skipped_count": len(invalid_rows),
-            "errors": [{"row": r["row_number"], "camera_code": r["camera_code"], "errors": r["errors"]} for r in invalid_rows]
+            "errors": [{"row": r.get("row_number", idx), "camera_code": r.get("camera_code", "N/A"), "errors": r.get("errors", [])} for idx, r in enumerate(invalid_rows, 1)]
         }
 
     # If DB pool is offline, use persistent disk storage via memory_registry
     if db is None:
         import_res = memory_registry.add_bulk_cameras(valid_rows)
-        all_skipped = [{"row": r["row_number"], "camera_code": r["camera_code"], "reason": ", ".join(r["errors"])} for r in invalid_rows] + import_res["skipped"]
+        all_skipped = [{"row": r.get("row_number", idx), "camera_code": r.get("camera_code", "N/A"), "reason": ", ".join(r.get("errors", []))} for idx, r in enumerate(invalid_rows, 1)] + import_res["skipped"]
 
         return {
             "message": f"Successfully imported {import_res['imported_count']} cameras into registry.",
-            "total_rows": validation_result["total_rows"],
+            "total_rows": total_rows,
             "imported_count": import_res["imported_count"],
             "skipped_count": len(all_skipped),
             "imported_cameras": [c["camera_code"] for c in import_res["imported"]],
@@ -367,14 +402,14 @@ async def bulk_import_csv(file: UploadFile = File(...), db: Optional[asyncpg.Poo
         db_records.append((
             dept_id,
             r["camera_code"],
-            r["make_model"],
-            r["source_type"],
-            r["ip_address"],
-            r["rtsp_url"],
+            r.get("make_model", "Generic CCTV"),
+            r.get("source_type", "NETWORK_CCTV"),
+            r.get("ip_address"),
+            r.get("rtsp_url"),
             float(r["longitude"]) if r.get("longitude") else None,
             float(r.get("latitude")) if r.get("latitude") else None,
-            r["camera_type"],
-            r["status"],
+            r.get("camera_type", "FIXED"),
+            r.get("status", "ONLINE"),
             float(r.get("ageing", 0.0))
         ))
 
@@ -401,11 +436,11 @@ async def bulk_import_csv(file: UploadFile = File(...), db: Optional[asyncpg.Poo
             else:
                 skipped_db.append({"camera_code": rec[1], "reason": "Already exists in database"})
 
-    all_skipped = [{"row": r["row_number"], "camera_code": r["camera_code"], "reason": ", ".join(r["errors"])} for r in invalid_rows] + skipped_db
+    all_skipped = [{"row": r.get("row_number", idx), "camera_code": r.get("camera_code", "N/A"), "reason": ", ".join(r.get("errors", []))} for idx, r in enumerate(invalid_rows, 1)] + skipped_db
 
     return {
         "message": f"Successfully imported {len(inserted_codes)} cameras into database.",
-        "total_rows": validation_result["total_rows"],
+        "total_rows": total_rows,
         "imported_count": len(inserted_codes),
         "skipped_count": len(all_skipped),
         "imported_cameras": inserted_codes,

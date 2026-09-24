@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from uuid import UUID
 from datetime import datetime
 
@@ -70,3 +70,9 @@ class IPValidationResponse(BaseModel):
     port_tested: int
     latency_ms: Optional[float] = None
     detail: str
+
+class BulkImportJsonPayload(BaseModel):
+    cameras: list[dict[str, Any]]
+
+class ValidateRecordsPayload(BaseModel):
+    records: list[dict[str, Any]]

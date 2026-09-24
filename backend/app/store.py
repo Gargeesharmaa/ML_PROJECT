@@ -284,6 +284,42 @@ class MemoryRegistry:
     def get_all_cameras(self) -> List[Dict[str, Any]]:
         return list(self.cameras)
 
+    def get_ageing_report(self, min_age_years: float = 3.0) -> List[Dict[str, Any]]:
+        results = []
+        for c in self.cameras:
+            age = float(c.get("ageing") or 0.0)
+            if age >= min_age_years:
+                results.append({
+                    "id": c.get("id"),
+                    "camera_code": c.get("camera_code"),
+                    "make_model": c.get("make_model"),
+                    "camera_type": c.get("camera_type"),
+                    "ageing": age,
+                    "status": c.get("status"),
+                    "dept_name": c.get("dept_name"),
+                    "latitude": c.get("latitude"),
+                    "longitude": c.get("longitude")
+                })
+        results.sort(key=lambda x: x["ageing"], reverse=True)
+        return results
+
+    def get_gap_analysis(self, buffer_radius_meters: float = 1000.0) -> List[Dict[str, Any]]:
+        dept_counts: Dict[str, int] = {}
+        for c in self.cameras:
+            d_name = c.get("dept_name") or "General"
+            dept_counts[d_name] = dept_counts.get(d_name, 0) + 1
+
+        results = []
+        for dept_name, count in dept_counts.items():
+            results.append({
+                "dept_name": dept_name,
+                "camera_count": count,
+                "buffer_radius_meters": buffer_radius_meters,
+                "coverage_status": "OPTIMAL" if count >= 5 else "NEEDS_EXPANSION" if count >= 2 else "CRITICAL_GAP"
+            })
+        return results
+
 memory_registry = MemoryRegistry()
+
 
 

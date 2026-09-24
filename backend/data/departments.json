@@ -83,5 +83,145 @@
     "id": "cdb90c28-4ccb-45a1-a64e-2333d47270cf",
     "dept_name": "Anand Municipal Corporation",
     "zone_code": "ZONE-ANA"
+  },
+  {
+    "id": "5b8b241d-38db-4f14-ad0e-b7ebad9c1436",
+    "dept_name": "Ahmedabad",
+    "zone_code": "ZONE-AHM"
+  },
+  {
+    "id": "d43956d6-efd3-45f8-b891-3a58b32749db",
+    "dept_name": "Surat Traffic",
+    "zone_code": "ZONE-SUR"
+  },
+  {
+    "id": "0aa5cef0-5064-4b60-a8ba-1a902e2766cf",
+    "dept_name": "Vadodara",
+    "zone_code": "ZONE-VAD"
+  },
+  {
+    "id": "3aca529b-d227-4b98-a3b5-c481380dda72",
+    "dept_name": "Rajkot",
+    "zone_code": "ZONE-RAJ"
+  },
+  {
+    "id": "55dd15e2-4ff9-4594-a8c0-5b8cce4d61fd",
+    "dept_name": "Bhavnagar",
+    "zone_code": "ZONE-BHA"
+  },
+  {
+    "id": "cea0ed46-9699-41ff-9764-fa7ba408fd48",
+    "dept_name": "Jamnagar",
+    "zone_code": "ZONE-JAM"
+  },
+  {
+    "id": "48ba7382-2296-42d0-a416-c8906912b968",
+    "dept_name": "Dwarka",
+    "zone_code": "ZONE-DWA"
+  },
+  {
+    "id": "f5cc803d-1604-49b6-bc8f-4b52637e4550",
+    "dept_name": "Somnath",
+    "zone_code": "ZONE-SOM"
+  },
+  {
+    "id": "ea06ee1a-92bf-441f-9932-ddbfcaefc29a",
+    "dept_name": "Ahmedabad Police",
+    "zone_code": "ZONE-AHM"
+  },
+  {
+    "id": "50bc1c2a-3f0e-4ae1-975f-bef226610a39",
+    "dept_name": "Ahmedabad Municipal",
+    "zone_code": "ZONE-AHM"
+  },
+  {
+    "id": "c21c6aae-078a-4a8a-a332-a9527b971fd4",
+    "dept_name": "Surat Police",
+    "zone_code": "ZONE-SUR"
+  },
+  {
+    "id": "449d8bb4-5238-43ed-af2c-5022f0759bf4",
+    "dept_name": "Surat Municipal",
+    "zone_code": "ZONE-SUR"
+  },
+  {
+    "id": "6be631fe-e427-4122-990a-98054952d814",
+    "dept_name": "Vadodara Police",
+    "zone_code": "ZONE-VAD"
+  },
+  {
+    "id": "fc19869d-0659-4013-9228-8781a9d47a2b",
+    "dept_name": "Vadodara Municipal",
+    "zone_code": "ZONE-VAD"
+  },
+  {
+    "id": "678ecee5-654b-469f-9cab-63d8b9b47197",
+    "dept_name": "Rajkot Police",
+    "zone_code": "ZONE-RAJ"
+  },
+  {
+    "id": "6d7471d9-66ae-47fd-a835-bc666ddcaea4",
+    "dept_name": "Rajkot Municipal",
+    "zone_code": "ZONE-RAJ"
+  },
+  {
+    "id": "eda47368-52ad-4356-99e7-cfef38bd8b10",
+    "dept_name": "Bhavnagar Police",
+    "zone_code": "ZONE-BHA"
+  },
+  {
+    "id": "c5e77d38-947b-48a8-a030-b27d2d0c1c85",
+    "dept_name": "Bhavnagar Municipal",
+    "zone_code": "ZONE-BHA"
+  },
+  {
+    "id": "2dc838bf-7f5f-414a-bb69-697a7a45d857",
+    "dept_name": "Jamnagar Police",
+    "zone_code": "ZONE-JAM"
+  },
+  {
+    "id": "238b1cd9-3573-4cb3-8254-84a15a0d885d",
+    "dept_name": "Jamnagar Municipal",
+    "zone_code": "ZONE-JAM"
+  },
+  {
+    "id": "94a6d42c-56c8-42ba-9980-2863b124216a",
+    "dept_name": "Dwarka Police",
+    "zone_code": "ZONE-DWA"
+  },
+  {
+    "id": "d803eac2-decf-4b05-89ef-d0d01aa0b40c",
+    "dept_name": "Devbhumi Dwarka",
+    "zone_code": "ZONE-DEV"
+  },
+  {
+    "id": "fef1db5b-039a-4967-ac84-ced21b8e562d",
+    "dept_name": "Somnath Police",
+    "zone_code": "ZONE-SOM"
+  },
+  {
+    "id": "c72276c8-762c-45c2-b574-c918627498a8",
+    "dept_name": "Gir Somnath",
+    "zone_code": "ZONE-GIR"
+  },
+  {
+    "id": "958a44cd-f8bb-4b3e-bfa4-4576113fd530",
+    "dept_name": "Ahmedabad Traffic",
+    "zone_code": "ZONE-AHM"
+  },
+  {
+    "id": "c7cbaa95-eb66-48e0-8a02-0e8566f40fa7",
+    "dept_name": "Ahmedabad Transport",
+    "zone_code": "ZONE-AHM"
+  },
+  {
+    "id": "b0a11342-636b-40cb-9d99-d3c2dc1eb242",
+    "dept_name": "Vadodara Traffic",
+    "zone_code": "ZONE-VAD"
+  },
+  {
+    "id": "e57aadd2-5ecd-43e4-b872-22eb53317281",
+    "dept_name": "Rajkot Traffic",
+    "zone_code": "ZONE-RAJ"
   }
 ]

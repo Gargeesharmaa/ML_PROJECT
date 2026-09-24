@@ -2591,4 +2591,968 @@ input:focus {
   gap: 12px;
   flex-wrap: wrap;
 }
+
+/* ==========================================================================
+   SURVEILLANCE MATRIX (VIDEO WALL) STYLES
+   ========================================================================== */
+.surveillance-matrix-container {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+}
+
+.matrix-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.matrix-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.live-pulsing-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #dc2626;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.pulse-icon {
+  animation: pulse 1.5s infinite;
+}
+
+.matrix-title-group h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.live-clock {
+  font-family: monospace;
+  font-size: 13px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.matrix-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.matrix-preset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.matrix-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.matrix-preset-btn.text-muted {
+  color: #94a3b8;
+  background: transparent;
+  border-color: transparent;
+}
+
+.layout-switcher {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px;
+  border-radius: 6px;
+  gap: 2px;
+}
+
+.layout-btn {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.layout-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* Grid Layouts */
+.matrix-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.matrix-grid.layout-2x2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.matrix-grid.layout-3x3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.matrix-grid.layout-1\+3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.matrix-grid.layout-1\+3 .focus-tile {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.matrix-grid.has-fullscreen {
+  display: block;
+}
+
+.matrix-tile {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s;
+}
+
+.matrix-tile:hover {
+  border-color: #3b82f6;
+}
+
+.matrix-tile.fullscreen-tile {
+  position: fixed;
+  top: 70px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
+  border-color: #2563eb;
+}
+
+.tile-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #0b1329;
+  border-bottom: 1px solid #1e293b;
+}
+
+.tile-cam-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-rec-dot {
+  font-size: 10px;
+  font-weight: 800;
+  color: #ef4444;
+  animation: pulse 1.2s infinite;
+}
+
+.tile-code {
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.anpr-tile-pill {
+  font-size: 9px;
+  font-weight: 800;
+  background: #4f46e5;
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.tile-dept {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.empty-slot-label {
+  font-size: 12px;
+  color: #475569;
+}
+
+.tile-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tile-cam-select {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 3px 6px;
+}
+
+.tile-tool-btn {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.tile-tool-btn:hover {
+  color: #ffffff;
+}
+
+.tile-video-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tile-video-element,
+.tile-stream-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tile-fallback-sim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  font-family: monospace;
+}
+
+.tile-fallback-sim p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.tile-fallback-sim span {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.sim-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 8px #38bdf8;
+  animation: scanline 4s linear infinite;
+}
+
+@keyframes scanline {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+.tile-osd-top-left {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #38bdf8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.tile-osd-top-right {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-family: monospace;
+  font-size: 10px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.tile-osd-bottom-left {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-family: monospace;
+  font-size: 10px;
+  color: #94a3b8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.tile-osd-bottom-right {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #4ade80;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.empty-tile-prompt {
+  text-align: center;
+  color: #475569;
+}
+
+.empty-tile-prompt p {
+  margin: 8px 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.empty-tile-prompt span {
+  font-size: 11px;
+}
+
+.matrix-no-cams-card {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+  max-width: 500px;
+  margin: 40px auto;
+  color: #64748b;
+}
+
+.matrix-no-cams-card h4 {
+  margin: 12px 0 6px;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.matrix-no-cams-card p {
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+
+/* ==========================================================================
+   ANPR RADAR & NUMBER PLATE RECOGNITION STYLES
+   ========================================================================== */
+.anpr-radar-container {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.anpr-hotlist-alert-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #dc2626;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+}
+
+.alert-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.alert-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.dismiss-alert-btn {
+  background: #ffffff;
+  color: #dc2626;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.anpr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.anpr-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.anpr-cam-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.anpr-cam-picker label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.anpr-cam-picker select {
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+}
+
+.anpr-scan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.anpr-scan-btn:hover {
+  background: #1d4ed8;
+}
+
+.anpr-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.anpr-toggle-btn.active {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+/* KPI ROW */
+.anpr-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.anpr-kpi-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.anpr-kpi-card.alert {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.kpi-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.kpi-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 4px 0;
+}
+
+.kpi-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.text-red {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* SPLIT LAYOUT */
+.anpr-split-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .anpr-split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* VIDEO CARD */
+.anpr-video-card {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.video-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #0b1329;
+  border-bottom: 1px solid #1e293b;
+}
+
+.cam-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cam-title strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.dept-tag {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.feed-specs {
+  font-family: monospace;
+  font-size: 11px;
+  color: #38bdf8;
+}
+
+.anpr-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  overflow: hidden;
+}
+
+.anpr-video-element,
+.anpr-stream-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.anpr-fallback-sim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  font-family: monospace;
+}
+
+.anpr-fallback-sim p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.anpr-fallback-sim span {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* DYNAMIC BOUNDING BOX OVERLAY */
+.anpr-bounding-box {
+  position: absolute;
+  top: 35%;
+  left: 30%;
+  width: 280px;
+  height: 130px;
+  border: 2px solid #22c55e;
+  border-radius: 6px;
+  background: rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  animation: zoomIn 0.3s ease-out;
+}
+
+.anpr-bounding-box.box-alert {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* HSRP Plate Badge inside overlay */
+.detected-plate-badge {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hsrp-flag {
+  background: #003399;
+  color: #ffffff;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+}
+
+.ind-text {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.plate-text {
+  padding: 4px 10px;
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #000000;
+}
+
+.detection-meta-tag {
+  display: flex;
+  gap: 8px;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.anpr-hud-osd {
+  position: absolute;
+  font-family: monospace;
+  font-size: 10px;
+  color: #38bdf8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.anpr-hud-osd.top-left {
+  top: 12px;
+  left: 12px;
+}
+
+.anpr-hud-osd.bottom-left {
+  bottom: 12px;
+  left: 12px;
+}
+
+/* DETECTION LOG CARD */
+.anpr-log-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.log-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.log-header-left h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.log-count {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.export-log-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.export-log-btn:hover {
+  background: #f1f5f9;
+}
+
+.log-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 12px;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  flex: 1;
+}
+
+.search-wrap input {
+  border: none;
+  outline: none;
+  font-size: 12px;
+  width: 100%;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-chip {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-chip.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.filter-chip.hotlist.active {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.anpr-table-scroll {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.anpr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.anpr-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.anpr-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+
+.anpr-table tr.row-alert {
+  background: #fff1f2;
+}
+
+.time-cell {
+  font-family: monospace;
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* HSRP Plate Badge in table */
+.hsrp-plate-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.hsrp-blue-band {
+  background: #003399;
+  color: #ffffff;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+}
+
+.band-ind {
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.hsrp-number {
+  padding: 2px 7px;
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #000000;
+}
+
+.vehicle-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+}
+
+.speed-cell {
+  font-family: monospace;
+  font-weight: 700;
+}
+
+.speed-fast {
+  color: #dc2626;
+}
+
+.speed-normal {
+  color: #16a34a;
+}
+
+.badge-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.badge-alert.stolen {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.badge-alert.speed {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.badge-alert.suspect {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.badge-alert.normal {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
 

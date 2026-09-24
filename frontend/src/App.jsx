@@ -15,12 +15,16 @@ import {
   Wifi,
   AlertTriangle,
   Play,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Grid,
+  Shield
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
 import CameraFeedModal from "./components/CameraFeedModal";
 import CsvImport from "./components/CsvImport";
+import SurveillanceMatrix from "./components/SurveillanceMatrix";
+import AnprRadar from "./components/AnprRadar";
 import "./App.css";
 
 const fallbackDepartments = [
@@ -475,6 +479,24 @@ function App() {
             <MapPin size={16} />
             <span>GIS Live Map</span>
           </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "matrix" ? "active" : ""}`}
+            onClick={() => setActiveTab("matrix")}
+          >
+            <Grid size={16} />
+            <span>Surveillance Matrix</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "anpr" ? "active" : ""}`}
+            onClick={() => setActiveTab("anpr")}
+          >
+            <Shield size={16} />
+            <span>ANPR Live Radar</span>
+          </button>
         </nav>
 
         {/* BACKEND SERVER STATUS */}
@@ -505,6 +527,10 @@ function App() {
         <GisMap onSwitchToOnboarding={() => setActiveTab("onboarding")} />
       ) : activeTab === "csv" ? (
         <CsvImport onNavigateToMap={() => setActiveTab("map")} />
+      ) : activeTab === "matrix" ? (
+        <SurveillanceMatrix onNavigateToOnboarding={() => setActiveTab("onboarding")} />
+      ) : activeTab === "anpr" ? (
+        <AnprRadar onNavigateToOnboarding={() => setActiveTab("onboarding")} />
       ) : (
         /* MAIN ONBOARDING VIEW */
         <main className="onboarding-main">
