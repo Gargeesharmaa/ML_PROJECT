@@ -187,5 +187,16 @@ class MemoryRegistry:
     def get_all_cameras(self) -> List[Dict[str, Any]]:
         return list(self.cameras)
 
+    def delete_camera(self, cam_id: str) -> bool:
+        initial_len = len(self.cameras)
+        self.cameras = [
+            c for c in self.cameras
+            if str(c.get("id")) != str(cam_id) and str(c.get("camera_code")) != str(cam_id)
+        ]
+        if len(self.cameras) < initial_len:
+            self._save_cameras()
+            return True
+        return False
+
 memory_registry = MemoryRegistry()
 

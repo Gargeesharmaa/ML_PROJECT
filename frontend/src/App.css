@@ -1479,6 +1479,24 @@ input:focus {
   font-weight: 700;
 }
 
+.quick-feed-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-feed-delete-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
 /* ==========================================================================
    CCTV LIVE STREAM VIEWER MODAL
    ========================================================================== */

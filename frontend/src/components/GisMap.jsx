@@ -11,7 +11,9 @@ import {
   AlertTriangle,
   Video,
   Plus,
-  Play
+  Play,
+  Trash2,
+  UploadCloud
 } from "lucide-react";
 import CameraFeedModal from "./CameraFeedModal";
 
@@ -77,7 +79,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-export default function GisMap({ onSwitchToOnboarding }) {
+export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
@@ -91,6 +93,49 @@ export default function GisMap({ onSwitchToOnboarding }) {
 
   // Live Camera Feed Modal state
   const [activeFeedCamera, setActiveFeedCamera] = useState(null);
+
+  // Camera Removal / Deletion State
+  const [cameraToDelete, setCameraToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteSuccessMsg, setDeleteSuccessMsg] = useState("");
+
+  // Confirm and execute camera deletion
+  const confirmDeleteCamera = async () => {
+    if (!cameraToDelete) return;
+    setDeleteLoading(true);
+    try {
+      const targetId = cameraToDelete.id || cameraToDelete.code;
+      const res = await fetch(`/api/cameras/${encodeURIComponent(targetId)}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setCameras((prev) =>
+          prev.filter((c) => {
+            const p = c.properties || {};
+            return (
+              p.id !== cameraToDelete.id &&
+              p.camera_code !== cameraToDelete.id &&
+              p.camera_code !== cameraToDelete.code
+            );
+          })
+        );
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.closePopup();
+        }
+        setDeleteSuccessMsg(`Camera ${cameraToDelete.code} successfully removed.`);
+        setTimeout(() => setDeleteSuccessMsg(""), 4000);
+        setCameraToDelete(null);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(`Failed to remove camera: ${data.detail || "Server error"}`);
+      }
+    } catch {
+      alert("Error communicating with server to remove camera.");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   // Filters
   const [selectedDept, setSelectedDept] = useState("ALL");
@@ -199,13 +244,15 @@ export default function GisMap({ onSwitchToOnboarding }) {
     markersLayerRef.current = markersLayer;
     mapInstanceRef.current = map;
 
-    // Handle "Watch Live Feed" clicks inside Leaflet Popups
+    // Handle "Watch Live Feed" and "Remove Camera" clicks inside Leaflet Popups
     map.on("popupopen", (e) => {
       const popupEl = e.popup.getElement();
-      const btn = popupEl?.querySelector(".watch-feed-btn");
-      if (btn) {
-        btn.onclick = () => {
-          const rawData = btn.getAttribute("data-cam");
+      if (!popupEl) return;
+
+      const feedBtn = popupEl.querySelector(".watch-feed-btn");
+      if (feedBtn) {
+        feedBtn.onclick = () => {
+          const rawData = feedBtn.getAttribute("data-cam");
           if (rawData) {
             try {
               const camObj = JSON.parse(decodeURIComponent(rawData));
@@ -213,6 +260,17 @@ export default function GisMap({ onSwitchToOnboarding }) {
             } catch (err) {
               console.error("Error opening feed:", err);
             }
+          }
+        };
+      }
+
+      const deleteBtn = popupEl.querySelector(".delete-cam-btn");
+      if (deleteBtn) {
+        deleteBtn.onclick = () => {
+          const camId = deleteBtn.getAttribute("data-id");
+          const camCode = deleteBtn.getAttribute("data-code");
+          if (camId || camCode) {
+            setCameraToDelete({ id: camId || camCode, code: camCode || camId });
           }
         };
       }
@@ -395,30 +453,56 @@ export default function GisMap({ onSwitchToOnboarding }) {
             <code style="word-break: break-all; font-size: 10px; color: #2563eb;">${p.rtsp_url || "webrtc://live"}</code>
           </div>
 
-          <!-- WATCH LIVE FEED ACTION BUTTON -->
-          <button
-            type="button"
-            class="watch-feed-btn"
-            data-cam="${camDataEncoded}"
-            style="
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 7px;
-              background: #0f172a;
-              color: #ffffff;
-              border: none;
-              padding: 9px 12px;
-              border-radius: 7px;
-              font-size: 12px;
-              font-weight: 700;
-              cursor: pointer;
-              transition: all 0.15s ease;
-            "
-          >
-            ▶ Watch Live Feed
-          </button>
+          <!-- ACTION BUTTONS: WATCH LIVE FEED & REMOVE CAMERA -->
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <button
+              type="button"
+              class="watch-feed-btn"
+              data-cam="${camDataEncoded}"
+              style="
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                background: #0f172a;
+                color: #ffffff;
+                border: none;
+                padding: 8px 10px;
+                border-radius: 6px;
+                font-size: 11px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.15s ease;
+              "
+            >
+              ▶ Watch Feed
+            </button>
+            <button
+              type="button"
+              class="delete-cam-btn"
+              data-id="${p.id || p.camera_code}"
+              data-code="${p.camera_code || "Camera"}"
+              title="Remove camera from GIS registry"
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                background: #fee2e2;
+                color: #dc2626;
+                border: 1px solid #fca5a5;
+                padding: 8px 10px;
+                border-radius: 6px;
+                font-size: 11px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.15s ease;
+              "
+            >
+              🗑️ Remove
+            </button>
+          </div>
         </div>
       `;
 
@@ -678,55 +762,132 @@ export default function GisMap({ onSwitchToOnboarding }) {
             </div>
             <h4>No Cameras Registered Yet</h4>
             <p>
-              Your GIS Map displays only the real cameras you feed into the registry. Add your laptop webcam or a Network CCTV to see it live on the map!
+              Your GIS Map displays only the real cameras you feed into the registry. Add your laptop webcam, a Network CCTV, or import via CSV to see them live on the map!
             </p>
-            <button
-              type="button"
-              className="primary-button"
-              onClick={onSwitchToOnboarding}
-            >
-              <Plus size={18} />
-              Feed Your First Camera
-            </button>
+            <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+              <button
+                type="button"
+                className="primary-button"
+                onClick={onSwitchToOnboarding}
+              >
+                <Plus size={18} />
+                Feed Camera
+              </button>
+              {onSwitchToBulkCsv && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={onSwitchToBulkCsv}
+                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                >
+                  <UploadCloud size={18} />
+                  Bulk CSV Import
+                </button>
+              )}
+            </div>
           </div>
         )}
 
         {/* QUICK LIVE FEED LIST SIDEBAR (When cameras exist) */}
         {cameras.length > 0 && (
           <div className="map-feed-quick-sidebar">
-            <div className="sidebar-header">
-              <Video size={16} />
-              <span>Live Feeds ({cameras.length})</span>
+            <div className="sidebar-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Video size={16} />
+                <span>Live Feeds ({cameras.length})</span>
+              </div>
+              {onSwitchToBulkCsv && (
+                <button
+                  type="button"
+                  onClick={onSwitchToBulkCsv}
+                  title="Import more cameras via CSV"
+                  style={{
+                    background: "rgba(255,255,255,0.15)",
+                    border: "none",
+                    color: "#fff",
+                    borderRadius: "4px",
+                    padding: "2px 6px",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                >
+                  <UploadCloud size={12} /> +CSV
+                </button>
+              )}
             </div>
             <div className="sidebar-feed-list">
               {cameras.map((f) => {
                 const p = f.properties || {};
                 const isOnline = (p.status || "").toUpperCase() === "ONLINE";
                 return (
-                  <button
+                  <div
                     key={p.id || p.camera_code}
-                    type="button"
                     className="quick-feed-card"
-                    onClick={() =>
-                      setActiveFeedCamera({
-                        ...p,
-                        latitude: f.geometry?.coordinates?.[1],
-                        longitude: f.geometry?.coordinates?.[0],
-                      })
-                    }
+                    style={{ position: "relative" }}
                   >
-                    <div className="quick-feed-title">
+                    <div
+                      className="quick-feed-title"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        setActiveFeedCamera({
+                          ...p,
+                          latitude: f.geometry?.coordinates?.[1],
+                          longitude: f.geometry?.coordinates?.[0],
+                        })
+                      }
+                    >
                       <strong>{p.camera_code}</strong>
-                      <span className={`status-dot ${isOnline ? "online" : "offline"}`}></span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span className={`status-dot ${isOnline ? "online" : "offline"}`}></span>
+                        <button
+                          type="button"
+                          className="quick-feed-delete-btn"
+                          title={`Remove ${p.camera_code}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCameraToDelete({
+                              id: p.id || p.camera_code,
+                              code: p.camera_code || "Camera",
+                            });
+                          }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
                     </div>
-                    <p className="quick-feed-dept">{p.dept_name}</p>
-                    <div className="quick-feed-footer">
+                    <p
+                      className="quick-feed-dept"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        setActiveFeedCamera({
+                          ...p,
+                          latitude: f.geometry?.coordinates?.[1],
+                          longitude: f.geometry?.coordinates?.[0],
+                        })
+                      }
+                    >
+                      {p.dept_name}
+                    </p>
+                    <div
+                      className="quick-feed-footer"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        setActiveFeedCamera({
+                          ...p,
+                          latitude: f.geometry?.coordinates?.[1],
+                          longitude: f.geometry?.coordinates?.[0],
+                        })
+                      }
+                    >
                       <span>{p.source_type === "LOCAL_WEBCAM" ? "Webcam" : p.camera_type || "CCTV"}</span>
                       <span className="watch-link">
                         <Play size={11} /> Watch
                       </span>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -741,6 +902,118 @@ export default function GisMap({ onSwitchToOnboarding }) {
           </div>
         )}
       </div>
+
+      {/* DELETE CAMERA CONFIRMATION MODAL */}
+      {cameraToDelete && (
+        <div className="cctv-modal-overlay">
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "12px",
+              padding: "24px",
+              maxWidth: "440px",
+              width: "100%",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.25)",
+              animation: "fadeIn 0.15s ease-out",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "14px" }}>
+              <div
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  background: "#fee2e2",
+                  color: "#dc2626",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700, color: "#0f172a" }}>
+                  Remove Camera from GIS Map?
+                </h3>
+                <p style={{ margin: "3px 0 0", fontSize: "13px", color: "#64748b" }}>
+                  Camera Code: <strong style={{ color: "#0f172a" }}>{cameraToDelete.code}</strong>
+                </p>
+              </div>
+            </div>
+            <p style={{ fontSize: "13px", color: "#475569", lineHeight: 1.5, marginBottom: "20px" }}>
+              Are you sure you want to remove this camera? It will be deleted from the statewide GIS registry database and live surveillance feeds.
+            </p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <button
+                type="button"
+                disabled={deleteLoading}
+                onClick={() => setCameraToDelete(null)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "1px solid #cbd5e1",
+                  background: "#ffffff",
+                  color: "#334155",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deleteLoading}
+                onClick={confirmDeleteCamera}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: "#dc2626",
+                  color: "#ffffff",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  cursor: deleteLoading ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                {deleteLoading ? <RefreshCw size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                {deleteLoading ? "Removing..." : "Yes, Remove Camera"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE SUCCESS NOTIFICATION TOAST */}
+      {deleteSuccessMsg && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "24px",
+            right: "24px",
+            zIndex: 10000,
+            background: "#0f172a",
+            color: "#ffffff",
+            padding: "12px 18px",
+            borderRadius: "8px",
+            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.3)",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "13px",
+            fontWeight: 600,
+            borderLeft: "4px solid #10b981",
+          }}
+        >
+          <span>✓</span>
+          <span>{deleteSuccessMsg}</span>
+        </div>
+      )}
 
       {/* LIVE CCTV FEED PLAYER MODAL SCREEN */}
       {activeFeedCamera && (

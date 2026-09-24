@@ -14,10 +14,12 @@ import {
   MapPin,
   Wifi,
   AlertTriangle,
-  Play
+  Play,
+  FileSpreadsheet
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
+import CsvImport from "./components/CsvImport";
 import CameraFeedModal from "./components/CameraFeedModal";
 import "./App.css";
 
@@ -453,7 +455,16 @@ function App() {
             onClick={() => setActiveTab("onboarding")}
           >
             <Camera size={16} />
-            <span>Camera Onboarding</span>
+            <span>Single Camera</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "bulk_csv" ? "active" : ""}`}
+            onClick={() => setActiveTab("bulk_csv")}
+          >
+            <FileSpreadsheet size={16} />
+            <span>Bulk CSV Upload</span>
           </button>
 
           <button
@@ -491,7 +502,14 @@ function App() {
 
       {/* VIEW SWITCHER */}
       {activeTab === "map" ? (
-        <GisMap onSwitchToOnboarding={() => setActiveTab("onboarding")} />
+        <GisMap
+          onSwitchToOnboarding={() => setActiveTab("onboarding")}
+          onSwitchToBulkCsv={() => setActiveTab("bulk_csv")}
+        />
+      ) : activeTab === "bulk_csv" ? (
+        <main className="onboarding-main" style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 20px" }}>
+          <CsvImport onNavigateToMap={() => setActiveTab("map")} />
+        </main>
       ) : (
         /* MAIN ONBOARDING VIEW */
         <main className="onboarding-main">
