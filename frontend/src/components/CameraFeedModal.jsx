@@ -1,0 +1,411 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  X,
+  Video,
+  Camera,
+  Maximize2,
+  Minimize2,
+  Radio,
+  Clock,
+  Wifi,
+  Shield,
+  Volume2,
+  VolumeX,
+  Compass,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw
+} from "lucide-react";
+
+export default function CameraFeedModal({ camera, onClose }) {
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [currentTime, setCurrentTime] = useState("");
+  const [webcamActive, setWebcamActive] = useState(false);
+  const [webcamError, setWebcamError] = useState("");
+  const [networkStreamError, setNetworkStreamError] = useState("");
+  const [streamKey, setStreamKey] = useState(Date.now());
+  const [ptzAction, setPtzAction] = useState("");
+  const [snapshotTaken, setSnapshotTaken] = useState(false);
+  const [nightVision, setNightVision] = useState(false);
+
+  const isLocalWebcam = camera?.source_type === "LOCAL_WEBCAM";
+
+  // 1. Live Running CCTV Clock (updates every second)
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      setCurrentTime(`${dateStr} ${timeStr}`);
+    };
+
+    updateClock();
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 2. Local Webcam Live Stream
+  useEffect(() => {
+    if (!isLocalWebcam) return;
+
+    let isCancelled = false;
+
+    async function startCamera() {
+      try {
+        setWebcamError("");
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setWebcamError("Webcam access not supported in this browser.");
+          return;
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false,
+        });
+
+        if (!isCancelled) {
+          streamRef.current = stream;
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.play().catch(() => {});
+          }
+          setWebcamActive(true);
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          console.error("Camera access error:", err);
+          setWebcamError("Could not access laptop webcam. Please grant camera permission.");
+        }
+      }
+    }
+
+    startCamera();
+
+    return () => {
+      isCancelled = true;
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+    };
+  }, [isLocalWebcam]);
+
+  // 3. PTZ Simulated Action Trigger
+  const triggerPtz = (action) => {
+    setPtzAction(action);
+    setTimeout(() => {
+      setPtzAction("");
+    }, 1200);
+  };
+
+  // 4. Capture Frame Snapshot
+  const takeSnapshot = () => {
+    setSnapshotTaken(true);
+    if (!isLocalWebcam && camera) {
+      const a = document.createElement("a");
+      a.href = `/api/cameras/${camera.camera_code || camera.id}/snapshot?t=${Date.now()}`;
+      a.download = `snapshot_${camera.camera_code || "CAM"}_${Date.now()}.jpg`;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    setTimeout(() => {
+      setSnapshotTaken(false);
+    }, 2000);
+  };
+
+  // 5. Fullscreen Toggle
+  const toggleFullscreen = () => {
+    const el = document.getElementById("cctv-monitor-screen");
+    if (!el) return;
+
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen?.();
+      setIsFullscreen(false);
+    }
+  };
+
+  return (
+    <div className="cctv-modal-overlay">
+      <div className="cctv-modal-container" id="cctv-monitor-screen">
+        {/* MODAL HEADER */}
+        <div className="cctv-modal-header">
+          <div className="cctv-header-left">
+            <div className="cctv-brand-icon">
+              <Video size={18} />
+            </div>
+            <div>
+              <div className="cctv-title-row">
+                <h4>{camera.camera_code || "CAM-LIVE"}</h4>
+                <span className="cctv-live-tag">
+                  <span className="live-pulsar"></span>
+                  LIVE FEED
+                </span>
+                <span className="cctv-type-tag">
+                  {isLocalWebcam ? "LOCAL WEBCAM" : camera.camera_type || "CCTV"}
+                </span>
+              </div>
+              <p className="cctv-subtext">
+                {camera.dept_name || "State Security Dept"} • {camera.make_model || "Surveillance Unit"}
+              </p>
+            </div>
+          </div>
+
+          <div className="cctv-header-actions">
+            <button
+              type="button"
+              className="cctv-icon-btn"
+              onClick={() => setNightVision(!nightVision)}
+              title="Toggle Night Vision Mode"
+            >
+              <Shield size={16} />
+              <span>{nightVision ? "IR Mode ON" : "Normal Mode"}</span>
+            </button>
+
+            <button
+              type="button"
+              className="cctv-icon-btn"
+              onClick={toggleFullscreen}
+              title="Toggle Fullscreen"
+            >
+              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            </button>
+
+            <button
+              type="button"
+              className="cctv-close-btn"
+              onClick={onClose}
+              title="Close Stream"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* CCTV MONITOR VIEWPORT */}
+        <div className={`cctv-viewport ${nightVision ? "night-vision" : ""}`}>
+          {/* Real Live Video / Stream Viewport */}
+          {isLocalWebcam ? (
+            <div className="video-stream-box">
+              <video
+                ref={videoRef}
+                className="live-video-element"
+                autoPlay
+                playsInline
+                muted
+              />
+              {webcamError && (
+                <div className="stream-error-overlay">
+                  <AlertCircle size={32} />
+                  <p>{webcamError}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Live Network CCTV Stream Viewport */
+            <div className="video-stream-box">
+              {networkStreamError ? (
+                <div className="stream-error-overlay">
+                  <AlertCircle size={36} style={{ color: "#f87171" }} />
+                  <h5 style={{ margin: "6px 0 2px", color: "#f8fafc", fontSize: "15px" }}>
+                    Camera Stream Offline or Unavailable
+                  </h5>
+                  <p style={{ margin: "0 0 14px", fontSize: "12px", color: "#cbd5e1", maxWidth: "420px" }}>
+                    {networkStreamError}
+                  </p>
+                  <button
+                    type="button"
+                    className="cctv-tool-btn"
+                    onClick={() => {
+                      setNetworkStreamError("");
+                      setStreamKey(Date.now());
+                    }}
+                  >
+                    <RefreshCw size={14} />
+                    <span>Retry RTSP Stream</span>
+                  </button>
+                </div>
+              ) : (
+                <img
+                  key={streamKey}
+                  src={`/api/cameras/${camera.camera_code || camera.id}/stream`}
+                  className="live-video-element"
+                  alt={`Live Feed - ${camera.camera_code}`}
+                  onError={() => {
+                    setNetworkStreamError(
+                      "RTSP connection could not be established. Check camera IP, RTSP port (8554/554), or credentials."
+                    );
+                  }}
+                />
+              )}
+            </div>
+          )}
+
+          {/* CCTV ON-SCREEN DISPLAY (OSD) OVERLAYS */}
+          <div className="cctv-osd-top-left">
+            <span className="osd-rec-badge">
+              <span className="rec-dot"></span> REC
+            </span>
+            <span className="osd-channel">CH-01</span>
+          </div>
+
+          <div className="cctv-osd-top-right">
+            <span className="osd-clock">
+              <Clock size={13} />
+              {currentTime}
+            </span>
+          </div>
+
+          <div className="cctv-osd-bottom-left">
+            <span className="osd-text">ID: {camera.camera_code}</span>
+            <span className="osd-text">IP: {camera.ip_address || "LOCAL_DEV"}</span>
+            <span className="osd-text">DEPT: {camera.dept_name || "N/A"}</span>
+          </div>
+
+          <div className="cctv-osd-bottom-right">
+            <span className="osd-text">1080P HD • 30 FPS</span>
+            <span className="osd-text">H.264 • 4096 KBPS</span>
+            <span className="osd-text status-active">ONLINE</span>
+          </div>
+
+          {/* PTZ Trigger Action Toast */}
+          {ptzAction && (
+            <div className="ptz-action-toast">
+              <Compass size={16} />
+              <span>PTZ COMMAND: {ptzAction}</span>
+            </div>
+          )}
+
+          {/* Snapshot Notification Toast */}
+          {snapshotTaken && (
+            <div className="snapshot-toast">
+              <CheckCircle2 size={18} />
+              <span>Frame Snapshot Captured (1080p Saved)</span>
+            </div>
+          )}
+        </div>
+
+        {/* MONITOR FOOTER & PTZ CONTROLS */}
+        <div className="cctv-modal-footer">
+          {/* METADATA INFO */}
+          <div className="cctv-footer-info">
+            <div className="footer-meta-item">
+              <span>Source Type</span>
+              <strong>{isLocalWebcam ? "Laptop Webcam (WebRTC)" : "Network CCTV (RTSP)"}</strong>
+            </div>
+
+            <div className="footer-meta-item">
+              <span>RTSP Stream URL</span>
+              <code>{camera.rtsp_url || "webrtc://local-device/webcam"}</code>
+            </div>
+
+            {camera.latitude && camera.longitude && (
+              <div className="footer-meta-item">
+                <span>GIS Coordinates</span>
+                <strong>
+                  {Number(camera.latitude).toFixed(4)}, {Number(camera.longitude).toFixed(4)}
+                </strong>
+              </div>
+            )}
+          </div>
+
+          {/* PTZ & TOOL CONTROLS */}
+          <div className="cctv-controls-deck">
+            <button
+              type="button"
+              className="cctv-tool-btn"
+              onClick={takeSnapshot}
+              title="Capture Frame Snapshot"
+            >
+              <Camera size={15} />
+              <span>Snapshot</span>
+            </button>
+
+            {/* PTZ JOYSTICK CONTROLS */}
+            <div className="ptz-joystick-box">
+              <span className="ptz-label">PTZ Control</span>
+
+              <div className="ptz-pad">
+                <button
+                  type="button"
+                  className="ptz-btn up"
+                  onClick={() => triggerPtz("TILT UP +5°")}
+                  title="Tilt Up"
+                >
+                  <ArrowUp size={14} />
+                </button>
+                <div className="ptz-mid-row">
+                  <button
+                    type="button"
+                    className="ptz-btn left"
+                    onClick={() => triggerPtz("PAN LEFT -10°")}
+                    title="Pan Left"
+                  >
+                    <ArrowLeft size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    className="ptz-btn center"
+                    onClick={() => triggerPtz("HOME POSITION")}
+                    title="Center / Home"
+                  >
+                    <RotateCcw size={12} />
+                  </button>
+                  <button
+                    type="button"
+                    className="ptz-btn right"
+                    onClick={() => triggerPtz("PAN RIGHT +10°")}
+                    title="Pan Right"
+                  >
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  className="ptz-btn down"
+                  onClick={() => triggerPtz("TILT DOWN -5°")}
+                  title="Tilt Down"
+                >
+                  <ArrowDown size={14} />
+                </button>
+              </div>
+
+              <div className="ptz-zoom-group">
+                <button
+                  type="button"
+                  className="zoom-btn"
+                  onClick={() => triggerPtz("ZOOM IN 2X")}
+                  title="Zoom In"
+                >
+                  <ZoomIn size={13} />
+                </button>
+                <button
+                  type="button"
+                  className="zoom-btn"
+                  onClick={() => triggerPtz("ZOOM OUT 1X")}
+                  title="Zoom Out"
+                >
+                  <ZoomOut size={13} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

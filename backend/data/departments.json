@@ -1,0 +1,57 @@
+[
+  {
+    "id": "11111111-1111-1111-1111-111111111101",
+    "dept_name": "Gujarat Police",
+    "zone_code": "POL-GJ"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111102",
+    "dept_name": "Ahmedabad Municipal Corporation",
+    "zone_code": "AMC-AHD"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111103",
+    "dept_name": "Surat Municipal Corporation",
+    "zone_code": "SMC-SRT"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111104",
+    "dept_name": "Vadodara Municipal Corporation",
+    "zone_code": "VMC-VAD"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111105",
+    "dept_name": "Rajkot Municipal Corporation",
+    "zone_code": "RMC-RJK"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111106",
+    "dept_name": "Gujarat State Road Transport",
+    "zone_code": "GSRTC-GJ"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111107",
+    "dept_name": "Gujarat Traffic Police",
+    "zone_code": "TRAF-GJ"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111108",
+    "dept_name": "Gujarat Metro Rail",
+    "zone_code": "METRO-GJ"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111109",
+    "dept_name": "Gandhinagar Municipal Corporation",
+    "zone_code": "GMC-GND"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111110",
+    "dept_name": "Surat Traffic Police",
+    "zone_code": "TRAF-SRT"
+  },
+  {
+    "id": "f6d62ba4-c289-404e-9eef-40b1bbbc9aae",
+    "dept_name": "Police Headquarters",
+    "zone_code": "ZONE-POL"
+  }
+]
