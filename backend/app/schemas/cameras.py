@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator
-from typing import Optional, List, Dict, Any
+from typing import Optional
 from uuid import UUID
 from datetime import datetime
 
@@ -14,7 +14,7 @@ class CameraBase(BaseModel):
     rtsp_url: Optional[str] = None
     latitude: Optional[float] = Field(default=None, ge=-90, le=90)
     longitude: Optional[float] = Field(default=None, ge=-180, le=180)
-    camera_type: Optional[str] = Field(default="FIXED", pattern="^(PTZ|BULLET|DOME|THERMAL|FIXED|ANPR)$")
+    camera_type: Optional[str] = Field(default="FIXED", pattern="^(PTZ|BULLET|DOME|THERMAL|FIXED)$")
     status: Optional[str] = Field(default="OFFLINE", pattern="^(ONLINE|OFFLINE|MAINTENANCE)$")
     ageing: Optional[float] = 0.0
 
@@ -70,9 +70,3 @@ class IPValidationResponse(BaseModel):
     port_tested: int
     latency_ms: Optional[float] = None
     detail: str
-
-class BulkImportJsonPayload(BaseModel):
-    cameras: list[dict[str, Any]]
-
-class ValidateRecordsPayload(BaseModel):
-    records: list[dict[str, Any]]

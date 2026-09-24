@@ -138,85 +138,6 @@ class MemoryRegistry:
             "status": cam_record["status"]
         }
 
-    def add_bulk_cameras(self, cameras_list: List[Any]) -> Dict[str, Any]:
-        """Bulk import multiple cameras, saving once to disk upon completion."""
-        imported = []
-        skipped = []
-        errors = []
-
-        existing_codes = {c["camera_code"].lower(): c for c in self.cameras}
-
-        for idx, item in enumerate(cameras_list, start=1):
-            try:
-                # Support both dict and object
-                c_code = getattr(item, "camera_code", None) or (item.get("camera_code") if isinstance(item, dict) else None)
-                if not c_code or not str(c_code).strip():
-                    errors.append({"row": idx, "reason": "Missing required camera_code"})
-                    continue
-
-                code_clean = str(c_code).strip()
-                if code_clean.lower() in existing_codes:
-                    skipped.append({"row": idx, "camera_code": code_clean, "reason": "Camera code already exists in registry"})
-                    continue
-
-                dept_id = getattr(item, "dept_id", None) or (item.get("dept_id") if isinstance(item, dict) else None)
-                dept_name = getattr(item, "department_name", None) or getattr(item, "dept_name", None) or (item.get("dept_name") or item.get("department_name") if isinstance(item, dict) else None)
-
-                dept = None
-                if dept_id:
-                    dept = self.get_department_by_id(str(dept_id))
-                elif dept_name:
-                    dept = self.get_department_by_name(str(dept_name))
-                    if not dept:
-                        dept = self.add_department(str(dept_name).strip(), f"ZONE-{str(dept_name)[:3].upper()}")
-
-                resolved_dept_id = dept["id"] if dept else str(uuid.uuid4())
-                resolved_dept_name = dept["dept_name"] if dept else (str(dept_name) if dept_name else "General Department")
-
-                def _val(key, default=None):
-                    v = getattr(item, key, None)
-                    if v is None and isinstance(item, dict):
-                        v = item.get(key)
-                    return v if v is not None else default
-
-                lat = _val("latitude")
-                lon = _val("longitude")
-
-                cam_record = {
-                    "id": str(uuid.uuid4()),
-                    "dept_id": resolved_dept_id,
-                    "dept_name": resolved_dept_name,
-                    "camera_code": code_clean,
-                    "make_model": _val("make_model", "Generic CCTV"),
-                    "source_type": _val("source_type", "NETWORK_CCTV"),
-                    "ip_address": _val("ip_address"),
-                    "rtsp_url": _val("rtsp_url"),
-                    "latitude": float(lat) if lat is not None and str(lat).strip() != "" else None,
-                    "longitude": float(lon) if lon is not None and str(lon).strip() != "" else None,
-                    "camera_type": str(_val("camera_type", "FIXED")).upper(),
-                    "status": str(_val("status", "ONLINE")).upper(),
-                    "ageing": float(_val("ageing", 0.0)) if _val("ageing") is not None else 0.0,
-                }
-
-                self.cameras.append(cam_record)
-                existing_codes[code_clean.lower()] = cam_record
-                imported.append(cam_record)
-            except Exception as e:
-                errors.append({"row": idx, "reason": str(e)})
-
-        if imported:
-            self._save_cameras()
-
-        return {
-            "total_processed": len(cameras_list),
-            "imported_count": len(imported),
-            "skipped_count": len(skipped),
-            "error_count": len(errors),
-            "imported": imported,
-            "skipped": skipped,
-            "errors": errors
-        }
-
     def get_cameras_geojson(self) -> Dict[str, Any]:
         features = []
         for c in self.cameras:
@@ -263,63 +184,8 @@ class MemoryRegistry:
                 return dict(c)
         return None
 
-    def delete_camera(self, cam_id: str) -> bool:
-        """Delete camera by id or camera_code and save to disk."""
-        target_idx = None
-        for idx, c in enumerate(self.cameras):
-            if str(c.get("id")) == str(cam_id) or str(c.get("camera_code")).lower() == str(cam_id).lower():
-                target_idx = idx
-                break
-        if target_idx is not None:
-            self.cameras.pop(target_idx)
-            self._save_cameras()
-            return True
-        return False
-
-    def clear_all_cameras(self):
-        """Remove all registered cameras from registry and disk."""
-        self.cameras = []
-        self._save_cameras()
-
     def get_all_cameras(self) -> List[Dict[str, Any]]:
         return list(self.cameras)
 
-    def get_ageing_report(self, min_age_years: float = 3.0) -> List[Dict[str, Any]]:
-        results = []
-        for c in self.cameras:
-            age = float(c.get("ageing") or 0.0)
-            if age >= min_age_years:
-                results.append({
-                    "id": c.get("id"),
-                    "camera_code": c.get("camera_code"),
-                    "make_model": c.get("make_model"),
-                    "camera_type": c.get("camera_type"),
-                    "ageing": age,
-                    "status": c.get("status"),
-                    "dept_name": c.get("dept_name"),
-                    "latitude": c.get("latitude"),
-                    "longitude": c.get("longitude")
-                })
-        results.sort(key=lambda x: x["ageing"], reverse=True)
-        return results
-
-    def get_gap_analysis(self, buffer_radius_meters: float = 1000.0) -> List[Dict[str, Any]]:
-        dept_counts: Dict[str, int] = {}
-        for c in self.cameras:
-            d_name = c.get("dept_name") or "General"
-            dept_counts[d_name] = dept_counts.get(d_name, 0) + 1
-
-        results = []
-        for dept_name, count in dept_counts.items():
-            results.append({
-                "dept_name": dept_name,
-                "camera_count": count,
-                "buffer_radius_meters": buffer_radius_meters,
-                "coverage_status": "OPTIMAL" if count >= 5 else "NEEDS_EXPANSION" if count >= 2 else "CRITICAL_GAP"
-            })
-        return results
-
 memory_registry = MemoryRegistry()
-
-
 

@@ -23,10 +23,47 @@ import {
   AlertCircle,
   RefreshCw
 } from "lucide-react";
+import MediaMTXWebRTCReader from "../utils/mediamtxReader";
+
+function parseRtspUrl(rtspUrl) {
+  if (!rtspUrl || !rtspUrl.startsWith("rtsp://")) return null;
+  try {
+    const raw = rtspUrl.slice(7);
+    const atIndex = raw.lastIndexOf("@");
+    let auth = "";
+    let hostAndPath = raw;
+    if (atIndex !== -1) {
+      auth = raw.slice(0, atIndex);
+      hostAndPath = raw.slice(atIndex + 1);
+    }
+    const colonInAuth = auth.indexOf(":");
+    let user = "";
+    let pass = "";
+    if (colonInAuth !== -1) {
+      user = decodeURIComponent(auth.slice(0, colonInAuth));
+      pass = decodeURIComponent(auth.slice(colonInAuth + 1));
+    }
+    const slashIndex = hostAndPath.indexOf("/");
+    const hostPort = slashIndex !== -1 ? hostAndPath.slice(0, slashIndex) : hostAndPath;
+    const path = slashIndex !== -1 ? hostAndPath.slice(slashIndex) : "";
+    const host = hostPort.split(":")[0];
+
+    return {
+      host,
+      path,
+      user,
+      pass,
+      whepUrl: `http://${host}:8889${path}/whep`,
+    };
+  } catch {
+    return null;
+  }
+}
 
 export default function CameraFeedModal({ camera, onClose }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const readerRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
   const [webcamActive, setWebcamActive] = useState(false);
@@ -38,6 +75,8 @@ export default function CameraFeedModal({ camera, onClose }) {
   const [nightVision, setNightVision] = useState(false);
 
   const isLocalWebcam = camera?.source_type === "LOCAL_WEBCAM";
+  const [streamMode, setStreamMode] = useState(isLocalWebcam ? "LOCAL_WEBCAM" : "WEBRTC");
+  const [isConnecting, setIsConnecting] = useState(!isLocalWebcam);
 
   // 1. Live Running CCTV Clock (updates every second)
   useEffect(() => {
@@ -54,51 +93,104 @@ export default function CameraFeedModal({ camera, onClose }) {
     return () => clearInterval(interval);
   }, []);
 
-  // 2. Local Webcam Live Stream
+  // 2. Stream Initializer: WebRTC (Webcam or Network CCTV WHEP)
   useEffect(() => {
-    if (!isLocalWebcam) return;
-
     let isCancelled = false;
 
-    async function startCamera() {
-      try {
-        setWebcamError("");
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          setWebcamError("Webcam access not supported in this browser.");
-          return;
-        }
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-          audio: false,
-        });
-
-        if (!isCancelled) {
-          streamRef.current = stream;
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            videoRef.current.play().catch(() => {});
+    if (isLocalWebcam) {
+      async function startCamera() {
+        try {
+          setWebcamError("");
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            setWebcamError("Webcam access not supported in this browser.");
+            return;
           }
-          setWebcamActive(true);
-        }
-      } catch (err) {
-        if (!isCancelled) {
-          console.error("Camera access error:", err);
-          setWebcamError("Could not access laptop webcam. Please grant camera permission.");
+
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false,
+          });
+
+          if (!isCancelled) {
+            streamRef.current = stream;
+            if (videoRef.current) {
+              videoRef.current.srcObject = stream;
+              videoRef.current.play().catch(() => {});
+            }
+            setWebcamActive(true);
+            setIsConnecting(false);
+          }
+        } catch (err) {
+          if (!isCancelled) {
+            console.error("Camera access error:", err);
+            setWebcamError("Could not access laptop webcam. Please grant camera permission.");
+            setIsConnecting(false);
+          }
         }
       }
+
+      startCamera();
+
+      return () => {
+        isCancelled = true;
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach((track) => track.stop());
+          streamRef.current = null;
+        }
+      };
+    } else {
+      // Network CCTV WebRTC Connection
+      const parsed = parseRtspUrl(camera?.rtsp_url);
+      if (parsed) {
+        setIsConnecting(true);
+        setNetworkStreamError("");
+        setStreamMode("WEBRTC");
+
+        try {
+          const reader = new MediaMTXWebRTCReader({
+            url: parsed.whepUrl,
+            user: parsed.user,
+            pass: parsed.pass,
+            onError: (err) => {
+              if (!isCancelled) {
+                console.warn("MediaMTX WebRTC issue, falling back to backend stream:", err);
+                setStreamMode("BACKEND_MJPEG");
+                setIsConnecting(false);
+              }
+            },
+            onTrack: (evt) => {
+              if (!isCancelled) {
+                console.log("MediaMTX WebRTC track received:", evt);
+                if (videoRef.current) {
+                  videoRef.current.srcObject = evt.streams[0];
+                  videoRef.current.play().catch(() => {});
+                }
+                setWebcamActive(true);
+                setIsConnecting(false);
+              }
+            },
+          });
+          readerRef.current = reader;
+        } catch (err) {
+          if (!isCancelled) {
+            setStreamMode("BACKEND_MJPEG");
+            setIsConnecting(false);
+          }
+        }
+      } else {
+        setStreamMode("BACKEND_MJPEG");
+        setIsConnecting(false);
+      }
+
+      return () => {
+        isCancelled = true;
+        if (readerRef.current) {
+          readerRef.current.close();
+          readerRef.current = null;
+        }
+      };
     }
-
-    startCamera();
-
-    return () => {
-      isCancelled = true;
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-      }
-    };
-  }, [isLocalWebcam]);
+  }, [camera?.rtsp_url, isLocalWebcam]);
 
   // 3. PTZ Simulated Action Trigger
   const triggerPtz = (action) => {
@@ -111,14 +203,28 @@ export default function CameraFeedModal({ camera, onClose }) {
   // 4. Capture Frame Snapshot
   const takeSnapshot = () => {
     setSnapshotTaken(true);
-    if (!isLocalWebcam && camera) {
-      const a = document.createElement("a");
-      a.href = `/api/cameras/${camera.camera_code || camera.id}/snapshot?t=${Date.now()}`;
-      a.download = `snapshot_${camera.camera_code || "CAM"}_${Date.now()}.jpg`;
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    try {
+      if (videoRef.current && videoRef.current.videoWidth > 0) {
+        const canvas = document.createElement("canvas");
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        const link = document.createElement("a");
+        link.download = `snapshot_${camera.camera_code || "CAM"}_${Date.now()}.jpg`;
+        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+      } else if (!isLocalWebcam && camera) {
+        const a = document.createElement("a");
+        a.href = `/api/cameras/${camera.camera_code || camera.id}/snapshot?t=${Date.now()}`;
+        a.download = `snapshot_${camera.camera_code || "CAM"}_${Date.now()}.jpg`;
+        a.target = "_blank";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    } catch (err) {
+      console.warn("Snapshot fallback:", err);
     }
     setTimeout(() => {
       setSnapshotTaken(false);
@@ -198,8 +304,7 @@ export default function CameraFeedModal({ camera, onClose }) {
 
         {/* CCTV MONITOR VIEWPORT */}
         <div className={`cctv-viewport ${nightVision ? "night-vision" : ""}`}>
-          {/* Real Live Video / Stream Viewport */}
-          {isLocalWebcam ? (
+          {isLocalWebcam || streamMode === "WEBRTC" ? (
             <div className="video-stream-box">
               <video
                 ref={videoRef}
@@ -208,6 +313,17 @@ export default function CameraFeedModal({ camera, onClose }) {
                 playsInline
                 muted
               />
+              {isConnecting && (
+                <div className="stream-error-overlay" style={{ background: "rgba(15, 23, 42, 0.85)" }}>
+                  <RefreshCw size={36} style={{ color: "#38bdf8", animation: "spin 1.5s linear infinite" }} />
+                  <h5 style={{ margin: "12px 0 4px", color: "#f8fafc", fontSize: "15px" }}>
+                    Connecting Live WebRTC Stream...
+                  </h5>
+                  <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>
+                    Negotiating H.264 video feed for {camera.camera_code || "Camera"}
+                  </p>
+                </div>
+              )}
               {webcamError && (
                 <div className="stream-error-overlay">
                   <AlertCircle size={32} />
@@ -216,7 +332,7 @@ export default function CameraFeedModal({ camera, onClose }) {
               )}
             </div>
           ) : (
-            /* Live Network CCTV Stream Viewport */
+            /* Fallback Backend MJPEG Stream Viewport */
             <div className="video-stream-box">
               {networkStreamError ? (
                 <div className="stream-error-overlay">

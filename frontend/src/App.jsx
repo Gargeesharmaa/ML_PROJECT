@@ -14,17 +14,11 @@ import {
   MapPin,
   Wifi,
   AlertTriangle,
-  Play,
-  FileSpreadsheet,
-  Grid,
-  Shield
+  Play
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
 import CameraFeedModal from "./components/CameraFeedModal";
-import CsvImport from "./components/CsvImport";
-import SurveillanceMatrix from "./components/SurveillanceMatrix";
-import AnprRadar from "./components/AnprRadar";
 import "./App.css";
 
 const fallbackDepartments = [
@@ -464,38 +458,11 @@ function App() {
 
           <button
             type="button"
-            className={`nav-tab-btn ${activeTab === "csv" ? "active" : ""}`}
-            onClick={() => setActiveTab("csv")}
-          >
-            <FileSpreadsheet size={16} />
-            <span>Bulk CSV Import</span>
-          </button>
-
-          <button
-            type="button"
             className={`nav-tab-btn ${activeTab === "map" ? "active" : ""}`}
             onClick={() => setActiveTab("map")}
           >
             <MapPin size={16} />
             <span>GIS Live Map</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-tab-btn ${activeTab === "matrix" ? "active" : ""}`}
-            onClick={() => setActiveTab("matrix")}
-          >
-            <Grid size={16} />
-            <span>Surveillance Matrix</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-tab-btn ${activeTab === "anpr" ? "active" : ""}`}
-            onClick={() => setActiveTab("anpr")}
-          >
-            <Shield size={16} />
-            <span>ANPR Live Radar</span>
           </button>
         </nav>
 
@@ -525,12 +492,6 @@ function App() {
       {/* VIEW SWITCHER */}
       {activeTab === "map" ? (
         <GisMap onSwitchToOnboarding={() => setActiveTab("onboarding")} />
-      ) : activeTab === "csv" ? (
-        <CsvImport onNavigateToMap={() => setActiveTab("map")} />
-      ) : activeTab === "matrix" ? (
-        <SurveillanceMatrix onNavigateToOnboarding={() => setActiveTab("onboarding")} />
-      ) : activeTab === "anpr" ? (
-        <AnprRadar onNavigateToOnboarding={() => setActiveTab("onboarding")} />
       ) : (
         /* MAIN ONBOARDING VIEW */
         <main className="onboarding-main">
@@ -779,7 +740,6 @@ function App() {
                           <option value="PTZ">PTZ</option>
                           <option value="BULLET">Bullet</option>
                           <option value="DOME">Dome</option>
-                          <option value="ANPR">ANPR (Number Plate)</option>
                           <option value="THERMAL">Thermal</option>
                         </select>
                       </div>

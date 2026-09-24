@@ -11,8 +11,7 @@ import {
   AlertTriangle,
   Video,
   Plus,
-  Play,
-  Trash2
+  Play
 } from "lucide-react";
 import CameraFeedModal from "./CameraFeedModal";
 
@@ -177,47 +176,6 @@ export default function GisMap({ onSwitchToOnboarding }) {
     }
   };
 
-  // Delete Single Camera
-  const handleDeleteCamera = async (camId, camCode) => {
-    if (!window.confirm(`Are you sure you want to remove camera "${camCode || camId}" from the registry?`)) {
-      return;
-    }
-    try {
-      const res = await fetch(`/api/cameras/${encodeURIComponent(camId)}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        throw new Error("Failed to delete camera.");
-      }
-      setCameras((prev) =>
-        prev.filter((f) => {
-          const p = f.properties || {};
-          return p.id !== camId && p.camera_code !== camCode && p.camera_code !== camId;
-        })
-      );
-      if (activeFeedCamera && (activeFeedCamera.id === camId || activeFeedCamera.camera_code === camCode)) {
-        setActiveFeedCamera(null);
-      }
-    } catch (err) {
-      alert("Error deleting camera: " + err.message);
-    }
-  };
-
-  // Clear All Cameras
-  const handleClearAllCameras = async () => {
-    if (!window.confirm("Are you sure you want to remove ALL registered cameras from the registry?")) {
-      return;
-    }
-    try {
-      const res = await fetch("/api/cameras", { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to clear cameras.");
-      setCameras([]);
-      setActiveFeedCamera(null);
-    } catch (err) {
-      alert("Error clearing cameras: " + err.message);
-    }
-  };
-
   // 2. Initialize Leaflet Map (Centered on Gujarat)
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -241,7 +199,7 @@ export default function GisMap({ onSwitchToOnboarding }) {
     markersLayerRef.current = markersLayer;
     mapInstanceRef.current = map;
 
-    // Handle "Watch Live Feed" and "Delete Camera" clicks inside Leaflet Popups
+    // Handle "Watch Live Feed" clicks inside Leaflet Popups
     map.on("popupopen", (e) => {
       const popupEl = e.popup.getElement();
       const btn = popupEl?.querySelector(".watch-feed-btn");
@@ -255,18 +213,6 @@ export default function GisMap({ onSwitchToOnboarding }) {
             } catch (err) {
               console.error("Error opening feed:", err);
             }
-          }
-        };
-      }
-
-      const delBtn = popupEl?.querySelector(".delete-cam-popup-btn");
-      if (delBtn) {
-        delBtn.onclick = () => {
-          const camId = delBtn.getAttribute("data-cam-id");
-          const camCode = delBtn.getAttribute("data-cam-code");
-          if (camId) {
-            map.closePopup();
-            handleDeleteCamera(camId, camCode);
           }
         };
       }
@@ -449,57 +395,30 @@ export default function GisMap({ onSwitchToOnboarding }) {
             <code style="word-break: break-all; font-size: 10px; color: #2563eb;">${p.rtsp_url || "webrtc://live"}</code>
           </div>
 
-          <!-- ACTION BUTTONS: WATCH FEED & DELETE -->
-          <div style="display: flex; gap: 6px; margin-top: 10px;">
-            <button
-              type="button"
-              class="watch-feed-btn"
-              data-cam="${camDataEncoded}"
-              style="
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 5px;
-                background: #0f172a;
-                color: #ffffff;
-                border: none;
-                padding: 8px 12px;
-                border-radius: 6px;
-                font-size: 11px;
-                font-weight: 700;
-                cursor: pointer;
-                transition: all 0.15s ease;
-              "
-            >
-              ▶ Watch Feed
-            </button>
-
-            <button
-              type="button"
-              class="delete-cam-popup-btn"
-              data-cam-id="${p.id || p.camera_code}"
-              data-cam-code="${p.camera_code}"
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 4px;
-                background: #fee2e2;
-                color: #991b1b;
-                border: 1px solid #fecaca;
-                padding: 8px 10px;
-                border-radius: 6px;
-                font-size: 11px;
-                font-weight: 700;
-                cursor: pointer;
-                transition: all 0.15s ease;
-              "
-              title="Delete this camera from registry"
-            >
-              🗑 Delete
-            </button>
-          </div>
+          <!-- WATCH LIVE FEED ACTION BUTTON -->
+          <button
+            type="button"
+            class="watch-feed-btn"
+            data-cam="${camDataEncoded}"
+            style="
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 7px;
+              background: #0f172a;
+              color: #ffffff;
+              border: none;
+              padding: 9px 12px;
+              border-radius: 7px;
+              font-size: 12px;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.15s ease;
+            "
+          >
+            ▶ Watch Live Feed
+          </button>
         </div>
       `;
 
@@ -659,12 +578,10 @@ export default function GisMap({ onSwitchToOnboarding }) {
               onChange={(e) => setTypeFilter(e.target.value)}
             >
               <option value="ALL">All Types</option>
-              <option value="ANPR">ANPR</option>
               <option value="BULLET">Bullet</option>
               <option value="PTZ">PTZ</option>
               <option value="DOME">Dome</option>
               <option value="FIXED">Fixed</option>
-              <option value="THERMAL">Thermal</option>
             </select>
           </div>
 
@@ -777,42 +694,18 @@ export default function GisMap({ onSwitchToOnboarding }) {
         {/* QUICK LIVE FEED LIST SIDEBAR (When cameras exist) */}
         {cameras.length > 0 && (
           <div className="map-feed-quick-sidebar">
-            <div className="sidebar-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <Video size={16} />
-                <span>Live Feeds ({cameras.length})</span>
-              </div>
-              <button
-                type="button"
-                className="clear-all-sidebar-btn"
-                onClick={handleClearAllCameras}
-                title="Clear all cameras from registry"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#f87171",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  padding: "3px 6px",
-                  borderRadius: "4px",
-                  transition: "all 0.15s ease"
-                }}
-              >
-                <Trash2 size={13} />
-                <span>Clear</span>
-              </button>
+            <div className="sidebar-header">
+              <Video size={16} />
+              <span>Live Feeds ({cameras.length})</span>
             </div>
             <div className="sidebar-feed-list">
               {cameras.map((f) => {
                 const p = f.properties || {};
                 const isOnline = (p.status || "").toUpperCase() === "ONLINE";
                 return (
-                  <div
+                  <button
                     key={p.id || p.camera_code}
+                    type="button"
                     className="quick-feed-card"
                     onClick={() =>
                       setActiveFeedCamera({
@@ -829,31 +722,11 @@ export default function GisMap({ onSwitchToOnboarding }) {
                     <p className="quick-feed-dept">{p.dept_name}</p>
                     <div className="quick-feed-footer">
                       <span>{p.source_type === "LOCAL_WEBCAM" ? "Webcam" : p.camera_type || "CCTV"}</span>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span className="watch-link">
-                          <Play size={11} /> Watch
-                        </span>
-                        <span
-                          className="delete-feed-link"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteCamera(p.id || p.camera_code, p.camera_code);
-                          }}
-                          title="Delete Camera"
-                          style={{
-                            color: "#ef4444",
-                            cursor: "pointer",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            padding: "2px",
-                            borderRadius: "4px"
-                          }}
-                        >
-                          <Trash2 size={13} />
-                        </span>
-                      </div>
+                      <span className="watch-link">
+                        <Play size={11} /> Watch
+                      </span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
