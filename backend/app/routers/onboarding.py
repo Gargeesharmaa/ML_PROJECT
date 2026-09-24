@@ -168,7 +168,21 @@ def normalize_csv_dict(row: Dict[str, Any]) -> Dict[str, Any]:
         "ageing": ["ageing", "age", "years"],
     }
 
-    clean_row = {k.strip().lower().replace(" ", "_"): (v.strip() if v else "") for k, v in row.items() if k}
+    clean_row = {}
+    for k, v in row.items():
+        if k is None:
+            continue
+        clean_key = str(k).strip().lower().replace(" ", "_")
+        if isinstance(v, (int, float)):
+            clean_val = str(v)
+        elif isinstance(v, str):
+            clean_val = v.strip()
+        elif v is None:
+            clean_val = ""
+        else:
+            clean_val = str(v).strip()
+        clean_row[clean_key] = clean_val
+
     for target_key, aliases in key_aliases.items():
         for alias in aliases:
             if alias in clean_row and clean_row[alias]:

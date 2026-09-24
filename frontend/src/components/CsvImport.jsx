@@ -232,9 +232,17 @@ export default function CsvImport({ onNavigateToMap }) {
         body: JSON.stringify({ cameras: validRowsToImport }),
       });
 
-      const data = await response.json();
+      let data;
+      const cType = response.headers.get("content-type") || "";
+      if (cType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const rawText = await response.text();
+        throw new Error(rawText || `Server error (${response.status})`);
+      }
+
       if (!response.ok) {
-        throw new Error(data.detail || "Failed to import cameras");
+        throw new Error(data?.detail || data?.message || "Failed to import cameras");
       }
 
       setImportResult(data);
