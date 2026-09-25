@@ -135,6 +135,48 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
     return cameras.filter((c) => (c.dept_name || "") === deptFilter);
   }, [cameras, deptFilter]);
 
+  const [syncingSentinel, setSyncingSentinel] = useState(false);
+  const [streamKeys, setStreamKeys] = useState({});
+
+  const handleSyncSentinel = async () => {
+    setSyncingSentinel(true);
+    try {
+      const res = await fetch("/api/cameras/sync-sentinel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gateway_url: "http://103.250.160.189" })
+      });
+      if (res.ok) {
+        const camsRes = await fetch("/api/cameras");
+        if (camsRes.ok) {
+          const data = await camsRes.json();
+          let camList = [];
+          if (Array.isArray(data)) camList = data;
+          else if (data.features) {
+            camList = data.features.map(f => ({ ...(f.properties || {}), latitude: f.geometry?.coordinates?.[1], longitude: f.geometry?.coordinates?.[0] }));
+          } else if (data.cameras) camList = data.cameras;
+          setCameras(camList);
+          const newSlots = {};
+          camList.slice(0, slotCount).forEach((cam, idx) => {
+            newSlots[idx] = cam;
+          });
+          setSelectedSlots(newSlots);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to sync sentinel cameras:", e);
+    } finally {
+      setSyncingSentinel(false);
+    }
+  };
+
+  const handleReloadTile = (slotIdx) => {
+    setStreamKeys((prev) => ({
+      ...prev,
+      [slotIdx]: Date.now()
+    }));
+  };
+
   // Quick Action: Tile Online Cameras
   const handleTileOnline = () => {
     const onlineCams = availableCameras.filter((c) => (c.status || "ONLINE").toUpperCase() === "ONLINE");
@@ -230,6 +272,19 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
               ))}
             </select>
           </div>
+
+          {/* Sync Sentinel Grid Button */}
+          <button
+            type="button"
+            className="matrix-preset-btn"
+            style={{ background: "#059669", color: "#ffffff", borderColor: "#10b981" }}
+            onClick={handleSyncSentinel}
+            disabled={syncingSentinel}
+            title="Synchronize all 30 official Gujarat Police cameras"
+          >
+            <RefreshCw size={14} className={syncingSentinel ? "spin" : ""} />
+            <span>{syncingSentinel ? "Syncing..." : "Sync Gujarat Grid (30 Cams)"}</span>
+          </button>
 
           {/* Quick Presets */}
           <button
@@ -398,6 +453,15 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                         <button
                           type="button"
                           className="tile-tool-btn"
+                          onClick={() => handleReloadTile(slotIdx)}
+                          title="Reconnect / Refresh Stream"
+                        >
+                          <RefreshCw size={12} />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="tile-tool-btn"
                           onClick={() => handleTakeSnapshot(cam)}
                           title="Capture Snapshot"
                         >
@@ -432,7 +496,8 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                         />
                       ) : (
                         <img
-                          src={`/api/cameras/${cam.camera_code || cam.id}/stream`}
+                          key={`${cam.camera_code || cam.id}_${streamKeys[slotIdx] || 0}`}
+                          src={`/api/cameras/${cam.camera_code || cam.id}/stream?t=${streamKeys[slotIdx] || 0}`}
                           alt={cam.camera_code}
                           className="tile-stream-img"
                           onError={(e) => {

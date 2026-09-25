@@ -2442,4 +2442,51 @@ input:focus {
 .tile-osd-top-left { top: 6px; left: 8px; }
 .tile-osd-top-right { top: 6px; right: 8px; }
 .tile-osd-bottom-left { bottom: 6px; left: 8px; }
-.tile-osd-bottom-right { bottom: 6px; right: 8px; }
+.tile-osd-bottom-right { bottom: 6px; right: 8px; }
+
+/* Simulation Fallback Layer for Video Wall */
+.tile-fallback-sim {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+  color: #94a3b8;
+  font-family: monospace;
+  font-size: 11px;
+  gap: 6px;
+  z-index: 5;
+}
+
+.sim-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+.sim-crosshair {
+  width: 40px;
+  height: 40px;
+  border: 1px dashed rgba(59, 130, 246, 0.4);
+  border-radius: 50%;
+  animation: pulse 2s infinite ease-in-out;
+}
+
