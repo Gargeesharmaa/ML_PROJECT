@@ -223,5 +223,145 @@
     "id": "e57aadd2-5ecd-43e4-b872-22eb53317281",
     "dept_name": "Rajkot Traffic",
     "zone_code": "ZONE-RAJ"
+  },
+  {
+    "id": "c8756d32-b02f-4ad2-b1d8-1f918797345a",
+    "dept_name": "Gujarat Police - Ahmedabad",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "31c23a86-918b-48e2-bff8-fb4f5fbea65a",
+    "dept_name": "Gujarat Police - Surat Traffic",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "141629ee-dd80-4b6d-ad1a-2dae8f65c463",
+    "dept_name": "Gujarat Police - Vadodara",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "dc484193-ada8-438a-9b5c-55550134e60b",
+    "dept_name": "Gujarat Police - Rajkot",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "5032aadb-f4a8-4bd1-9cad-148d20da06b1",
+    "dept_name": "Gujarat Police - Bhavnagar",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "be044e7c-9cbf-4888-9dd3-ffba1d03e719",
+    "dept_name": "Gujarat Police - Jamnagar",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "d6af00ee-06b3-42af-a4ff-108dc5a40540",
+    "dept_name": "Gujarat Police - Dwarka",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "9e25af52-806d-4c0f-b848-1be3bb0999f9",
+    "dept_name": "Gujarat Police - Somnath",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "f3586e5f-ce33-4829-9132-2ed8326fdd04",
+    "dept_name": "Gujarat Police - Ahmedabad Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "3eaaf898-dc78-4142-a035-63643c7cdadf",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "2e66ab8d-ee8a-43c4-a475-21bb696cfcb5",
+    "dept_name": "Gujarat Police - Surat Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "da85d300-2645-432c-9a3b-c4df28dbea4a",
+    "dept_name": "Gujarat Police - Surat Municipal",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "e793f70f-0841-4dbb-b1ec-44a632e15a09",
+    "dept_name": "Gujarat Police - Vadodara Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "e0f46d71-69d0-4f0d-a9f9-5a81cf37e168",
+    "dept_name": "Gujarat Police - Vadodara Municipal",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "ad226ba7-4b26-4979-9a36-973d9daed572",
+    "dept_name": "Gujarat Police - Rajkot Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "0d26cab6-c6cc-4b9b-a01a-948052086eb9",
+    "dept_name": "Gujarat Police - Rajkot Municipal",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "b6800f01-3caa-4529-93e0-aef0f08f9c2d",
+    "dept_name": "Gujarat Police - Bhavnagar Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "fb3e7bb9-c543-4ab2-a763-60ce1df6862a",
+    "dept_name": "Gujarat Police - Bhavnagar Municipal",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "1e56fbcd-67d6-4b1b-8e16-b7bf3acf9a88",
+    "dept_name": "Gujarat Police - Jamnagar Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "36cc953b-56ab-4b83-8b31-ed4f22697f4a",
+    "dept_name": "Gujarat Police - Jamnagar Municipal",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "30caecee-b6b9-4fd5-82e8-4ba8489b97b1",
+    "dept_name": "Gujarat Police - Dwarka Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "78061ac5-7bd1-4f7c-b7e7-081f5dfb0891",
+    "dept_name": "Gujarat Police - Devbhumi Dwarka",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "d40b6ccd-bcab-4651-b0eb-cb8b2759b614",
+    "dept_name": "Gujarat Police - Somnath Police",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "9c953ec0-ee55-4dac-bc6c-3b69e03ff23f",
+    "dept_name": "Gujarat Police - Gir Somnath",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "f1312917-53fb-46c3-9dc1-b18fcd36975a",
+    "dept_name": "Gujarat Police - Ahmedabad Traffic",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "4c9505fb-ac17-4c85-ae36-dbfe84def963",
+    "dept_name": "Gujarat Police - Ahmedabad Transport",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "a5e59462-01e2-4961-bf10-6e158101c9cb",
+    "dept_name": "Gujarat Police - Vadodara Traffic",
+    "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "257e9718-6e56-493a-adcd-b7a7756d249e",
+    "dept_name": "Gujarat Police - Rajkot Traffic",
+    "zone_code": "ZONE-GUJ"
   }
 ]

@@ -15,8 +15,12 @@ async def generate_mjpeg_stream(rtsp_url: str) -> AsyncGenerator[bytes, None]:
         "-nostdin",
         "-loglevel", "error",
         "-rtsp_transport", "tcp",
-        "-analyzeduration", "1000000",
-        "-probesize", "1000000",
+        "-reconnect", "1",
+        "-reconnect_at_eof", "1",
+        "-reconnect_streamed", "1",
+        "-reconnect_delay_max", "5",
+        "-analyzeduration", "2000000",
+        "-probesize", "2000000",
         "-i", rtsp_url,
         "-f", "image2pipe",
         "-vcodec", "mjpeg",
@@ -92,22 +96,24 @@ async def stream_camera(camera_id: str):
         )
 
     rtsp_url = camera.get("rtsp_url") if isinstance(camera, dict) else getattr(camera, "rtsp_url", None)
+    http_stream_url = camera.get("http_stream_url") if isinstance(camera, dict) else getattr(camera, "http_stream_url", None)
     source_type = camera.get("source_type") if isinstance(camera, dict) else getattr(camera, "source_type", None)
 
-    if not rtsp_url or source_type == "LOCAL_WEBCAM":
+    stream_input = rtsp_url or http_stream_url
+    if not stream_input or source_type == "LOCAL_WEBCAM":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="This camera does not have an active RTSP stream URL."
+            detail="This camera does not have an active RTSP or HTTP stream URL."
         )
 
     return StreamingResponse(
-        generate_mjpeg_stream(rtsp_url),
+        generate_mjpeg_stream(stream_input),
         media_type="multipart/x-mixed-replace; boundary=frame"
     )
 
 @router.get("/{camera_id}/snapshot")
 async def snapshot_camera(camera_id: str):
-    """Capture a single frame snapshot from the camera RTSP stream."""
+    """Capture a single frame snapshot from the camera RTSP/HTTP stream."""
     camera = memory_registry.get_camera_by_id(camera_id)
     if not camera:
         for c in memory_registry.get_all_cameras():
@@ -117,7 +123,10 @@ async def snapshot_camera(camera_id: str):
                 break
 
     rtsp_url = camera.get("rtsp_url") if isinstance(camera, dict) else getattr(camera, "rtsp_url", None)
-    if not camera or not rtsp_url:
+    http_stream_url = camera.get("http_stream_url") if isinstance(camera, dict) else getattr(camera, "http_stream_url", None)
+    stream_input = rtsp_url or http_stream_url
+
+    if not camera or not stream_input:
         raise HTTPException(status_code=404, detail="Camera or RTSP stream not found.")
 
     cmd = [
@@ -125,9 +134,9 @@ async def snapshot_camera(camera_id: str):
         "-nostdin",
         "-loglevel", "error",
         "-rtsp_transport", "tcp",
-        "-analyzeduration", "1000000",
-        "-probesize", "1000000",
-        "-i", rtsp_url,
+        "-analyzeduration", "2000000",
+        "-probesize", "2000000",
+        "-i", stream_input,
         "-vframes", "1",
         "-q:v", "2",
         "-f", "image2",

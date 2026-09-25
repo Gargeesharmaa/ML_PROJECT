@@ -78,6 +78,35 @@ export default function CameraFeedModal({ camera, onClose }) {
   const [streamMode, setStreamMode] = useState(isLocalWebcam ? "LOCAL_WEBCAM" : "WEBRTC");
   const [isConnecting, setIsConnecting] = useState(!isLocalWebcam);
 
+  // Sentinel HTTP Direct Stream Fallback (/stream/<id>)
+  const parsed = parseRtspUrl(camera?.rtsp_url);
+  const sentinelHttpUrl = camera?.http_stream_url || (parsed?.host && parsed?.path ? `http://${parsed.host}${parsed.path}` : null);
+
+  // Reconnection with Exponential Backoff (2s -> 4s -> 8s -> ... max 30s)
+  const [reconnectCountdown, setReconnectCountdown] = useState(0);
+  const [reconnectAttempt, setReconnectAttempt] = useState(0);
+
+  const triggerAutoReconnect = () => {
+    const nextAttempt = reconnectAttempt + 1;
+    const delaySec = Math.min(Math.pow(2, nextAttempt), 30);
+    setReconnectAttempt(nextAttempt);
+    setReconnectCountdown(delaySec);
+  };
+
+  useEffect(() => {
+    if (reconnectCountdown <= 0) return;
+    const timer = setTimeout(() => {
+      if (reconnectCountdown === 1) {
+        setNetworkStreamError("");
+        setStreamKey(Date.now());
+        setReconnectCountdown(0);
+      } else {
+        setReconnectCountdown(reconnectCountdown - 1);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [reconnectCountdown]);
+
   // 1. Live Running CCTV Clock (updates every second)
   useEffect(() => {
     const updateClock = () => {
@@ -264,6 +293,16 @@ export default function CameraFeedModal({ camera, onClose }) {
                 <span className="cctv-type-tag">
                   {isLocalWebcam ? "LOCAL WEBCAM" : camera.camera_type || "CCTV"}
                 </span>
+                <span
+                  className="cctv-type-tag"
+                  style={{
+                    background: (camera.codec || "").toUpperCase() === "H.265" ? "#7c3aed" : "#2563eb",
+                    color: "#ffffff",
+                    fontWeight: 700
+                  }}
+                >
+                  {camera.codec || "H.264"}
+                </span>
               </div>
               <p className="cctv-subtext">
                 {camera.dept_name || "State Security Dept"} • {camera.make_model || "Surveillance Unit"}
@@ -272,6 +311,50 @@ export default function CameraFeedModal({ camera, onClose }) {
           </div>
 
           <div className="cctv-header-actions">
+            {/* PROTOCOL SELECTOR PILLS */}
+            {!isLocalWebcam && (
+              <div className="stream-protocol-pill-group">
+                <button
+                  type="button"
+                  className={`protocol-pill ${streamMode === "WEBRTC" ? "active" : ""}`}
+                  onClick={() => {
+                    setStreamMode("WEBRTC");
+                    setNetworkStreamError("");
+                    setReconnectCountdown(0);
+                  }}
+                  title="Low-Latency WebRTC WHEP"
+                >
+                  WebRTC
+                </button>
+                <button
+                  type="button"
+                  className={`protocol-pill ${streamMode === "BACKEND_MJPEG" ? "active" : ""}`}
+                  onClick={() => {
+                    setStreamMode("BACKEND_MJPEG");
+                    setNetworkStreamError("");
+                    setReconnectCountdown(0);
+                  }}
+                  title="FFmpeg TCP Stream (Firewall Proof)"
+                >
+                  FFmpeg TCP
+                </button>
+                {sentinelHttpUrl && (
+                  <button
+                    type="button"
+                    className={`protocol-pill ${streamMode === "SENTINEL_HTTP" ? "active" : ""}`}
+                    onClick={() => {
+                      setStreamMode("SENTINEL_HTTP");
+                      setNetworkStreamError("");
+                      setReconnectCountdown(0);
+                    }}
+                    title="Sentinel Browser HTTP Fallback (/stream/<id>)"
+                  >
+                    Sentinel HTTP
+                  </button>
+                )}
+              </div>
+            )}
+
             <button
               type="button"
               className="cctv-icon-btn"
@@ -320,7 +403,7 @@ export default function CameraFeedModal({ camera, onClose }) {
                     Connecting Live WebRTC Stream...
                   </h5>
                   <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>
-                    Negotiating H.264 video feed for {camera.camera_code || "Camera"}
+                    Negotiating {camera.codec || "H.264"} video feed for {camera.camera_code || "Camera"}
                   </p>
                 </div>
               )}
@@ -331,10 +414,75 @@ export default function CameraFeedModal({ camera, onClose }) {
                 </div>
               )}
             </div>
-          ) : (
-            /* Fallback Backend MJPEG Stream Viewport */
+          ) : streamMode === "SENTINEL_HTTP" ? (
+            /* Direct Sentinel HTTP Range Player (/stream/<id>) */
             <div className="video-stream-box">
-              {networkStreamError ? (
+              <video
+                key={streamKey}
+                className="live-video-element"
+                controls
+                autoPlay
+                playsInline
+                muted
+                src={sentinelHttpUrl}
+                onError={() => {
+                  setNetworkStreamError(
+                    "Direct Sentinel HTTP range stream (/stream/<id>) interrupted. Reconnecting with backoff..."
+                  );
+                  triggerAutoReconnect();
+                }}
+              />
+              {reconnectCountdown > 0 && (
+                <div className="stream-error-overlay" style={{ background: "rgba(15, 23, 42, 0.9)" }}>
+                  <RefreshCw size={36} style={{ color: "#38bdf8", animation: "spin 1.5s linear infinite" }} />
+                  <h5 style={{ margin: "10px 0 4px", color: "#f8fafc", fontSize: "15px" }}>
+                    Feed Restarting or Looping
+                  </h5>
+                  <p style={{ margin: "0 0 12px", fontSize: "12px", color: "#94a3b8" }}>
+                    Auto-reconnecting in <strong style={{ color: "#38bdf8" }}>{reconnectCountdown}s</strong> (Attempt #{reconnectAttempt})
+                  </p>
+                  <button
+                    type="button"
+                    className="cctv-tool-btn"
+                    onClick={() => {
+                      setReconnectCountdown(0);
+                      setNetworkStreamError("");
+                      setStreamKey(Date.now());
+                    }}
+                  >
+                    <RefreshCw size={14} />
+                    <span>Reconnect Now</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Backend MJPEG Stream Viewport (TCP FFMPEG) */
+            <div className="video-stream-box">
+              {reconnectCountdown > 0 ? (
+                <div className="stream-error-overlay" style={{ background: "rgba(15, 23, 42, 0.9)" }}>
+                  <RefreshCw size={36} style={{ color: "#38bdf8", animation: "spin 1.5s linear infinite" }} />
+                  <h5 style={{ margin: "10px 0 4px", color: "#f8fafc", fontSize: "15px" }}>
+                    Stream Interrupted or Loop Restart
+                  </h5>
+                  <p style={{ margin: "0 0 12px", fontSize: "12px", color: "#cbd5e1", maxWidth: "420px" }}>
+                    Feed restarting at loop boundary. Reconnecting in{" "}
+                    <strong style={{ color: "#38bdf8" }}>{reconnectCountdown}s</strong> (Attempt #{reconnectAttempt}).
+                  </p>
+                  <button
+                    type="button"
+                    className="cctv-tool-btn"
+                    onClick={() => {
+                      setReconnectCountdown(0);
+                      setNetworkStreamError("");
+                      setStreamKey(Date.now());
+                    }}
+                  >
+                    <RefreshCw size={14} />
+                    <span>Reconnect Now</span>
+                  </button>
+                </div>
+              ) : networkStreamError ? (
                 <div className="stream-error-overlay">
                   <AlertCircle size={36} style={{ color: "#f87171" }} />
                   <h5 style={{ margin: "6px 0 2px", color: "#f8fafc", fontSize: "15px" }}>
@@ -363,8 +511,9 @@ export default function CameraFeedModal({ camera, onClose }) {
                   alt={`Live Feed - ${camera.camera_code}`}
                   onError={() => {
                     setNetworkStreamError(
-                      "RTSP connection could not be established. Check camera IP, RTSP port (8554/554), or credentials."
+                      "RTSP connection interrupted. Feed may be looping or restarting."
                     );
+                    triggerAutoReconnect();
                   }}
                 />
               )}

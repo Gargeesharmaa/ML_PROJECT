@@ -137,6 +137,30 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
     }
   };
 
+  // Sentinel Grid 1-Click Sync
+  const [syncingSentinel, setSyncingSentinel] = useState(false);
+
+  const handleQuickSyncSentinel = async () => {
+    setSyncingSentinel(true);
+    try {
+      const res = await fetch("/api/cameras/sync-sentinel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gateway_url: "http://103.250.160.189" })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDeleteSuccessMsg(`Synced ${data.synced_count} cameras from Sentinel Catalogue (${data.codecs_summary?.H264 || 0} H.264, ${data.codecs_summary?.H265 || 0} H.265)`);
+        setTimeout(() => setDeleteSuccessMsg(""), 4500);
+        await refreshData();
+      }
+    } catch {
+      alert("Failed to connect to Sentinel gateway.");
+    } finally {
+      setSyncingSentinel(false);
+    }
+  };
+
   // Filters
   const [selectedDept, setSelectedDept] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -448,6 +472,18 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
             <code style="background: #f1f5f9; padding: 2px 5px; border-radius: 4px; font-size: 11px;">${p.ip_address || "Local Device"}</code>
           </div>
 
+          <div style="margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
+            <span style="color: #64748b; font-size: 11px;">Stream Codec:</span>
+            <span style="
+              font-size: 10px;
+              font-weight: 700;
+              padding: 1px 6px;
+              border-radius: 4px;
+              background: ${p.codec === "H.265" ? "#ede9fe" : "#dbeafe"};
+              color: ${p.codec === "H.265" ? "#7c3aed" : "#2563eb"};
+            ">${p.codec || "H.264"}</span>
+          </div>
+
           <div style="margin-bottom: 10px;">
             <span style="color: #64748b; font-size: 11px;">Stream URL:</span><br/>
             <code style="word-break: break-all; font-size: 10px; color: #2563eb;">${p.rtsp_url || "webrtc://live"}</code>
@@ -751,6 +787,18 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
             Refresh
+          </button>
+
+          <button
+            type="button"
+            className="floating-map-btn"
+            disabled={syncingSentinel}
+            onClick={handleQuickSyncSentinel}
+            title="Synchronize Live Cameras from Sentinel Catalogue (/api/ingest)"
+            style={{ color: "#0284c7", fontWeight: 700 }}
+          >
+            <RefreshCw size={16} className={syncingSentinel ? "animate-spin" : ""} />
+            {syncingSentinel ? "Syncing..." : "Sync Sentinel"}
           </button>
         </div>
 

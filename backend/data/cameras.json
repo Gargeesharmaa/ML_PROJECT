@@ -1,20 +1,5 @@
 [
   {
-    "id": "3811d8e3-faf9-4390-a703-dd52cd2ba630",
-    "dept_id": "f6d62ba4-c289-404e-9eef-40b1bbbc9aae",
-    "dept_name": "Police Headquarters",
-    "camera_code": "CAM-AHM-01",
-    "make_model": "Hikvision DS-2CD2043G2",
-    "source_type": "NETWORK_CCTV",
-    "ip_address": "192.168.1.100",
-    "rtsp_url": "rtsp://admin:pass@192.168.1.100:554/live",
-    "latitude": 23.0225,
-    "longitude": 72.5714,
-    "camera_type": "BULLET",
-    "status": "OFFLINE",
-    "ageing": 0.0
-  },
-  {
     "id": "f8467e3a-64cf-4e03-b99f-a50557b28a19",
     "dept_id": "11111111-1111-1111-1111-111111111102",
     "dept_name": "Ahmedabad Municipal Corporation",
@@ -135,9 +120,9 @@
     "ageing": 0.5
   },
   {
-    "id": "1c28421b-f49f-4cfa-9b36-0d50375eb7db",
-    "dept_id": "5b8b241d-38db-4f14-ad0e-b7ebad9c1436",
-    "dept_name": "Ahmedabad",
+    "id": "fb411e8b-0ad1-419e-9444-47b1bf57f418",
+    "dept_id": "c8756d32-b02f-4ad2-b1d8-1f918797345a",
+    "dept_name": "Gujarat Police - Ahmedabad",
     "camera_code": "CAM01",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -147,12 +132,15 @@
     "longitude": 72.5076,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 0.5
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam01/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam01"
   },
   {
-    "id": "7b2e6911-9d9f-4e91-94c2-c920148106d2",
-    "dept_id": "d43956d6-efd3-45f8-b891-3a58b32749db",
-    "dept_name": "Surat Traffic",
+    "id": "a53b867b-8601-4c11-9c1f-f70211e867fe",
+    "dept_id": "31c23a86-918b-48e2-bff8-fb4f5fbea65a",
+    "dept_name": "Gujarat Police - Surat Traffic",
     "camera_code": "CAM02",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -162,12 +150,15 @@
     "longitude": 72.8311,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 1.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam02/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam02"
   },
   {
-    "id": "17977b21-c8f8-433d-a000-2a61cd5b0f83",
-    "dept_id": "0aa5cef0-5064-4b60-a8ba-1a902e2766cf",
-    "dept_name": "Vadodara",
+    "id": "18a56c29-9bd7-4f09-a486-f3c0f04fd234",
+    "dept_id": "141629ee-dd80-4b6d-ad1a-2dae8f65c463",
+    "dept_name": "Gujarat Police - Vadodara",
     "camera_code": "CAM03",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -177,12 +168,15 @@
     "longitude": 73.1812,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 2.0
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam03/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam03"
   },
   {
-    "id": "fb3ab9ac-1944-417d-984d-bdb1db09fb92",
-    "dept_id": "3aca529b-d227-4b98-a3b5-c481380dda72",
-    "dept_name": "Rajkot",
+    "id": "fcc82966-c844-4ed1-b29f-65d9b3dde003",
+    "dept_id": "dc484193-ada8-438a-9b5c-55550134e60b",
+    "dept_name": "Gujarat Police - Rajkot",
     "camera_code": "CAM04",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -192,12 +186,15 @@
     "longitude": 70.8022,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 1.5
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam04/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam04"
   },
   {
-    "id": "e0ed494c-8a4d-42db-8406-d7ecdab04116",
-    "dept_id": "55dd15e2-4ff9-4594-a8c0-5b8cce4d61fd",
-    "dept_name": "Bhavnagar",
+    "id": "e62faab7-8384-4cba-804a-947d5035cce4",
+    "dept_id": "5032aadb-f4a8-4bd1-9cad-148d20da06b1",
+    "dept_name": "Gujarat Police - Bhavnagar",
     "camera_code": "CAM05",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -207,12 +204,15 @@
     "longitude": 72.1519,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 3.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam05/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam05"
   },
   {
-    "id": "84b097de-c477-4589-be1d-aecb4dfbf7a7",
-    "dept_id": "cea0ed46-9699-41ff-9764-fa7ba408fd48",
-    "dept_name": "Jamnagar",
+    "id": "8832585f-88c7-47af-9652-95334fe8c4c1",
+    "dept_id": "be044e7c-9cbf-4888-9dd3-ffba1d03e719",
+    "dept_name": "Gujarat Police - Jamnagar",
     "camera_code": "CAM06",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -222,12 +222,15 @@
     "longitude": 70.0577,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 2.5
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam06/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam06"
   },
   {
-    "id": "2228ca77-2e50-4cd4-a28c-22a1d282f581",
-    "dept_id": "48ba7382-2296-42d0-a416-c8906912b968",
-    "dept_name": "Dwarka",
+    "id": "317e03cf-bbb5-4bf5-84b9-cb52d144aee9",
+    "dept_id": "d6af00ee-06b3-42af-a4ff-108dc5a40540",
+    "dept_name": "Gujarat Police - Dwarka",
     "camera_code": "CAM07",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -237,12 +240,15 @@
     "longitude": 68.9685,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 4.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam07/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam07"
   },
   {
-    "id": "cf15fd95-4e33-4180-bd75-af33d830ece4",
-    "dept_id": "f5cc803d-1604-49b6-bc8f-4b52637e4550",
-    "dept_name": "Somnath",
+    "id": "b7cc3b9f-008d-430f-a5ba-8732e39843af",
+    "dept_id": "9e25af52-806d-4c0f-b848-1be3bb0999f9",
+    "dept_name": "Gujarat Police - Somnath",
     "camera_code": "CAM08",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -252,12 +258,15 @@
     "longitude": 70.4012,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 5.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam08/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam08"
   },
   {
-    "id": "86e915e8-cfcc-47ee-9928-f40a261c0d7a",
-    "dept_id": "ea06ee1a-92bf-441f-9932-ddbfcaefc29a",
-    "dept_name": "Ahmedabad Police",
+    "id": "d97072fd-6379-4492-b825-0927d753e76a",
+    "dept_id": "f3586e5f-ce33-4829-9132-2ed8326fdd04",
+    "dept_name": "Gujarat Police - Ahmedabad Police",
     "camera_code": "CAM09",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -267,12 +276,15 @@
     "longitude": 72.5714,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 1.0
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam09/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam09"
   },
   {
-    "id": "841b708b-ed40-4ed1-bcc3-324f50fc76a6",
-    "dept_id": "50bc1c2a-3f0e-4ae1-975f-bef226610a39",
-    "dept_name": "Ahmedabad Municipal",
+    "id": "a05a85c2-6366-4051-9a7e-9d957e0d00d5",
+    "dept_id": "3eaaf898-dc78-4142-a035-63643c7cdadf",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
     "camera_code": "CAM10",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -282,12 +294,15 @@
     "longitude": 72.585,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 2.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam10/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam10"
   },
   {
-    "id": "298138a8-0239-48d4-a773-75df845abb63",
-    "dept_id": "c21c6aae-078a-4a8a-a332-a9527b971fd4",
-    "dept_name": "Surat Police",
+    "id": "9c840f83-8894-47f9-8dcc-1fc822a4e1a6",
+    "dept_id": "2e66ab8d-ee8a-43c4-a475-21bb696cfcb5",
+    "dept_name": "Gujarat Police - Surat Police",
     "camera_code": "CAM11",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -297,12 +312,15 @@
     "longitude": 72.819,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 0.8
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam11/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam11"
   },
   {
-    "id": "fa921696-0a4f-4a8d-8dc2-b20316eee54e",
-    "dept_id": "449d8bb4-5238-43ed-af2c-5022f0759bf4",
-    "dept_name": "Surat Municipal",
+    "id": "f79337ac-c4a0-49f5-8deb-3fcc0c6af142",
+    "dept_id": "da85d300-2645-432c-9a3b-c4df28dbea4a",
+    "dept_name": "Gujarat Police - Surat Municipal",
     "camera_code": "CAM12",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -312,12 +330,15 @@
     "longitude": 72.8311,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 3.5
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam12/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam12"
   },
   {
-    "id": "a7f7c28b-6b0d-42bc-b115-09b9edb6e777",
-    "dept_id": "6be631fe-e427-4122-990a-98054952d814",
-    "dept_name": "Vadodara Police",
+    "id": "0a4a3434-aafd-4456-9b0a-9947932218f8",
+    "dept_id": "e793f70f-0841-4dbb-b1ec-44a632e15a09",
+    "dept_name": "Gujarat Police - Vadodara Police",
     "camera_code": "CAM13",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -327,12 +348,15 @@
     "longitude": 73.1812,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 1.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam13/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam13"
   },
   {
-    "id": "4016e31a-064e-40e2-a5f7-a66a65b6b7bf",
-    "dept_id": "fc19869d-0659-4013-9228-8781a9d47a2b",
-    "dept_name": "Vadodara Municipal",
+    "id": "8b36264f-6fe9-461a-9261-b5e7da9fd1b7",
+    "dept_id": "e0f46d71-69d0-4f0d-a9f9-5a81cf37e168",
+    "dept_name": "Gujarat Police - Vadodara Municipal",
     "camera_code": "CAM14",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -342,12 +366,15 @@
     "longitude": 73.17,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 2.5
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam14/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam14"
   },
   {
-    "id": "3829dafd-1875-4402-9058-5302e803fb16",
-    "dept_id": "678ecee5-654b-469f-9cab-63d8b9b47197",
-    "dept_name": "Rajkot Police",
+    "id": "76f025a9-bbb1-401d-b9d4-a4a0bb09d060",
+    "dept_id": "ad226ba7-4b26-4979-9a36-973d9daed572",
+    "dept_name": "Gujarat Police - Rajkot Police",
     "camera_code": "CAM15",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -357,12 +384,15 @@
     "longitude": 70.8022,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 4.0
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam15/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam15"
   },
   {
-    "id": "a40843fb-237d-4acf-bad7-2d049b7eae31",
-    "dept_id": "6d7471d9-66ae-47fd-a835-bc666ddcaea4",
-    "dept_name": "Rajkot Municipal",
+    "id": "5eaedd44-3f17-47e8-8004-9d58245749d0",
+    "dept_id": "0d26cab6-c6cc-4b9b-a01a-948052086eb9",
+    "dept_name": "Gujarat Police - Rajkot Municipal",
     "camera_code": "CAM16",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -372,12 +402,15 @@
     "longitude": 70.79,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 1.2
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam16/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam16"
   },
   {
-    "id": "cf98fd01-c66f-4bcf-804c-4a1df7aaa709",
-    "dept_id": "eda47368-52ad-4356-99e7-cfef38bd8b10",
-    "dept_name": "Bhavnagar Police",
+    "id": "0b4211fb-b0ab-42eb-9cf8-ee101c90c00a",
+    "dept_id": "b6800f01-3caa-4529-93e0-aef0f08f9c2d",
+    "dept_name": "Gujarat Police - Bhavnagar Police",
     "camera_code": "CAM17",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -387,12 +420,15 @@
     "longitude": 72.15,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 2.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam17/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam17"
   },
   {
-    "id": "a67c9a96-eed9-4b23-afa3-27e16091f1b3",
-    "dept_id": "c5e77d38-947b-48a8-a030-b27d2d0c1c85",
-    "dept_name": "Bhavnagar Municipal",
+    "id": "772401da-240e-4101-a8df-b18a669ed3e9",
+    "dept_id": "fb3e7bb9-c543-4ab2-a763-60ce1df6862a",
+    "dept_name": "Gujarat Police - Bhavnagar Municipal",
     "camera_code": "CAM18",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -402,12 +438,15 @@
     "longitude": 72.16,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 1.5
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam18/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam18"
   },
   {
-    "id": "18cc29eb-1d1e-4c28-8e96-731b41d5cf44",
-    "dept_id": "2dc838bf-7f5f-414a-bb69-697a7a45d857",
-    "dept_name": "Jamnagar Police",
+    "id": "c93033bf-1a2f-4b82-81fd-3b7496e1fccf",
+    "dept_id": "1e56fbcd-67d6-4b1b-8e16-b7bf3acf9a88",
+    "dept_name": "Gujarat Police - Jamnagar Police",
     "camera_code": "CAM19",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -417,12 +456,15 @@
     "longitude": 70.06,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 3.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam19/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam19"
   },
   {
-    "id": "034972b4-49eb-4c79-b605-571fdb92c7fc",
-    "dept_id": "238b1cd9-3573-4cb3-8254-84a15a0d885d",
-    "dept_name": "Jamnagar Municipal",
+    "id": "2ffd9e22-a7ec-4ce7-a70a-aee7d0859a90",
+    "dept_id": "36cc953b-56ab-4b83-8b31-ed4f22697f4a",
+    "dept_name": "Gujarat Police - Jamnagar Municipal",
     "camera_code": "CAM20",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -432,12 +474,15 @@
     "longitude": 70.05,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 5.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam20/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam20"
   },
   {
-    "id": "15ff4954-da04-468b-a8a4-0f64f1455dca",
-    "dept_id": "94a6d42c-56c8-42ba-9980-2863b124216a",
-    "dept_name": "Dwarka Police",
+    "id": "01b74587-f50a-410f-87c8-109962c10957",
+    "dept_id": "30caecee-b6b9-4fd5-82e8-4ba8489b97b1",
+    "dept_name": "Gujarat Police - Dwarka Police",
     "camera_code": "CAM21",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -447,12 +492,15 @@
     "longitude": 68.975,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 2.0
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam21/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam21"
   },
   {
-    "id": "5224019f-ef12-4f9b-95ad-0f7f42cb6b6b",
-    "dept_id": "d803eac2-decf-4b05-89ef-d0d01aa0b40c",
-    "dept_name": "Devbhumi Dwarka",
+    "id": "d031cbac-181d-4d88-9a70-b9a73ff66468",
+    "dept_id": "78061ac5-7bd1-4f7c-b7e7-081f5dfb0891",
+    "dept_name": "Gujarat Police - Devbhumi Dwarka",
     "camera_code": "CAM22",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -462,12 +510,15 @@
     "longitude": 68.96,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 3.5
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam22/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam22"
   },
   {
-    "id": "a33e673b-6719-420a-9427-8a0f9a49de0b",
-    "dept_id": "fef1db5b-039a-4967-ac84-ced21b8e562d",
-    "dept_name": "Somnath Police",
+    "id": "df14e5a7-b43d-4bcc-9efe-29e8a22f6270",
+    "dept_id": "d40b6ccd-bcab-4651-b0eb-cb8b2759b614",
+    "dept_name": "Gujarat Police - Somnath Police",
     "camera_code": "CAM23",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -477,12 +528,15 @@
     "longitude": 70.405,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 1.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam23/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam23"
   },
   {
-    "id": "7325a4e8-5239-4e58-99e3-95ced4ef4f49",
-    "dept_id": "c72276c8-762c-45c2-b574-c918627498a8",
-    "dept_name": "Gir Somnath",
+    "id": "2c5ae940-5e82-4f7e-8de1-2e842a880236",
+    "dept_id": "9c953ec0-ee55-4dac-bc6c-3b69e03ff23f",
+    "dept_name": "Gujarat Police - Gir Somnath",
     "camera_code": "CAM24",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -492,12 +546,15 @@
     "longitude": 70.395,
     "camera_type": "BULLET",
     "status": "ONLINE",
-    "ageing": 4.5
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam24/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam24"
   },
   {
-    "id": "0383df22-fae2-435c-b688-bc0f89d9d364",
-    "dept_id": "958a44cd-f8bb-4b3e-bfa4-4576113fd530",
-    "dept_name": "Ahmedabad Traffic",
+    "id": "148b397d-649e-4be8-a5f2-c43c14f2e7aa",
+    "dept_id": "f1312917-53fb-46c3-9dc1-b18fcd36975a",
+    "dept_name": "Gujarat Police - Ahmedabad Traffic",
     "camera_code": "CAM25",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -507,12 +564,15 @@
     "longitude": 72.57,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 0.7
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam25/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam25"
   },
   {
-    "id": "71b23f8f-207a-4962-8f13-669b2ac6a5dd",
-    "dept_id": "c7cbaa95-eb66-48e0-8a02-0e8566f40fa7",
-    "dept_name": "Ahmedabad Transport",
+    "id": "2ac23e06-7a75-4944-995b-237a802cb9d9",
+    "dept_id": "4c9505fb-ac17-4c85-ae36-dbfe84def963",
+    "dept_name": "Gujarat Police - Ahmedabad Transport",
     "camera_code": "CAM26",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -522,12 +582,15 @@
     "longitude": 72.56,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 6.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam26/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam26"
   },
   {
-    "id": "5d085b54-741f-4260-b7b4-a9160f7c7273",
-    "dept_id": "d43956d6-efd3-45f8-b891-3a58b32749db",
-    "dept_name": "Surat Traffic",
+    "id": "61f41783-9263-4317-bce9-93e3e05b8c47",
+    "dept_id": "31c23a86-918b-48e2-bff8-fb4f5fbea65a",
+    "dept_name": "Gujarat Police - Surat Traffic",
     "camera_code": "CAM27",
     "make_model": "Hikvision",
     "source_type": "NETWORK_CCTV",
@@ -537,12 +600,15 @@
     "longitude": 72.84,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 1.5
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam27/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam27"
   },
   {
-    "id": "683498a2-d231-4f93-8e14-e88fc3959ccb",
-    "dept_id": "c21c6aae-078a-4a8a-a332-a9527b971fd4",
-    "dept_name": "Surat Police",
+    "id": "77bf8a5b-a4e4-4b17-82b1-2cbea0a70515",
+    "dept_id": "2e66ab8d-ee8a-43c4-a475-21bb696cfcb5",
+    "dept_name": "Gujarat Police - Surat Police",
     "camera_code": "CAM28",
     "make_model": "Dahua",
     "source_type": "NETWORK_CCTV",
@@ -552,12 +618,15 @@
     "longitude": 72.825,
     "camera_type": "DOME",
     "status": "ONLINE",
-    "ageing": 2.5
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam28/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam28"
   },
   {
-    "id": "ee45cfc7-c183-410b-9012-47ad44598f5b",
-    "dept_id": "b0a11342-636b-40cb-9d99-d3c2dc1eb242",
-    "dept_name": "Vadodara Traffic",
+    "id": "b74735c6-6d19-497f-bf2c-dbf401f07fc7",
+    "dept_id": "a5e59462-01e2-4961-bf10-6e158101c9cb",
+    "dept_name": "Gujarat Police - Vadodara Traffic",
     "camera_code": "CAM29",
     "make_model": "CP Plus",
     "source_type": "NETWORK_CCTV",
@@ -567,6 +636,27 @@
     "longitude": 73.19,
     "camera_type": "PTZ",
     "status": "ONLINE",
-    "ageing": 1.0
+    "ageing": 0.5,
+    "codec": "H.264",
+    "hls_url": "http://103.250.160.189:8888/stream/cam29/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam29"
+  },
+  {
+    "id": "c3368530-25b6-4985-af50-df648cbd1e24",
+    "dept_id": "257e9718-6e56-493a-adcd-b7a7756d249e",
+    "dept_name": "Gujarat Police - Rajkot Traffic",
+    "camera_code": "CAM30",
+    "make_model": "Hikvision",
+    "source_type": "NETWORK_CCTV",
+    "ip_address": "103.250.160.189",
+    "rtsp_url": "rtsp://shreyanshsharma049@gmail.com:ETD6-KZJG-VGF4@103.250.160.189:8554/stream/cam30",
+    "latitude": 22.295,
+    "longitude": 70.81,
+    "camera_type": "DOME",
+    "status": "ONLINE",
+    "ageing": 0.5,
+    "codec": "H.265",
+    "hls_url": "http://103.250.160.189:8888/stream/cam30/index.m3u8",
+    "http_stream_url": "http://103.250.160.189/stream/cam30"
   }
 ]

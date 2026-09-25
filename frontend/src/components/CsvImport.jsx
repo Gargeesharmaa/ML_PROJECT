@@ -41,6 +41,41 @@ export default function CsvImport({ onNavigateToMap }) {
   const [importResult, setImportResult] = useState(null);
   const [importError, setImportError] = useState("");
 
+  // Sentinel Gateway 1-Click Sync State
+  const [sentinelGatewayUrl, setSentinelGatewayUrl] = useState("http://103.250.160.189");
+  const [isSyncingSentinel, setIsSyncingSentinel] = useState(false);
+  const [syncError, setSyncError] = useState("");
+
+  const handleSyncSentinel = async () => {
+    setIsSyncingSentinel(true);
+    setSyncError("");
+    setImportError("");
+    try {
+      const response = await fetch("/api/cameras/sync-sentinel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gateway_url: sentinelGatewayUrl }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.detail || "Failed to sync from Sentinel Gateway");
+      }
+      setImportResult({
+        imported_count: data.synced_count,
+        skipped_count: 0,
+        imported_cameras: data.synced_codes,
+        message: data.message,
+        codecs_summary: data.codecs_summary,
+        catalogue_endpoint: data.catalogue_endpoint,
+        source: data.source,
+      });
+    } catch (err) {
+      setSyncError(err.message || "Failed to synchronize cameras from Sentinel Gateway.");
+    } finally {
+      setIsSyncingSentinel(false);
+    }
+  };
+
   // 1. Download CSV Template
   const handleDownloadTemplate = async () => {
     try {
@@ -345,6 +380,105 @@ export default function CsvImport({ onNavigateToMap }) {
               Upload Another CSV
             </button>
           </div>
+        </div>
+      )}
+
+      {/* SENTINEL GATEWAY ONE-CLICK SYNC BANNER */}
+      {!validationData && !importResult && (
+        <div style={{
+          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+          border: "1px solid #334155",
+          borderRadius: "12px",
+          padding: "20px 24px",
+          marginBottom: "20px",
+          color: "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "16px",
+          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)"
+        }}>
+          <div style={{ maxWidth: "600px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+              <span style={{
+                background: "#0284c7",
+                color: "#fff",
+                fontSize: "10px",
+                fontWeight: 800,
+                padding: "2px 8px",
+                borderRadius: "4px",
+                letterSpacing: "0.5px"
+              }}>
+                OFFICIAL SENTINEL INTEGRATION
+              </span>
+              <span style={{ fontSize: "12px", color: "#94a3b8" }}>Gujarat Police Hackathon 2026</span>
+            </div>
+            <h3 style={{ margin: "0 0 6px", fontSize: "16px", fontWeight: 700, color: "#f8fafc" }}>
+              Sync Live Cameras from Sentinel Gateway (/api/ingest)
+            </h3>
+            <p style={{ margin: 0, fontSize: "12px", color: "#cbd5e1", lineHeight: 1.5 }}>
+              Automatically ingest all live sandbox endpoints, H.264 & H.265 codecs, and coordinates directly from the Sentinel Sandbox Catalogue as specified in the official guide.
+            </p>
+            {syncError && (
+              <p style={{ margin: "8px 0 0", fontSize: "12px", color: "#f87171" }}>
+                {syncError}
+              </p>
+            )}
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <input
+              type="text"
+              value={sentinelGatewayUrl}
+              onChange={(e) => setSentinelGatewayUrl(e.target.value)}
+              placeholder="http://103.250.160.189"
+              style={{
+                background: "#0f172a",
+                border: "1px solid #475569",
+                borderRadius: "6px",
+                padding: "8px 12px",
+                color: "#f8fafc",
+                fontSize: "12px",
+                minWidth: "220px"
+              }}
+            />
+            <button
+              type="button"
+              disabled={isSyncingSentinel}
+              onClick={handleSyncSentinel}
+              className="primary-button"
+              style={{
+                padding: "9px 18px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "12px",
+                fontWeight: 700,
+                whiteSpace: "nowrap"
+              }}
+            >
+              <RefreshCw size={14} className={isSyncingSentinel ? "animate-spin" : ""} />
+              {isSyncingSentinel ? "Syncing Grid..." : "1-Click Sync Grid"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* DIVIDER WITH "OR" */}
+      {!validationData && !importResult && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "14px",
+          margin: "10px 0 20px",
+          color: "#94a3b8",
+          fontSize: "12px",
+          fontWeight: 700
+        }}>
+          <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }}></div>
+          <span>OR UPLOAD CUSTOM CSV DATASET</span>
+          <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }}></div>
         </div>
       )}
 

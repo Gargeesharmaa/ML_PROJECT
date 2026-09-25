@@ -128,6 +128,9 @@ class MemoryRegistry:
             "camera_type": camera.camera_type or "FIXED",
             "status": camera.status or "ONLINE",
             "ageing": camera.ageing or 0.0,
+            "codec": getattr(camera, "codec", None) or "H.264",
+            "hls_url": getattr(camera, "hls_url", None) or "",
+            "http_stream_url": getattr(camera, "http_stream_url", None) or "",
         }
         self.cameras.append(cam_record)
         self._save_cameras()
