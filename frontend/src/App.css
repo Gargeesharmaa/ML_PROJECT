@@ -2082,4 +2082,364 @@ input:focus {
 .zoom-btn:hover {
   background: #38bdf8;
   color: #0f172a;
-}
+}
+
+/* ==========================================================================
+   SURVEILLANCE VIDEO WALL MATRIX
+   ========================================================================== */
+.surveillance-matrix-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 65px);
+  background: #090d16;
+  color: #f1f5f9;
+  overflow: hidden;
+}
+
+.matrix-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.matrix-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.live-pulsing-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.matrix-title-group h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.matrix-subtitle {
+  margin: 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.live-clock {
+  font-family: monospace;
+  font-size: 11px;
+  background: #1e293b;
+  color: #38bdf8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.matrix-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.matrix-dept-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #94a3b8;
+}
+
+.dept-select {
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+}
+
+.dept-select option {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.matrix-preset-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.matrix-preset-btn:hover {
+  background: #334155;
+  color: #38bdf8;
+  border-color: #38bdf8;
+}
+
+.matrix-preset-btn.text-muted {
+  color: #94a3b8;
+}
+
+.layout-switcher {
+  display: flex;
+  align-items: center;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.layout-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.layout-btn:hover {
+  color: #f8fafc;
+}
+
+.layout-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* Video Wall Grid */
+.matrix-grid {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  background: #06090e;
+  overflow: auto;
+}
+
+.matrix-grid.layout-2x2 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.matrix-grid.layout-3x3 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.matrix-grid.layout-4x4 {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.matrix-grid.layout-1\+5 {
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.matrix-grid.layout-1\+5 .focus-tile {
+  grid-column: 1 / 2;
+  grid-row: 1 / 4;
+}
+
+.matrix-tile {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: border-color 0.15s ease;
+}
+
+.matrix-tile:hover {
+  border-color: #38bdf8;
+}
+
+.matrix-tile.fullscreen-tile {
+  position: fixed;
+  inset: 10px;
+  z-index: 1000;
+  border-color: #38bdf8;
+  box-shadow: 0 0 50px rgba(0,0,0,0.9);
+}
+
+.tile-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+}
+
+.tile-cam-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.live-rec-dot {
+  font-size: 10px;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+.live-rec-dot.online {
+  color: #22c55e;
+}
+
+.live-rec-dot.offline {
+  color: #ef4444;
+}
+
+.tile-code {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.tile-dept {
+  color: #64748b;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+.empty-slot-label {
+  color: #64748b;
+  font-style: italic;
+}
+
+.tile-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tile-cam-select {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  border-radius: 4px;
+  font-size: 10px;
+  padding: 2px 4px;
+  max-width: 140px;
+}
+
+.tile-tool-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.tile-tool-btn:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+
+.tile-video-viewport {
+  flex: 1;
+  background: #000000;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  overflow: hidden;
+}
+
+.tile-stream-img,
+.tile-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empty-tile-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #475569;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-tile-prompt p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.empty-tile-prompt span {
+  font-size: 10px;
+  color: #475569;
+}
+
+/* Tile OSD */
+.tile-osd-top-left,
+.tile-osd-top-right,
+.tile-osd-bottom-left,
+.tile-osd-bottom-right {
+  position: absolute;
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 2px #000;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.tile-osd-top-left { top: 6px; left: 8px; }
+.tile-osd-top-right { top: 6px; right: 8px; }
+.tile-osd-bottom-left { bottom: 6px; left: 8px; }
+.tile-osd-bottom-right { bottom: 6px; right: 8px; }

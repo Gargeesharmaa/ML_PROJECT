@@ -15,11 +15,13 @@ import {
   Wifi,
   AlertTriangle,
   Play,
-  FileSpreadsheet
+  FileSpreadsheet,
+  LayoutGrid
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
 import CsvImport from "./components/CsvImport";
+import SurveillanceMatrix from "./components/SurveillanceMatrix";
 import CameraFeedModal from "./components/CameraFeedModal";
 import "./App.css";
 
@@ -475,6 +477,15 @@ function App() {
             <MapPin size={16} />
             <span>GIS Live Map</span>
           </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "matrix" ? "active" : ""}`}
+            onClick={() => setActiveTab("matrix")}
+          >
+            <LayoutGrid size={16} />
+            <span>Video Wall Grid</span>
+          </button>
         </nav>
 
         {/* BACKEND SERVER STATUS */}
@@ -510,6 +521,11 @@ function App() {
         <main className="onboarding-main" style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 20px" }}>
           <CsvImport onNavigateToMap={() => setActiveTab("map")} />
         </main>
+      ) : activeTab === "matrix" ? (
+        <SurveillanceMatrix
+          onNavigateToOnboarding={() => setActiveTab("onboarding")}
+          onOpenStreamModal={(cam) => setStreamNowCamera(cam)}
+        />
       ) : (
         /* MAIN ONBOARDING VIEW */
         <main className="onboarding-main">
