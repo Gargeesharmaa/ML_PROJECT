@@ -20,7 +20,7 @@ except ImportError:
 
 logger = logging.getLogger("uvicorn.error")
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # C:\Users\shrey\Desktop\projects\ML_PROJECT\backend
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Points to /backend
 DATA_DIR = BASE_DIR / "data"
 ANPR_DIR = BASE_DIR / "ANPR"
 CROPS_DIR = DATA_DIR / "anpr_crops"
@@ -37,6 +37,49 @@ CROPS_DIR.mkdir(parents=True, exist_ok=True)
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def clean_indian_plate(text: str) -> str:
+    """
+    Normalizes Indian license plate numbers with domain-specific OCR correction.
+    Corrects common OCR character confusions (e.g. 6J -> GJ, 0U -> GJ, 16 -> GJ).
+    """
+    raw = re.sub(r"[^A-Z0-9]", "", str(text).upper())
+    if len(raw) < 4:
+        return raw
+
+    chars = list(raw)
+
+    # 1. State code normalization (first 2 chars)
+    # Common OCR confusions for Gujarat (GJ): 6J, 0J, CJ, 16, 0U, 62, 02
+    if len(chars) >= 2:
+        prefix = chars[0] + chars[1]
+        if prefix in ["6J", "0J", "CJ", "16", "0U", "62", "02", "G1", "GI", "GL"]:
+            chars[0] = "G"
+            chars[1] = "J"
+        elif chars[0] in ["6", "0", "C"] and chars[1] == "J":
+            chars[0] = "G"
+        elif chars[0] == "G" and chars[1] in ["1", "I", "L"]:
+            chars[1] = "J"
+
+    # 2. Number plate digit normalization for District Code (chars 2 and 3)
+    num_map = {"O": "0", "I": "1", "Z": "2", "S": "5", "B": "8", "A": "4", "U": "0", "J": "1", "Q": "0"}
+    if len(chars) > 2 and chars[2] in num_map:
+        chars[2] = num_map[chars[2]]
+    if len(chars) > 3 and chars[3] in num_map:
+        chars[3] = num_map[chars[3]]
+
+    # 3. Series letters and 4-digit number at the end
+    letter_map = {"0": "O", "1": "I", "2": "Z", "5": "S", "8": "B", "4": "A", "6": "G"}
+    if len(chars) >= 8:
+        for i in range(len(chars) - 4, len(chars)):
+            if chars[i] in num_map:
+                chars[i] = num_map[chars[i]]
+        for i in range(4, len(chars) - 4):
+            if chars[i] in letter_map:
+                chars[i] = letter_map[chars[i]]
+
+    return "".join(chars)
+
+
 def are_plates_similar(p1: str, p2: str) -> bool:
     """Robust fuzzy comparison between license plates accounting for OCR character confusions."""
     c1 = re.sub(r"[^A-Z0-9]", "", str(p1).upper())
@@ -45,12 +88,14 @@ def are_plates_similar(p1: str, p2: str) -> bool:
         return False
     if c1 == c2 or c1 in c2 or c2 in c1:
         return True
+
     # Character normalization: map visually similar characters
-    trans = str.maketrans("OIZSB", "01258")
+    trans = str.maketrans("OIZSBA", "012584")
     n1 = c1.translate(trans)
     n2 = c2.translate(trans)
     if n1 == n2 or n1 in n2 or n2 in n1:
         return True
+
     # Levenshtein distance check if length >= 4
     if len(c1) >= 4 and len(c2) >= 4 and abs(len(c1) - len(c2)) <= 2:
         diffs = sum(ch1 != ch2 for ch1, ch2 in zip(c1, c2)) + abs(len(c1) - len(c2))
@@ -61,12 +106,63 @@ def are_plates_similar(p1: str, p2: str) -> bool:
 
 def format_plate_text(raw_text: str) -> str:
     """Format raw plate alphanumeric text nicely for display."""
-    clean = re.sub(r"[^A-Z0-9]", "", str(raw_text).upper())
+    clean = clean_indian_plate(raw_text)
     if len(clean) >= 9 and clean[:2].isalpha():
         return f"{clean[:2]} {clean[2:4]} {clean[4:6]} {clean[6:]}"
     elif len(clean) >= 6:
         return f"{clean[:2]} {clean[2:]}"
     return clean
+
+
+def classify_vehicle(crop: np.ndarray, raw_cls: str, conf: float) -> str:
+    """
+    Intelligently classifies vehicles on Indian roads.
+    Distinguishes Auto-Rickshaw (3-wheeler), Motorcycle, Bus, Truck, Van, and Car.
+    """
+    if raw_cls == "motorcycle":
+        return "Motorcycle"
+    if raw_cls == "bus":
+        return "Bus"
+
+    if crop is None or crop.size == 0:
+        return raw_cls.capitalize()
+
+    h, w = crop.shape[:2]
+    aspect = h / max(1, w)
+
+    # Detect Indian Auto-Rickshaw (Yellow roof/visor/hood + CNG green + compact profile)
+    try:
+        hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+        lower_yellow = np.array([15, 60, 80])
+        upper_yellow = np.array([35, 255, 255])
+        mask_y = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        yellow_ratio = np.sum(mask_y > 0) / float(h * w)
+
+        lower_green = np.array([35, 40, 40])
+        upper_green = np.array([85, 255, 255])
+        mask_g = cv2.inRange(hsv, lower_green, upper_green)
+        green_ratio = np.sum(mask_g > 0) / float(h * w)
+
+        if (yellow_ratio > 0.015 or (yellow_ratio > 0.008 and green_ratio > 0.025)) and aspect > 1.05:
+            return "Auto-Rickshaw"
+    except Exception:
+        pass
+
+    if raw_cls == "truck":
+        if aspect > 1.25 and w < 240:
+            return "Auto-Rickshaw"
+        if w < 260 and h < 320:
+            return "Van / Mini-Truck"
+        return "Truck"
+
+    if raw_cls == "car":
+        if aspect > 1.25 and w < 230:
+            return "Auto-Rickshaw"
+        if w > 270 and h > 270 and aspect > 0.95:
+            return "Van / SUV"
+        return "Car"
+
+    return raw_cls.capitalize()
 
 
 class ANPREngine:
@@ -98,6 +194,7 @@ class ANPREngine:
         self.fps = 0.0
         self.last_detected_plate = ""
         self.recent_plates = {}  # {plate_str: last_seen_timestamp}
+        self.recent_vehicles = {}  # {v_signature: last_seen_timestamp}
 
         self._thread = None
         self._stop_event = threading.Event()
@@ -150,7 +247,6 @@ class ANPREngine:
             }
         ]
 
-        # Load registered CCTV cameras from cameras.json
         if CAMERAS_FILE.exists():
             try:
                 with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
@@ -160,7 +256,6 @@ class ANPREngine:
                         code = cam.get("camera_code", "CAM")
                         dept = cam.get("dept_name", "Gujarat CCTV")
                         rtsp = cam.get("rtsp_url", "")
-                        source_t = cam.get("source_type", "NETWORK_CCTV")
                         sources.append({
                             "id": c_id,
                             "name": f"📷 {code} - {dept}",
@@ -188,7 +283,6 @@ class ANPREngine:
         """Persist a new ANPR event."""
         events = self.load_events()
         events.insert(0, event)
-        # Keep up to 500 events
         events = events[:500]
         try:
             with open(EVENTS_FILE, "w", encoding="utf-8") as f:
@@ -204,8 +298,8 @@ class ANPREngine:
         self.source_type = source_type
         self.source_id = source_id or "demo_video"
         self.source_name = source_name or ("Demo Highway Video" if source_type == "DEMO_VIDEO" else "Live Camera")
-        self.rtsp_url = rtsp_url
-
+        self.recent_plates = {}
+        self.recent_vehicles = {}
         self._stop_event.clear()
         self.is_running = True
         self._thread = threading.Thread(target=self._worker_loop, daemon=True)
@@ -240,14 +334,13 @@ class ANPREngine:
 
     def set_target_plate(self, plate_number: str) -> Dict[str, Any]:
         """Sets target search plate and immediately checks existing detection logs."""
-        clean = re.sub(r"[^A-Z0-9]", "", str(plate_number).upper())
+        clean = clean_indian_plate(plate_number)
         if not clean:
             return {"status": "ERROR", "message": "Invalid plate number"}
 
         self.target_plate = clean
         self.catched_event = None
 
-        # Check existing events in database
         events = self.load_events()
         for evt in events:
             evt_plate = evt.get("plate", {}).get("raw_number") or evt.get("plate", {}).get("number", "")
@@ -281,7 +374,6 @@ class ANPREngine:
         extracted_plate = ""
         best_conf = 0.0
 
-        # 1. Try plate detector
         if self.plate_model:
             results = self.plate_model(img, verbose=False, conf=0.25)[0]
             if results.boxes is not None and len(results.boxes) > 0:
@@ -296,12 +388,11 @@ class ANPREngine:
                             best_conf = conf
                             extracted_plate = plate_text
 
-        # 2. Fallback: OCR on full image or center
         if not extracted_plate and self.ocr_reader:
             try:
                 ocr_res = self.ocr_reader.readtext(img)
                 for item in ocr_res:
-                    raw = re.sub(r"[^A-Z0-9]", "", item[1].upper())
+                    raw = clean_indian_plate(item[1])
                     if len(raw) >= 4 and any(c.isdigit() for c in raw) and any(c.isalpha() for c in raw):
                         extracted_plate = raw
                         best_conf = float(item[2])
@@ -315,7 +406,6 @@ class ANPREngine:
                 "message": "Number plate could not be recognized in the uploaded photo. Please enter plate text manually."
             }
 
-        # Set as target and check
         res = self.set_target_plate(extracted_plate)
         res["extracted_plate"] = format_plate_text(extracted_plate)
         res["raw_extracted_plate"] = extracted_plate
@@ -329,46 +419,47 @@ class ANPREngine:
         return {"status": "CLEARED", "message": "Search target cleared."}
 
     def _run_crop_ocr(self, crop: np.ndarray) -> (str, float):
-        """Preprocesses cropped plate and runs EasyOCR."""
+        """Preprocesses cropped plate and runs EasyOCR with Indian plate tuning."""
         if crop is None or crop.size == 0 or self.ocr_reader is None:
             return "", 0.0
 
         ch, cw = crop.shape[:2]
-        if ch < 10 or cw < 15:
+        if ch < 8 or cw < 15:
             return "", 0.0
 
-        # Upscale small crops to height >= 70 for reliable character recognition
-        if ch < 70:
-            scale = 70.0 / ch
-            crop_prep = cv2.resize(crop, (int(cw * scale), 70), interpolation=cv2.INTER_CUBIC)
-        else:
-            crop_prep = crop
+        # Upscale small crops to height >= 75 for character clarity
+        scale = max(1.0, 75.0 / ch)
+        crop_prep = cv2.resize(crop, (int(cw * scale), int(ch * scale)), interpolation=cv2.INTER_CUBIC)
 
         gray = cv2.cvtColor(crop_prep, cv2.COLOR_BGR2GRAY)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
         enhanced = clahe.apply(gray)
 
+        best_text = ""
+        best_conf = 0.0
+
         try:
+            # First attempt on CLAHE enhanced
             res = self.ocr_reader.readtext(enhanced)
             if not res:
+                # Fallback to direct resized crop
                 res = self.ocr_reader.readtext(crop_prep)
 
             texts = []
             confs = []
             for item in res:
-                t = re.sub(r"[^A-Z0-9]", "", item[1].upper())
+                t = clean_indian_plate(item[1])
                 if t:
                     texts.append(t)
                     confs.append(float(item[2]))
 
             if texts:
-                full = "".join(texts)
-                avg_c = float(np.mean(confs))
-                return full, avg_c
+                best_text = "".join(texts)
+                best_conf = float(np.mean(confs))
         except Exception as e:
             logger.warning(f"Crop OCR warning: {e}")
 
-        return "", 0.0
+        return best_text, best_conf
 
     def _open_capture(self) -> Optional[cv2.VideoCapture]:
         """Opens video capture based on source_type."""
@@ -379,7 +470,6 @@ class ANPREngine:
             return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
 
         elif self.source_type == "LOCAL_WEBCAM":
-            # Laptop webcam index 0
             cap = cv2.VideoCapture(0, cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_ANY)
             if not cap.isOpened():
                 cap = cv2.VideoCapture(0)
@@ -390,14 +480,20 @@ class ANPREngine:
             if not rtsp:
                 logger.error("No RTSP URL provided for camera source.")
                 return None
-            # Set transport to TCP for stability
             os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
             return cv2.VideoCapture(rtsp, cv2.CAP_FFMPEG)
 
         return None
 
     def _worker_loop(self):
-        """Main inference worker reading frames, running YOLO+EasyOCR, and publishing stream."""
+        """
+        Main inference worker:
+        1. Runs YOLOv8 vehicle detection & classification (Auto-Rickshaw, Motorcycle, Bus, Truck, Car).
+        2. Runs YOLOv8 plate detector & EasyOCR on plate crops.
+        3. Matches plates with enclosing vehicles.
+        4. Logs events and saves high-resolution plate crops.
+        5. Renders tactical HUD overlay on stream.
+        """
         cap = self._open_capture()
         if cap is None or not cap.isOpened():
             logger.error("Failed to open capture device/stream.")
@@ -405,8 +501,8 @@ class ANPREngine:
             return
 
         frame_count = 0
-        last_fps_time = time.time()
-        cached_boxes = []  # [{bbox, label, is_match}]
+        cached_vehicles = []  # [(vtype, bbox, conf)]
+        cached_plates = []    # [{bbox, plate, raw_plate, conf, is_match, vtype}]
 
         while not self._stop_event.is_set():
             t_start = time.time()
@@ -414,7 +510,6 @@ class ANPREngine:
 
             if not ret or frame is None:
                 if self.source_type == "DEMO_VIDEO":
-                    # Loop demo video seamlessly
                     cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                     time.sleep(0.02)
                     continue
@@ -425,56 +520,148 @@ class ANPREngine:
             frame_count += 1
             h, w = frame.shape[:2]
 
-            # Run heavy AI inference every 3rd frame to ensure smooth 25+ FPS display
+            # Run full AI detection every 3rd frame
             should_run_ai = (frame_count % 3 == 0)
 
-            if should_run_ai and self.plate_model:
-                cached_boxes = []
-                # 1. Run Plate Detection
-                p_results = self.plate_model(frame, verbose=False, conf=0.25)[0]
-                if p_results.boxes is not None and len(p_results.boxes) > 0:
-                    for box in p_results.boxes:
-                        bx1, by1, bx2, by2 = map(int, box.xyxy[0].tolist())
-                        bx1, by1 = max(0, bx1), max(0, by1)
-                        bx2, by2 = min(w, bx2), min(h, by2)
-                        box_w, box_h = bx2 - bx1, by2 - by1
+            if should_run_ai:
+                current_v_boxes = []
+                current_p_boxes = []
 
-                        if box_w >= 20 and box_h >= 12:
-                            crop = frame[by1:by2, bx1:bx2]
-                            plate_text, conf = self._run_crop_ocr(crop)
+                # 1. RUN VEHICLE DETECTION & CLASSIFICATION
+                if self.vehicle_model:
+                    v_res = self.vehicle_model(frame, verbose=False, conf=0.3, classes=[2, 3, 5, 7])[0]
+                    if v_res.boxes is not None and len(v_res.boxes) > 0:
+                        for vb in v_res.boxes:
+                            cid = int(vb.cls[0])
+                            cname = v_res.names[cid]
+                            vconf = float(vb.conf[0])
+                            vx1, vy1, vx2, vy2 = map(int, vb.xyxy[0].tolist())
+                            vx1, vy1 = max(0, vx1), max(0, vy1)
+                            vx2, vy2 = min(w, vx2), min(h, vy2)
 
-                            if len(plate_text) >= 3:
-                                is_match = False
-                                if self.target_plate and are_plates_similar(plate_text, self.target_plate):
-                                    is_match = True
+                            if (vx2 - vx1) >= 40 and (vy2 - vy1) >= 40:
+                                vcrop = frame[vy1:vy2, vx1:vx2]
+                                vtype = classify_vehicle(vcrop, cname, vconf)
+                                current_v_boxes.append((vtype, [vx1, vy1, vx2, vy2], vconf))
 
-                                formatted = format_plate_text(plate_text)
-                                cached_boxes.append({
-                                    "bbox": [bx1, by1, bx2, by2],
-                                    "plate": formatted,
-                                    "raw_plate": plate_text,
-                                    "conf": conf,
-                                    "is_match": is_match
-                                })
+                # 2. RUN PLATE DETECTION & OCR
+                if self.plate_model:
+                    p_res = self.plate_model(frame, verbose=False, conf=0.22)[0]
+                    if p_res.boxes is not None and len(p_res.boxes) > 0:
+                        for pb in p_res.boxes:
+                            bx1, by1, bx2, by2 = map(int, pb.xyxy[0].tolist())
+                            bx1, by1 = max(0, bx1), max(0, by1)
+                            bx2, by2 = min(w, bx2), min(h, by2)
+                            bw, bh = bx2 - bx1, by2 - by1
 
-                                # Debounced event logging
-                                now_ts = time.time()
-                                last_seen = self.recent_plates.get(plate_text, 0)
-                                if (now_ts - last_seen) > 6.0:
-                                    self.recent_plates[plate_text] = now_ts
-                                    self.last_detected_plate = formatted
+                            if bw >= 16 and bh >= 10:
+                                crop = frame[by1:by2, bx1:bx2]
+                                plate_text, conf = self._run_crop_ocr(crop)
 
-                                    # Save plate crop image
+                                if len(plate_text) >= 3:
+                                    clean_text = clean_indian_plate(plate_text)
+                                    formatted = format_plate_text(clean_text)
+
+                                    # Associate with enclosing vehicle
+                                    matched_vtype = "Car"
+                                    matched_vconf = 0.92
+                                    for v in current_v_boxes:
+                                        vx1, vy1, vx2, vy2 = v[1]
+                                        pcx, pcy = (bx1 + bx2) // 2, (by1 + by2) // 2
+                                        if (vx1 - 30) <= pcx <= (vx2 + 30) and (vy1 - 40) <= pcy <= (vy2 + 50):
+                                            matched_vtype = v[0]
+                                            matched_vconf = v[2]
+                                            break
+
+                                    is_match = False
+                                    if self.target_plate and are_plates_similar(clean_text, self.target_plate):
+                                        is_match = True
+
+                                    current_p_boxes.append({
+                                        "bbox": [bx1, by1, bx2, by2],
+                                        "plate": formatted,
+                                        "raw_plate": clean_text,
+                                        "conf": conf,
+                                        "is_match": is_match,
+                                        "vtype": matched_vtype
+                                    })
+
+                                    # Debounced event logging
+                                    now_ts = time.time()
+                                    last_seen = self.recent_plates.get(clean_text, 0)
+                                    if (now_ts - last_seen) > 5.0:
+                                        self.recent_plates[clean_text] = now_ts
+                                        self.last_detected_plate = formatted
+
+                                        # Save plate crop image
+                                        evt_id = f"EVT_{int(now_ts * 1000)}"
+                                        crop_filename = f"{evt_id}.jpg"
+                                        crop_path = CROPS_DIR / crop_filename
+                                        try:
+                                            cv2.imwrite(str(crop_path), crop)
+                                            crop_url = f"/api/anpr/crops/{crop_filename}"
+                                        except Exception:
+                                            crop_url = ""
+
+                                        event_record = {
+                                            "event_id": evt_id,
+                                            "camera_id": self.source_id,
+                                            "camera_code": self.source_id[:10],
+                                            "camera_name": self.source_name,
+                                            "dept_name": self.source_name,
+                                            "timestamp": datetime.now(timezone.utc).isoformat(),
+                                            "vehicle": {
+                                                "type": matched_vtype,
+                                                "confidence": round(matched_vconf, 2)
+                                            },
+                                            "plate": {
+                                                "number": formatted,
+                                                "raw_number": clean_text,
+                                                "confidence": round(conf, 2),
+                                                "bounding_box": [bx1, by1, bw, bh]
+                                            },
+                                            "crop_url": crop_url,
+                                            "is_target_catched": is_match,
+                                            "status": "TARGET_CATCHED" if is_match else "NORMAL",
+                                            "speed": 48
+                                        }
+
+                                        self.save_event(event_record)
+
+                                        if is_match:
+                                            self.catched_event = event_record
+                                            logger.info(f"🚨 TARGET CATCHED ON CAMERA: {formatted} ({matched_vtype})")
+
+                # Also track passing Auto-Rickshaws or Motorcycles even if plate was obscured
+                for v in current_v_boxes:
+                    vtype, vbox, vconf = v
+                    if vtype in ["Auto-Rickshaw", "Motorcycle", "Bus"]:
+                        # Center of vehicle
+                        vcx = (vbox[0] + vbox[2]) // 2
+                        vcy = (vbox[1] + vbox[3]) // 2
+                        # Trigger log when passing through road tracking zone
+                        if (0.12 * h) <= vcy <= (0.88 * h) and (0.10 * w) <= vcx <= (0.90 * w):
+                            sig = f"{vtype}_{vcx // 120}"
+                            now_ts = time.time()
+                            if (now_ts - self.recent_vehicles.get(sig, 0)) > 8.0:
+                                self.recent_vehicles[sig] = now_ts
+                                # Check if any plate was logged nearby
+                                has_plate_nearby = any(
+                                    abs((p["bbox"][0] + p["bbox"][2]) // 2 - vcx) < 100
+                                    for p in current_p_boxes
+                                )
+                                if not has_plate_nearby:
+                                    # Log passing vehicle event
                                     evt_id = f"EVT_{int(now_ts * 1000)}"
+                                    vcrop = frame[vbox[1]:vbox[3], vbox[0]:vbox[2]]
                                     crop_filename = f"{evt_id}.jpg"
-                                    crop_path = CROPS_DIR / crop_filename
                                     try:
-                                        cv2.imwrite(str(crop_path), crop)
+                                        cv2.imwrite(str(CROPS_DIR / crop_filename), vcrop)
                                         crop_url = f"/api/anpr/crops/{crop_filename}"
                                     except Exception:
                                         crop_url = ""
 
-                                    event_record = {
+                                    self.save_event({
                                         "event_id": evt_id,
                                         "camera_id": self.source_id,
                                         "camera_code": self.source_id[:10],
@@ -482,94 +669,106 @@ class ANPREngine:
                                         "dept_name": self.source_name,
                                         "timestamp": datetime.now(timezone.utc).isoformat(),
                                         "vehicle": {
-                                            "type": "Car",
-                                            "confidence": 0.94
+                                            "type": vtype,
+                                            "confidence": round(vconf, 2)
                                         },
                                         "plate": {
-                                            "number": formatted,
-                                            "raw_number": plate_text,
-                                            "confidence": round(conf, 2),
-                                            "bounding_box": [bx1, by1, box_w, box_h]
+                                            "number": f"IN-TRANSIT ({vtype})",
+                                            "raw_number": vtype,
+                                            "confidence": round(vconf, 2),
+                                            "bounding_box": vbox
                                         },
                                         "crop_url": crop_url,
-                                        "is_target_catched": is_match,
-                                        "status": "TARGET_CATCHED" if is_match else "NORMAL",
-                                        "speed": 52
-                                    }
+                                        "is_target_catched": False,
+                                        "status": "NORMAL",
+                                        "speed": 42
+                                    })
 
-                                    self.save_event(event_record)
+                cached_vehicles = current_v_boxes
+                cached_plates = current_p_boxes
 
-                                    if is_match:
-                                        self.catched_event = event_record
-                                        logger.info(f"🚨 TARGET CATCHED ON CAMERA: {formatted}")
+            # Render tactical HUD overlay on frame
+            annotated_frame = self._render_hud(frame, cached_vehicles, cached_plates)
 
-            # Draw HUD overlays on frame
-            annotated_frame = self._render_hud(frame, cached_boxes)
-
-            # Encode as JPEG
+            # Encode as JPEG for streaming
             success, enc_jpg = cv2.imencode(".jpg", annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 75])
             if success:
                 with self._frame_lock:
                     self.latest_frame_bytes = enc_jpg.tobytes()
 
-            # Calculate FPS
+            # FPS calculation
             elapsed = time.time() - t_start
             if elapsed > 0:
                 cur_fps = 1.0 / elapsed
                 self.fps = 0.9 * self.fps + 0.1 * cur_fps if self.fps > 0 else cur_fps
 
-            # Pace to ~25 FPS
             sleep_time = max(0.005, (1.0 / 25.0) - elapsed)
             time.sleep(sleep_time)
 
         cap.release()
         self.is_running = False
 
-    def _render_hud(self, frame: np.ndarray, boxes: List[Dict[str, Any]]) -> np.ndarray:
+    def _render_hud(self, frame: np.ndarray, vehicles: List[Any], plates: List[Dict[str, Any]]) -> np.ndarray:
         """Renders futuristic tactical HUD overlays, boxes, and target interception alert."""
         vis = frame.copy()
         h, w = vis.shape[:2]
 
-        # 1. Draw Plate Bounding Boxes
-        for item in boxes:
+        # 1. DRAW VEHICLE BOUNDING BOXES
+        for v in vehicles:
+            vtype, vbox, vconf = v
+            vx1, vy1, vx2, vy2 = vbox
+
+            # Specific colors for vehicle classes
+            if vtype == "Auto-Rickshaw":
+                v_color = (0, 180, 255)  # Amber / Yellow
+            elif vtype == "Motorcycle":
+                v_color = (255, 128, 0)  # Cyan-Blue
+            elif vtype == "Bus":
+                v_color = (180, 0, 255)  # Purple
+            elif vtype == "Truck":
+                v_color = (0, 140, 255)  # Orange
+            else:
+                v_color = (180, 220, 0)  # Lime / Cyan for Car
+
+            cv2.rectangle(vis, (vx1, vy1), (vx2, vy2), v_color, 1)
+
+            # Vehicle Label Tag
+            v_tag = f"{vtype} [{int(vconf * 100)}%]"
+            (tw, th), _ = cv2.getTextSize(v_tag, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)
+            cv2.rectangle(vis, (vx1, max(0, vy1 - th - 6)), (vx1 + tw + 8, vy1), v_color, -1)
+            cv2.putText(vis, v_tag, (vx1 + 4, max(th + 1, vy1 - 3)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 1)
+
+        # 2. DRAW PLATE BOUNDING BOXES
+        for item in plates:
             bx1, by1, bx2, by2 = item["bbox"]
             is_match = item["is_match"]
             plate_str = item["plate"]
+            v_type = item.get("vtype", "Vehicle")
 
-            # Color: Neon Red/Gold for Target Match, Emerald Green for Normal
             box_color = (0, 0, 240) if is_match else (0, 230, 115)
             thickness = 3 if is_match else 2
 
-            # Rectangle & Corner Brackets
             cv2.rectangle(vis, (bx1, by1), (bx2, by2), box_color, thickness)
 
-            # Plate Banner above box
-            label_text = f"{'🚨 CATCHED: ' if is_match else ''}{plate_str}"
-            (tw, th), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+            label_text = f"{'🚨 CATCHED: ' if is_match else ''}{plate_str} ({v_type})"
+            (tw, th), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.55, 2)
             cv2.rectangle(vis, (bx1, max(0, by1 - th - 10)), (bx1 + tw + 10, by1), box_color, -1)
             cv2.putText(
                 vis,
                 label_text,
                 (bx1 + 5, max(th + 2, by1 - 5)),
                 cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
+                0.55,
                 (0, 0, 0) if not is_match else (255, 255, 255),
                 2
             )
 
-        # 2. Top-Left Tactical OSD
-        cv2.rectangle(vis, (10, 10), (320, 70), (15, 23, 42), -1)
-        cv2.rectangle(vis, (10, 10), (320, 70), (51, 65, 85), 1)
+        # 3. TOP-LEFT TACTICAL HUD
+        cv2.rectangle(vis, (10, 10), (340, 75), (15, 23, 42), -1)
+        cv2.rectangle(vis, (10, 10), (340, 75), (51, 65, 85), 1)
 
-        cv2.putText(
-            vis,
-            f"SOURCE: {self.source_name[:28]}",
-            (18, 30),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.45,
-            (255, 255, 255),
-            1
-        )
+        cv2.putText(vis, f"SOURCE: {self.source_name[:26]}", (18, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+
         status_text = "STATUS: SCANNING ACTIVE"
         status_color = (0, 230, 115)
         if self.catched_event:
@@ -577,9 +776,9 @@ class ANPREngine:
             status_color = (0, 0, 255)
 
         cv2.putText(vis, status_text, (18, 48), cv2.FONT_HERSHEY_SIMPLEX, 0.45, status_color, 1)
-        cv2.putText(vis, f"FPS: {self.fps:.1f} | AI: YOLOv8+EasyOCR", (18, 64), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (148, 163, 184), 1)
+        cv2.putText(vis, f"FPS: {self.fps:.1f} | VEHICLES: {len(vehicles)} | PLATES: {len(plates)}", (18, 66), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (148, 163, 184), 1)
 
-        # 3. Top-Right Target Monitor Box
+        # 4. TOP-RIGHT TARGET MONITOR HUD
         if self.target_plate:
             is_catched = (self.catched_event is not None)
             target_box_color = (0, 0, 200) if is_catched else (220, 120, 0)

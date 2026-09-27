@@ -25,6 +25,79 @@ import {
 } from "lucide-react";
 import "./AnprRadar.css";
 
+function AutoRickshawIcon({ size = 15 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ display: "inline-block", verticalAlign: "middle" }}
+    >
+      <circle cx="5" cy="18" r="3" />
+      <circle cx="18" cy="18" r="3" />
+      <path d="M5 15l2-8h8l3 5v6" />
+      <path d="M7 7l4-4h4" />
+      <line x1="12" y1="7" x2="12" y2="15" />
+      <line x1="8" y1="18" x2="15" y2="18" />
+    </svg>
+  );
+}
+
+function renderVehicleBadge(vtype) {
+  const typeStr = (vtype || "Car").toLowerCase();
+  if (typeStr.includes("auto") || typeStr.includes("rickshaw")) {
+    return (
+      <span className="vbadge vbadge-auto" title="Auto-Rickshaw (Three-Wheeler)">
+        <AutoRickshawIcon size={14} />
+        <span>Auto-Rickshaw</span>
+      </span>
+    );
+  }
+  if (typeStr.includes("motorcycle") || typeStr.includes("bike")) {
+    return (
+      <span className="vbadge vbadge-bike" title="Motorcycle / Two-Wheeler">
+        <Bike size={14} />
+        <span>Motorcycle</span>
+      </span>
+    );
+  }
+  if (typeStr.includes("bus")) {
+    return (
+      <span className="vbadge vbadge-bus" title="Bus / Transit">
+        <Truck size={14} />
+        <span>Bus</span>
+      </span>
+    );
+  }
+  if (typeStr.includes("truck")) {
+    return (
+      <span className="vbadge vbadge-truck" title="Commercial Truck">
+        <Truck size={14} />
+        <span>Truck</span>
+      </span>
+    );
+  }
+  if (typeStr.includes("van") || typeStr.includes("suv")) {
+    return (
+      <span className="vbadge vbadge-van" title="Van / SUV">
+        <Car size={14} />
+        <span>Van / SUV</span>
+      </span>
+    );
+  }
+  return (
+    <span className="vbadge vbadge-car" title="Passenger Car">
+      <Car size={14} />
+      <span>Car</span>
+    </span>
+  );
+}
+
 export default function AnprRadar({ onNavigateToOnboarding }) {
   // Sources & Stream State
   const [sources, setSources] = useState([]);
@@ -787,10 +860,9 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
               <thead>
                 <tr>
                   <th>Time</th>
-                  <th>Number Plate</th>
-                  <th>Vehicle</th>
+                  <th>Captured Plate (Crop & HSRP)</th>
+                  <th>Vehicle Class</th>
                   <th>Location / Camera</th>
-                  <th>Crop</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -806,53 +878,49 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                         {new Date(log.timestamp).toLocaleTimeString()}
                       </td>
 
-                      {/* HSRP NUMBER PLATE BADGE */}
+                      {/* PHYSICAL CAPTURED PLATE CROP + HSRP NUMBER */}
                       <td>
-                        <div className="hsrp-plate-wrap">
-                          <div className="hsrp-blue-band">
-                            <span className="hsrp-ind">IND</span>
+                        <div className="plate-showcase-cell">
+                          {log.crop_url ? (
+                            <div
+                              className="plate-crop-preview-box"
+                              onClick={() => setPreviewCrop(log.crop_url)}
+                              title="Physical plate crop from camera - Click to enlarge"
+                            >
+                              <img
+                                src={log.crop_url}
+                                alt={log.plate?.number}
+                                className="plate-crop-img"
+                              />
+                              <span className="crop-tag">LIVE CROP</span>
+                            </div>
+                          ) : null}
+
+                          <div className="hsrp-plate-wrap">
+                            <div className="hsrp-blue-band">
+                              <span className="hsrp-ind">IND</span>
+                            </div>
+                            <span className="hsrp-number">
+                              {log.plate?.number || log.plate?.raw_number}
+                            </span>
                           </div>
-                          <span className="hsrp-number">{log.plate?.number || log.plate?.raw_number}</span>
                         </div>
                       </td>
 
+                      {/* INTELLIGENT VEHICLE CLASSIFICATION */}
                       <td>
-                        <div className="vehicle-class-cell">
-                          {log.vehicle?.type?.toLowerCase().includes("truck") ? (
-                            <Truck size={14} />
-                          ) : log.vehicle?.type?.toLowerCase().includes("motorcycle") || log.vehicle?.type?.toLowerCase().includes("bike") ? (
-                            <Bike size={14} />
-                          ) : (
-                            <Car size={14} />
-                          )}
-                          <span>{log.vehicle?.type || "Car"}</span>
+                        {renderVehicleBadge(log.vehicle?.type)}
+                      </td>
+
+                      <td>
+                        <div className="location-cell">
+                          <span className="location-name">
+                            {log.dept_name || log.camera_name || log.camera_id}
+                          </span>
+                          <span className="camera-code-tag">
+                            📷 {log.camera_code || "CAM"}
+                          </span>
                         </div>
-                      </td>
-
-                      <td>
-                        <span style={{ fontSize: "11px", color: "#cbd5e1" }}>
-                          {log.dept_name || log.camera_name || log.camera_id}
-                        </span>
-                      </td>
-
-                      {/* CROP SNAPSHOT */}
-                      <td>
-                        {log.crop_url ? (
-                          <img
-                            src={log.crop_url}
-                            alt="Crop"
-                            style={{
-                              height: "22px",
-                              borderRadius: "3px",
-                              border: "1px solid #475569",
-                              cursor: "pointer"
-                            }}
-                            onClick={() => setPreviewCrop(log.crop_url)}
-                            title="Click to enlarge"
-                          />
-                        ) : (
-                          <span style={{ color: "#64748b", fontSize: "11px" }}>-</span>
-                        )}
                       </td>
 
                       <td>
@@ -870,7 +938,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
 
                 {filteredEvents.length === 0 && (
                   <tr>
-                    <td colSpan={6} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
                       <Camera size={28} style={{ margin: "0 auto 10px", opacity: 0.4, display: "block" }} />
                       <p style={{ margin: 0, fontWeight: 600 }}>No live detections recorded yet.</p>
                       <span style={{ fontSize: "11px", color: "#64748b" }}>

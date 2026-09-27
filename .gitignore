@@ -23,3 +23,4 @@ Thumbs.db
 *.mp4
 *.avi
 *.mkv
+backend/data/anpr_crops/*.jpg

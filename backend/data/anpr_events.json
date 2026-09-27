@@ -1,289 +1,46 @@
 [
   {
-    "event_id": "EVT_1790539690323",
-    "camera_id": "63a62e27-4d26-4208-903e-c1c2c53592c6",
-    "camera_code": "63a62e27-4",
-    "camera_name": "\ud83d\udcf7 CAM12 - Gujarat Police - Surat Municipal",
-    "dept_name": "\ud83d\udcf7 CAM12 - Gujarat Police - Surat Municipal",
-    "timestamp": "2026-09-27T20:08:10.325165+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "12 026210140",
-      "raw_number": "12026210140",
-      "confidence": 0.86,
-      "bounding_box": [
-        1069,
-        10,
-        188,
-        33
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539690323.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539672781",
-    "camera_id": "63a62e27-4d26-4208-903e-c1c2c53592c6",
-    "camera_code": "63a62e27-4",
-    "camera_name": "\ud83d\udcf7 CAM12 - Gujarat Police - Surat Municipal",
-    "dept_name": "\ud83d\udcf7 CAM12 - Gujarat Police - Surat Municipal",
-    "timestamp": "2026-09-27T20:07:52.782223+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "12 026210124",
-      "raw_number": "12026210124",
-      "confidence": 0.54,
-      "bounding_box": [
-        1069,
-        9,
-        186,
-        33
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539672781.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539342176",
+    "event_id": "EVT_1790541613854",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
     "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
     "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:02:22.178149+00:00",
+    "timestamp": "2026-09-27T20:40:13.855216+00:00",
     "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
+      "type": "Motorcycle",
+      "confidence": 0.46
     },
     "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.46,
       "bounding_box": [
-        311,
-        328,
-        65,
-        16
+        712,
+        49,
+        775,
+        146
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790539342176.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541613854.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
-    "speed": 52
+    "speed": 42
   },
   {
-    "event_id": "EVT_1790539184705",
+    "event_id": "EVT_1790541612672",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:44.706389+00:00",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:12.675052+00:00",
     "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
+      "type": "Van / SUV",
+      "confidence": 0.43
     },
     "plate": {
-      "number": "69 92402883",
-      "raw_number": "6992402883",
-      "confidence": 0.1,
-      "bounding_box": [
-        269,
-        470,
-        75,
-        21
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539184705.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539183742",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:43.743988+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "61 52462887",
-      "raw_number": "6152462887",
-      "confidence": 0.17,
-      "bounding_box": [
-        279,
-        437,
-        73,
-        19
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539183742.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539183271",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:43.272113+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "02 52462883",
-      "raw_number": "0252462883",
-      "confidence": 0.14,
-      "bounding_box": [
-        286,
-        415,
-        69,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539183271.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539182800",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:42.802743+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 2162677",
-      "raw_number": "012162677",
-      "confidence": 0.08,
-      "bounding_box": [
-        291,
-        395,
-        70,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539182800.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539182158",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:42.159879+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "45 216287",
-      "raw_number": "45216287",
-      "confidence": 0.09,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539182158.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539181564",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:41.565181+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "00 45216857",
-      "raw_number": "0045216857",
-      "confidence": 0.01,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539181564.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539180849",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:59:40.849868+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539180849.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539105925",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:25.928341+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "08 2462087",
-      "raw_number": "082462087",
-      "confidence": 0.47,
+      "number": "J8 24O2087",
+      "raw_number": "J824O2087",
+      "confidence": 0.36,
       "bounding_box": [
         235,
         588,
@@ -291,2135 +48,765 @@
         22
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790539105925.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541612672.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539104986",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:24.990027+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6V 92462883",
-      "raw_number": "6V92462883",
-      "confidence": 0.04,
-      "bounding_box": [
-        244,
-        559,
-        80,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539104986.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539103901",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:23.902261+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6J 32462883",
-      "raw_number": "6J32462883",
-      "confidence": 0.17,
-      "bounding_box": [
-        252,
-        532,
-        79,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539103901.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539103430",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:23.431225+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "0J 92462883",
-      "raw_number": "0J92462883",
-      "confidence": 0.09,
-      "bounding_box": [
-        263,
-        495,
-        75,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539103430.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539102806",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:22.807412+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "69 92402883",
-      "raw_number": "6992402883",
-      "confidence": 0.1,
-      "bounding_box": [
-        269,
-        470,
-        75,
-        21
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539102806.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539102205",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:22.207007+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "61 52462887",
-      "raw_number": "6152462887",
-      "confidence": 0.17,
-      "bounding_box": [
-        279,
-        437,
-        73,
-        19
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539102205.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539101712",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:21.713032+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "02 52462883",
-      "raw_number": "0252462883",
-      "confidence": 0.14,
-      "bounding_box": [
-        286,
-        415,
-        69,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539101712.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539101233",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:21.235347+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 2162677",
-      "raw_number": "012162677",
-      "confidence": 0.08,
-      "bounding_box": [
-        291,
-        395,
-        70,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539101233.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539100648",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:20.649173+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "45 216287",
-      "raw_number": "45216287",
-      "confidence": 0.09,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539100648.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539099994",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:19.996294+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "00 45216857",
-      "raw_number": "0045216857",
-      "confidence": 0.01,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539099994.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539099438",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:58:19.438414+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539099438.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539022504",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:57:02.506604+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "08 2462087",
-      "raw_number": "082462087",
-      "confidence": 0.47,
-      "bounding_box": [
-        235,
-        588,
-        82,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539022504.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539021897",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:57:01.899230+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6V 92462883",
-      "raw_number": "6V92462883",
-      "confidence": 0.04,
-      "bounding_box": [
-        244,
-        559,
-        80,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539021897.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539020414",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:57:00.415392+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6J 32462883",
-      "raw_number": "6J32462883",
-      "confidence": 0.17,
-      "bounding_box": [
-        252,
-        532,
-        79,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539020414.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539019557",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:59.558068+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "0J 92462883",
-      "raw_number": "0J92462883",
-      "confidence": 0.09,
-      "bounding_box": [
-        263,
-        495,
-        75,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539019557.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539018216",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:58.217955+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "69 92402883",
-      "raw_number": "6992402883",
-      "confidence": 0.1,
-      "bounding_box": [
-        269,
-        470,
-        75,
-        21
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539018216.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539017649",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:57.652579+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "61 52462887",
-      "raw_number": "6152462887",
-      "confidence": 0.17,
-      "bounding_box": [
-        279,
-        437,
-        73,
-        19
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539017649.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539017180",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:57.182279+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "02 52462883",
-      "raw_number": "0252462883",
-      "confidence": 0.14,
-      "bounding_box": [
-        286,
-        415,
-        69,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539017180.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539016662",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:56.663367+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 2162677",
-      "raw_number": "012162677",
-      "confidence": 0.08,
-      "bounding_box": [
-        291,
-        395,
-        70,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539016662.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539016009",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:56.010578+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "45 216287",
-      "raw_number": "45216287",
-      "confidence": 0.09,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539016009.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539015432",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:55.434804+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "00 45216857",
-      "raw_number": "0045216857",
-      "confidence": 0.01,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539015432.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790539014837",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:56:54.838225+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790539014837.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538851506",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:54:11.506410+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "45 216287",
-      "raw_number": "45216287",
-      "confidence": 0.09,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538851506.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538850662",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:54:10.664940+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "00 45216857",
-      "raw_number": "0045216857",
-      "confidence": 0.01,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538850662.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538849744",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video (test_video.mp4)",
-    "dept_name": "Demo Highway Video (test_video.mp4)",
-    "timestamp": "2026-09-27T19:54:09.745083+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538849744.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538836561",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:56.562493+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "SA T0 42 859",
-      "raw_number": "SAT042859",
-      "confidence": 0.99,
-      "bounding_box": [
-        134,
-        25,
-        138,
-        25
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538836561.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538825399",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:45.400251+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "08 2462087",
-      "raw_number": "082462087",
-      "confidence": 0.47,
-      "bounding_box": [
-        235,
-        588,
-        82,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538825399.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538824775",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:44.776365+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6V 92462883",
-      "raw_number": "6V92462883",
-      "confidence": 0.04,
-      "bounding_box": [
-        244,
-        559,
-        80,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538824775.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538823882",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:43.884829+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6J 32462883",
-      "raw_number": "6J32462883",
-      "confidence": 0.17,
-      "bounding_box": [
-        252,
-        532,
-        79,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538823882.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538823380",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:43.380746+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "0J 92462883",
-      "raw_number": "0J92462883",
-      "confidence": 0.09,
-      "bounding_box": [
-        263,
-        495,
-        75,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538823380.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538821461",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:41.462166+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "69 92402883",
-      "raw_number": "6992402883",
-      "confidence": 0.1,
-      "bounding_box": [
-        269,
-        470,
-        75,
-        21
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538821461.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538820716",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:40.717180+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "61 52462887",
-      "raw_number": "6152462887",
-      "confidence": 0.17,
-      "bounding_box": [
-        279,
-        437,
-        73,
-        19
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538820716.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538820027",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:40.028842+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "02 52462883",
-      "raw_number": "0252462883",
-      "confidence": 0.14,
-      "bounding_box": [
-        286,
-        415,
-        69,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538820027.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538819366",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:39.367201+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 2162677",
-      "raw_number": "012162677",
-      "confidence": 0.08,
-      "bounding_box": [
-        291,
-        395,
-        70,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538819366.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538818523",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:38.524071+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "45 216287",
-      "raw_number": "45216287",
-      "confidence": 0.09,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538818523.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538817783",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:37.785425+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "00 45216857",
-      "raw_number": "0045216857",
-      "confidence": 0.01,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538817783.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538816893",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:53:36.894151+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538816893.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538756606",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:36.608236+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "08 2462087",
-      "raw_number": "082462087",
-      "confidence": 0.47,
-      "bounding_box": [
-        235,
-        588,
-        82,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538756606.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538756159",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:36.160850+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6V 92462883",
-      "raw_number": "6V92462883",
-      "confidence": 0.04,
-      "bounding_box": [
-        244,
-        559,
-        80,
-        22
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538756159.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538755611",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:35.612585+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "6J 32462883",
-      "raw_number": "6J32462883",
-      "confidence": 0.17,
-      "bounding_box": [
-        252,
-        532,
-        79,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538755611.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538754914",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:34.916460+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "0J 92462883",
-      "raw_number": "0J92462883",
-      "confidence": 0.09,
-      "bounding_box": [
-        263,
-        495,
-        75,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538754914.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538754271",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:34.275182+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "69 92402883",
-      "raw_number": "6992402883",
-      "confidence": 0.1,
-      "bounding_box": [
-        269,
-        470,
-        75,
-        21
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538754271.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538753527",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:33.528882+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "61 52462887",
-      "raw_number": "6152462887",
-      "confidence": 0.17,
-      "bounding_box": [
-        279,
-        437,
-        73,
-        19
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538753527.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538753088",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:33.089582+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "02 52462883",
-      "raw_number": "0252462883",
-      "confidence": 0.14,
-      "bounding_box": [
-        286,
-        415,
-        69,
-        20
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538753088.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538752611",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:32.612454+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 2162677",
-      "raw_number": "012162677",
-      "confidence": 0.08,
-      "bounding_box": [
-        291,
-        395,
-        70,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538752611.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538752101",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:32.102285+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "45 216287",
-      "raw_number": "45216287",
-      "confidence": 0.09,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538752101.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538751598",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:31.599523+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "00 45216857",
-      "raw_number": "0045216857",
-      "confidence": 0.01,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538751598.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790538751049",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T19:52:31.050315+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "01 J2527077",
-      "raw_number": "01J2527077",
-      "confidence": 0.05,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790538751049.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 52
-  },
-  {
-    "event_id": "EVT_1790530329833",
-    "camera_id": "CAM-LOCAL-WEBCAM",
-    "camera_code": "003",
-    "dept_name": "Surat Traffic Police - Laptop Webcam",
-    "timestamp": "2026-09-27T17:32:09.833637+00:00",
-    "vehicle": {
-      "type": "Hyundai Creta",
-      "confidence": 0.95
-    },
-    "plate": {
-      "number": "GJ 05 CD 5678",
-      "confidence": 0.96,
-      "bounding_box": [
-        180,
-        240,
-        220,
-        65
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    },
-    "speed": 68
-  },
-  {
-    "event_id": "EVT_1790530327639",
-    "camera_id": "CAM-LOCAL-WEBCAM",
-    "camera_code": "003",
-    "dept_name": "Surat Traffic Police - Laptop Webcam",
-    "timestamp": "2026-09-27T17:32:07.639575+00:00",
-    "vehicle": {
-      "type": "Mahindra Scorpio",
-      "confidence": 0.95
-    },
-    "plate": {
-      "number": "GJ 01 AB 1234",
-      "confidence": 0.96,
-      "bounding_box": [
-        180,
-        240,
-        220,
-        65
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ01AB1234",
-      "reason": "STOLEN_VEHICLE",
-      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
-      "fir_number": "FIR-2026/AHD/0491",
-      "district": "Ahmedabad",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-20T10:00:00Z"
-    },
-    "speed": 68
-  },
-  {
-    "event_id": "EVT_1790530320184",
-    "camera_id": "CAM-LOCAL-WEBCAM",
-    "camera_code": "003",
-    "dept_name": "Surat Traffic Police - Laptop Webcam",
-    "timestamp": "2026-09-27T17:32:00.184804+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.95
-    },
-    "plate": {
-      "number": "GJ 01 AB 1234",
-      "confidence": 0.96,
-      "bounding_box": [
-        180,
-        240,
-        220,
-        65
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ01AB1234",
-      "reason": "STOLEN_VEHICLE",
-      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
-      "fir_number": "FIR-2026/AHD/0491",
-      "district": "Ahmedabad",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-20T10:00:00Z"
-    },
-    "speed": 68
-  },
-  {
-    "event_id": "EVT_1790530041117",
-    "camera_id": "CAM-LOCAL-WEBCAM",
-    "camera_code": "003",
-    "dept_name": "Surat Traffic Police - Laptop Webcam",
-    "timestamp": "2026-09-27T17:27:21.117037+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.95
-    },
-    "plate": {
-      "number": "GJ 01 AB 1234",
-      "raw_number": "GJ01AB1234",
-      "confidence": 1.0,
-      "bounding_box": [
-        75,
-        75,
-        453,
-        158
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ01AB1234",
-      "reason": "STOLEN_VEHICLE",
-      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
-      "fir_number": "FIR-2026/AHD/0491",
-      "district": "Ahmedabad",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-20T10:00:00Z"
-    },
     "speed": 48
   },
   {
-    "event_id": "EVT_1790528960959",
-    "camera_id": "CAM-LOCAL-WEBCAM",
-    "camera_code": "003",
-    "dept_name": "Surat Traffic Police - Laptop Webcam",
-    "timestamp": "2026-09-27T17:09:20.959353+00:00",
+    "event_id": "EVT_1790541612217",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:12.218508+00:00",
     "vehicle": {
-      "type": "Hyundai Creta",
-      "confidence": 0.95
+      "type": "Van / SUV",
+      "confidence": 0.42
     },
     "plate": {
-      "number": "GJ 05 CD 5678",
-      "confidence": 0.96,
+      "number": "GJ 92 G2 887",
+      "raw_number": "GJ92G2887",
+      "confidence": 0.05,
       "bounding_box": [
-        180,
-        240,
-        220,
-        65
+        244,
+        559,
+        80,
+        22
       ]
     },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    },
-    "speed": 68
+    "crop_url": "/api/anpr/crops/EVT_1790541612217.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
   },
   {
-    "event_id": "EVT_1790509822581",
-    "camera_id": "CAM03",
-    "dept_name": "Gujarat Police - Grid CAM03",
-    "timestamp": "2026-09-27T11:50:22.581201+00:00",
+    "event_id": "EVT_1790541611695",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:11.696630+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.92
+    },
+    "plate": {
+      "number": "GJ 92 IC 2883",
+      "raw_number": "GJ92IC2883",
+      "confidence": 0.06,
+      "bounding_box": [
+        252,
+        532,
+        79,
+        20
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541611695.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541611096",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:11.097589+00:00",
+    "vehicle": {
+      "type": "Van / SUV",
+      "confidence": 0.69
+    },
+    "plate": {
+      "number": "69 92AAG2883",
+      "raw_number": "6992AAG2883",
+      "confidence": 0.13,
+      "bounding_box": [
+        263,
+        495,
+        75,
+        20
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541611096.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541610639",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:10.641170+00:00",
+    "vehicle": {
+      "type": "Van / SUV",
+      "confidence": 0.47
+    },
+    "plate": {
+      "number": "GJ 92 AG 2883",
+      "raw_number": "GJ92AG2883",
+      "confidence": 0.11,
+      "bounding_box": [
+        269,
+        470,
+        75,
+        21
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541610639.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541610048",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:10.050275+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.61
+    },
+    "plate": {
+      "number": "61 24G2883",
+      "raw_number": "6124G2883",
+      "confidence": 0.44,
+      "bounding_box": [
+        279,
+        437,
+        73,
+        19
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541610048.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541609574",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:09.575584+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.46
+    },
+    "plate": {
+      "number": "GJ 24 G2 887",
+      "raw_number": "GJ24G2887",
+      "confidence": 0.21,
+      "bounding_box": [
+        286,
+        415,
+        69,
+        20
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541609574.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541609102",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:09.104506+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.58
+    },
+    "plate": {
+      "number": "01 32IG2737",
+      "raw_number": "0132IG2737",
+      "confidence": 0.03,
+      "bounding_box": [
+        291,
+        395,
+        70,
+        18
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541609102.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541608504",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:08.506197+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.92
+    },
+    "plate": {
+      "number": "42 4628",
+      "raw_number": "424628",
+      "confidence": 0.23,
+      "bounding_box": [
+        298,
+        375,
+        69,
+        18
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541608504.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541608002",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:08.003682+00:00",
     "vehicle": {
       "type": "Motorcycle",
-      "confidence": 0.94
+      "confidence": 0.46
     },
     "plate": {
-      "number": "GJ01KM9988",
-      "confidence": 0.93,
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.46,
       "bounding_box": [
-        280,
-        390,
-        190,
-        50
+        792,
+        406,
+        890,
+        582
       ]
     },
-    "is_watchlist_match": false,
-    "watchlist_alert": null
+    "crop_url": "/api/anpr/crops/EVT_1790541608002.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
   },
   {
-    "event_id": "EVT_1790509821330",
-    "camera_id": "CAM01",
-    "dept_name": "Gujarat Police - Grid CAM01",
-    "timestamp": "2026-09-27T11:50:21.330451+00:00",
+    "event_id": "EVT_1790541607999",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:08.000852+00:00",
     "vehicle": {
       "type": "Car",
-      "confidence": 0.94
+      "confidence": 0.67
     },
     "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
+      "number": "01 520528",
+      "raw_number": "01520528",
+      "confidence": 0.03,
       "bounding_box": [
-        280,
-        390,
-        190,
-        50
+        305,
+        347,
+        68,
+        17
       ]
     },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
+    "crop_url": "/api/anpr/crops/EVT_1790541607999.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
   },
   {
-    "event_id": "EVT_1790509819855",
-    "camera_id": "CAM03",
-    "dept_name": "Gujarat Police - Grid CAM03",
-    "timestamp": "2026-09-27T11:50:19.855765+00:00",
+    "event_id": "EVT_1790541607450",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:07.452245+00:00",
     "vehicle": {
       "type": "Car",
-      "confidence": 0.94
+      "confidence": 0.65
     },
     "plate": {
-      "number": "GJ01AB1234",
-      "confidence": 0.93,
+      "number": "01 32IG2077",
+      "raw_number": "0132IG2077",
+      "confidence": 0.13,
       "bounding_box": [
-        280,
-        390,
-        190,
-        50
+        311,
+        328,
+        65,
+        16
       ]
     },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ01AB1234",
-      "reason": "STOLEN_VEHICLE",
-      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
-      "fir_number": "FIR-2026/AHD/0491",
-      "district": "Ahmedabad",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-20T10:00:00Z"
-    }
+    "crop_url": "/api/anpr/crops/EVT_1790541607450.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
   },
   {
-    "event_id": "EVT_1790509572517",
-    "camera_id": "CAM02",
-    "dept_name": "Gujarat Police - Grid CAM02",
-    "timestamp": "2026-09-27T11:46:12.517154+00:00",
+    "event_id": "EVT_1790541603121",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:03.123083+00:00",
     "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
+      "type": "Auto-Rickshaw",
+      "confidence": 0.61
     },
     "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
+      "number": "IN-TRANSIT (Auto-Rickshaw)",
+      "raw_number": "Auto-Rickshaw",
+      "confidence": 0.61,
       "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509572362",
-    "camera_id": "CAM02",
-    "dept_name": "Gujarat Police - Grid CAM02",
-    "timestamp": "2026-09-27T11:46:12.362618+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509572227",
-    "camera_id": "CAM01",
-    "dept_name": "Gujarat Police - Grid CAM01",
-    "timestamp": "2026-09-27T11:46:12.227301+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509572018",
-    "camera_id": "CAM04",
-    "dept_name": "Gujarat Police - Grid CAM04",
-    "timestamp": "2026-09-27T11:46:12.018651+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509571846",
-    "camera_id": "CAM09",
-    "dept_name": "Gujarat Police - Grid CAM09",
-    "timestamp": "2026-09-27T11:46:11.846551+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509571695",
-    "camera_id": "CAM02",
-    "dept_name": "Gujarat Police - Grid CAM02",
-    "timestamp": "2026-09-27T11:46:11.695071+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509571528",
-    "camera_id": "CAM01",
-    "dept_name": "Gujarat Police - Grid CAM01",
-    "timestamp": "2026-09-27T11:46:11.528188+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509571355",
-    "camera_id": "CAM01",
-    "dept_name": "Gujarat Police - Grid CAM01",
-    "timestamp": "2026-09-27T11:46:11.355893+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509571190",
-    "camera_id": "CAM11",
-    "dept_name": "Gujarat Police - Grid CAM11",
-    "timestamp": "2026-09-27T11:46:11.190250+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509570825",
-    "camera_id": "CAM24",
-    "dept_name": "Gujarat Police - Grid CAM24",
-    "timestamp": "2026-09-27T11:46:10.825983+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509570479",
-    "camera_id": "CAM02",
-    "dept_name": "Gujarat Police - Grid CAM02",
-    "timestamp": "2026-09-27T11:46:10.479537+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509570258",
-    "camera_id": "CAM11",
-    "dept_name": "Gujarat Police - Grid CAM11",
-    "timestamp": "2026-09-27T11:46:10.258802+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509570052",
-    "camera_id": "CAM02",
-    "dept_name": "Gujarat Police - Grid CAM02",
-    "timestamp": "2026-09-27T11:46:10.052190+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509569838",
-    "camera_id": "CAM04",
-    "dept_name": "Gujarat Police - Grid CAM04",
-    "timestamp": "2026-09-27T11:46:09.838004+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509569654",
-    "camera_id": "CAM01",
-    "dept_name": "Gujarat Police - Grid CAM01",
-    "timestamp": "2026-09-27T11:46:09.654291+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509569196",
-    "camera_id": "CAM24",
-    "dept_name": "Gujarat Police - Grid CAM24",
-    "timestamp": "2026-09-27T11:46:09.196492+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ05CD5678",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ05CD5678",
-      "reason": "WANTED_SUSPECT",
-      "description": "Black Hyundai Creta linked to inter-district gold robbery",
-      "fir_number": "FIR-2026/SRT/1102",
-      "district": "Surat",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-22T14:30:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_1790509567688",
-    "camera_id": "CAM09",
-    "dept_name": "Gujarat Police - Grid CAM09",
-    "timestamp": "2026-09-27T11:46:07.688273+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ01KM9988",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": false,
-    "watchlist_alert": null
-  },
-  {
-    "event_id": "EVT_1790509533773",
-    "camera_id": "CAM-AHM-01",
-    "dept_name": "Gujarat Police - Grid CAM-AHM-01",
-    "timestamp": "2026-09-27T11:45:33.773238+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ01AB1234",
-      "confidence": 0.93,
-      "bounding_box": [
-        280,
-        390,
-        190,
-        50
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ01AB1234",
-      "reason": "STOLEN_VEHICLE",
-      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
-      "fir_number": "FIR-2026/AHD/0491",
-      "district": "Ahmedabad",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-20T10:00:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_17902401",
-    "camera_id": "CAM01",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-27T11:20:15Z",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.94
-    },
-    "plate": {
-      "number": "GJ01AB1234",
-      "confidence": 0.92,
-      "bounding_box": [
-        320,
-        410,
-        180,
-        55
-      ]
-    },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ01AB1234",
-      "reason": "STOLEN_VEHICLE",
-      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
-      "fir_number": "FIR-2026/AHD/0491",
-      "district": "Ahmedabad",
-      "severity": "CRITICAL",
-      "date_added": "2026-09-20T10:00:00Z"
-    }
-  },
-  {
-    "event_id": "EVT_17902402",
-    "camera_id": "CAM02",
-    "dept_name": "Gujarat Police - Surat Traffic",
-    "timestamp": "2026-09-27T11:22:40Z",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.88
-    },
-    "plate": {
-      "number": "GJ05XY8899",
-      "confidence": 0.85,
-      "bounding_box": [
-        210,
         360,
-        140,
-        45
+        226,
+        592,
+        571
       ]
     },
-    "is_watchlist_match": false,
-    "watchlist_alert": null
+    "crop_url": "/api/anpr/crops/EVT_1790541603121.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
   },
   {
-    "event_id": "EVT_17902403",
-    "camera_id": "CAM03",
-    "dept_name": "Gujarat Police - Vadodara",
-    "timestamp": "2026-09-27T11:24:10Z",
+    "event_id": "EVT_1790541602652",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:02.655993+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.33,
+      "bounding_box": [
+        181,
+        408,
+        281,
+        584
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541602652.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541602415",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:02.417535+00:00",
     "vehicle": {
       "type": "Bus",
-      "confidence": 0.91
+      "confidence": 0.56
     },
     "plate": {
-      "number": "GJ06EF9012",
-      "confidence": 0.89,
+      "number": "IN-TRANSIT (Bus)",
+      "raw_number": "Bus",
+      "confidence": 0.56,
       "bounding_box": [
-        150,
-        280,
-        220,
-        70
+        388,
+        176,
+        603,
+        492
       ]
     },
-    "is_watchlist_match": true,
-    "watchlist_alert": {
-      "plate_number": "GJ06EF9012",
-      "reason": "E_CHALLAN_DEFALUTER",
-      "description": "Commercial Bus with 18 unpaid red-light violations",
-      "fir_number": "CHL-2026/VAD/8821",
-      "district": "Vadodara",
-      "severity": "WARNING",
-      "date_added": "2026-09-23T09:15:00Z"
-    }
+    "crop_url": "/api/anpr/crops/EVT_1790541602415.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541602144",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:02.145691+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.4
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.4,
+      "bounding_box": [
+        225,
+        334,
+        302,
+        496
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541602144.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541601903",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:01.905093+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.35,
+      "bounding_box": [
+        697,
+        53,
+        752,
+        142
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541601903.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541601462",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
+    "timestamp": "2026-09-27T20:40:01.462949+00:00",
+    "vehicle": {
+      "type": "Auto-Rickshaw",
+      "confidence": 0.66
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-Rickshaw)",
+      "raw_number": "Auto-Rickshaw",
+      "confidence": 0.66,
+      "bounding_box": [
+        431,
+        103,
+        615,
+        383
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541601462.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541512564",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:32.565630+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.58
+    },
+    "plate": {
+      "number": "01 32IG2737",
+      "raw_number": "0132IG2737",
+      "confidence": 0.03,
+      "bounding_box": [
+        291,
+        395,
+        70,
+        18
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541512564.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541511818",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:31.819749+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.92
+    },
+    "plate": {
+      "number": "42 4628",
+      "raw_number": "424628",
+      "confidence": 0.23,
+      "bounding_box": [
+        298,
+        375,
+        69,
+        18
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541511818.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541511335",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:31.336225+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.46
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.46,
+      "bounding_box": [
+        792,
+        406,
+        890,
+        582
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541511335.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541511326",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:31.327029+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.67
+    },
+    "plate": {
+      "number": "01 520528",
+      "raw_number": "01520528",
+      "confidence": 0.03,
+      "bounding_box": [
+        305,
+        347,
+        68,
+        17
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541511326.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541510781",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:30.781597+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.65
+    },
+    "plate": {
+      "number": "01 32IG2077",
+      "raw_number": "0132IG2077",
+      "confidence": 0.13,
+      "bounding_box": [
+        311,
+        328,
+        65,
+        16
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541510781.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790541505986",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:25.987335+00:00",
+    "vehicle": {
+      "type": "Auto-Rickshaw",
+      "confidence": 0.61
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-Rickshaw)",
+      "raw_number": "Auto-Rickshaw",
+      "confidence": 0.61,
+      "bounding_box": [
+        360,
+        226,
+        592,
+        571
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541505986.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541505507",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:25.508332+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.33,
+      "bounding_box": [
+        181,
+        408,
+        281,
+        584
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541505507.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541505274",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:25.275581+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.56
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Bus)",
+      "raw_number": "Bus",
+      "confidence": 0.56,
+      "bounding_box": [
+        388,
+        176,
+        603,
+        492
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541505274.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541505038",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:25.039878+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.4
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.4,
+      "bounding_box": [
+        225,
+        334,
+        302,
+        496
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541505038.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541504855",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:24.856793+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.35,
+      "bounding_box": [
+        697,
+        53,
+        752,
+        142
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541504855.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790541504548",
+    "camera_id": "demo_video",
+    "camera_code": "demo_video",
+    "camera_name": "Demo Highway Video",
+    "dept_name": "Demo Highway Video",
+    "timestamp": "2026-09-27T20:38:24.550451+00:00",
+    "vehicle": {
+      "type": "Auto-Rickshaw",
+      "confidence": 0.66
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-Rickshaw)",
+      "raw_number": "Auto-Rickshaw",
+      "confidence": 0.66,
+      "bounding_box": [
+        431,
+        103,
+        615,
+        383
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790541504548.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
   }
 ]
