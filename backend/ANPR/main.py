@@ -1,5 +1,3 @@
-import os
-import sys
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
@@ -9,52 +7,9 @@ import numpy as np
 import time
 import json
 import re
-from typing import Optional, Tuple, Dict, Any, List
 from multiprocessing import Process, Queue, Manager
-
-# Directory constants
-ANPR_DIR = os.path.dirname(os.path.abspath(__file__))
-YOLO_MODEL_PATH = os.path.join(ANPR_DIR, "yolov8n.pt")
-PLATE_MODEL_PATH = os.path.join(ANPR_DIR, "yolov8n-plate.pt")
-TRACKER_CONFIG_PATH = os.path.join(ANPR_DIR, "custom_bytetrack.yaml")
-
-
-# ==========================================
-# OCR Engine Loader (RapidOCR / PaddleOCR / EasyOCR / Fallback)
-# ==========================================
-_GLOBAL_OCR_ENGINE = None
-
-def get_ocr_engine():
-    global _GLOBAL_OCR_ENGINE
-    if _GLOBAL_OCR_ENGINE is not None:
-        return _GLOBAL_OCR_ENGINE
-
-    # 1. Try RapidOCR (Lightweight, fast ONNX backend)
-    try:
-        from rapidocr_onnxruntime import RapidOCR
-        _GLOBAL_OCR_ENGINE = ("rapidocr", RapidOCR())
-        return _GLOBAL_OCR_ENGINE
-    except Exception:
-        pass
-
-    # 2. Try PaddleOCR
-    try:
-        from paddleocr import PaddleOCR
-        _GLOBAL_OCR_ENGINE = ("paddleocr", PaddleOCR(use_angle_cls=False, lang='en', show_log=False))
-        return _GLOBAL_OCR_ENGINE
-    except Exception:
-        pass
-
-    # 3. Try EasyOCR
-    try:
-        import easyocr
-        _GLOBAL_OCR_ENGINE = ("easyocr", easyocr.Reader(['en'], gpu=False))
-        return _GLOBAL_OCR_ENGINE
-    except Exception:
-        pass
-
-    _GLOBAL_OCR_ENGINE = ("fallback", None)
-    return _GLOBAL_OCR_ENGINE
+from ultralytics import YOLO # type: ignore
+from paddleocr import PaddleOCR
 
 
 # ==========================================
@@ -69,7 +24,7 @@ def preprocess_plate(plate_crop):
     
     # Resize to standard height for OCR accuracy
     h, w = gray.shape
-    if h < 64 and h > 0:
+    if h < 64:
         aspect = w / float(h)
         gray = cv2.resize(gray, (int(64 * aspect), 64), interpolation=cv2.INTER_CUBIC)
         
@@ -83,55 +38,34 @@ def preprocess_plate(plate_crop):
 # ==========================================
 # STAGE 4: OCR Engine & Regex Validation
 # ==========================================
-def run_ocr(ocr_tuple, plate_img) -> Tuple[str, float]:
+def run_ocr(ocr_engine, plate_img):
     processed = preprocess_plate(plate_img)
     if processed is None:
         return "", 0.0
-
-    engine_type, ocr_engine = ocr_tuple
-
+    
+    # PaddleOCR expectation
+    result = ocr_engine.ocr(processed, cls=False)
+    if not result or not result[0]:
+        return "", 0.0
+    
     raw_texts = []
     confidences = []
 
-    try:
-        if engine_type == "rapidocr" and ocr_engine:
-            result, _ = ocr_engine(processed)
-            if result:
-                for line in result:
-                    if line and len(line) >= 3:
-                        raw_texts.append(line[1])
-                        confidences.append(float(line[2]))
-
-        elif engine_type == "paddleocr" and ocr_engine:
-            result = ocr_engine.ocr(processed, cls=False)
-            if result and result[0]:
-                for line in result[0]:
-                    if line and len(line) >= 2:
-                        text, conf = line[1]
-                        raw_texts.append(text)
-                        confidences.append(float(conf))
-
-        elif engine_type == "easyocr" and ocr_engine:
-            result = ocr_engine.readtext(processed)
-            if result:
-                for bbox, text, conf in result:
-                    raw_texts.append(text)
-                    confidences.append(float(conf))
-
-        elif engine_type == "fallback":
-            # Heuristic contour-based plate text detection fallback
-            pass
-
-    except Exception as exc:
-        pass
+    # Safely iterate over all OCR text regions detected on the plate
+    for line in result[0]:
+        if line and len(line) >= 2:
+            text, conf = line[1]
+            raw_texts.append(text)
+            confidences.append(conf)
 
     if not raw_texts:
         return "", 0.0
 
+    # Combine text fragments (e.g., top and bottom line of plate)
     full_text = "".join(raw_texts)
-    avg_conf = float(np.mean(confidences)) if confidences else 0.5
+    avg_conf = float(np.mean(confidences))
     
-    # Regex Sanitization: keep alphanumeric capital characters
+    # Regex Sanitization
     clean_text = re.sub(r'[^A-Z0-9]', '', full_text.upper())
     
     return clean_text, avg_conf
@@ -141,62 +75,44 @@ def run_ocr(ocr_tuple, plate_img) -> Tuple[str, float]:
 # WORKER: High-Heavy Inference & OCR Pool
 # ==========================================
 def heavy_inference_worker(input_queue, output_queue, stop_event):
-    from ultralytics import YOLO
-
-    # 1. Initialize models with resilient path resolution
-    plate_weights = PLATE_MODEL_PATH if (os.path.exists(PLATE_MODEL_PATH) and os.path.getsize(PLATE_MODEL_PATH) > 1000) else YOLO_MODEL_PATH
-    plate_detector = YOLO(plate_weights)
-    ocr_tuple = get_ocr_engine()
+    # Initialize heavy models once per worker process
+    # Replace with yolov8n.pt if custom plate weights aren't present
+    plate_detector = YOLO("yolov8n-plate.pt") 
+    ocr_engine = PaddleOCR(use_angle_cls=False, lang='en', show_log=False)
     
     while not stop_event.is_set():
         if input_queue.empty():
             time.sleep(0.01)
             continue
             
-        try:
-            item = input_queue.get(timeout=0.1)
-        except Exception:
-            continue
-
+        item = input_queue.get()
         camera_id = item['camera_id']
         track_id = item['track_id']
         vehicle_crop = item['vehicle_crop']
         timestamp = item['timestamp']
         
         # --- Stage 2A: Plate Localization ---
+        plate_results = plate_detector(vehicle_crop, verbose=False)[0]
+        
         best_plate_str = ""
         best_ocr_conf = 0.0
         plate_bbox = [0, 0, 0, 0]
-
-        vh, vw = vehicle_crop.shape[:2]
         
-        # Candidate 1: Plate detector inference
-        try:
-            plate_results = plate_detector(vehicle_crop, verbose=False)[0]
-            if plate_results.boxes is not None and len(plate_results.boxes) > 0:
-                for box in plate_results.boxes:
-                    px1, py1, px2, py2 = map(int, box.xyxy[0].tolist())
-                    plate_crop = vehicle_crop[max(0, py1):min(vh, py2), max(0, px1):min(vw, px2)]
-                    plate_str, ocr_conf = run_ocr(ocr_tuple, plate_crop)
-                    if ocr_conf > best_ocr_conf and len(plate_str) >= 4:
-                        best_ocr_conf = ocr_conf
-                        best_plate_str = plate_str
-                        plate_bbox = [px1, py1, px2 - px1, py2 - py1]
-        except Exception:
-            pass
-
-        # Candidate 2: Geometric heuristic (lower-third of vehicle where bumper plate sits)
-        if best_ocr_conf < 0.4 and vh > 40 and vw > 40:
-            bumper_y1 = int(vh * 0.65)
-            bumper_crop = vehicle_crop[bumper_y1:vh, :]
-            plate_str, ocr_conf = run_ocr(ocr_tuple, bumper_crop)
-            if ocr_conf > best_ocr_conf and len(plate_str) >= 4:
-                best_ocr_conf = ocr_conf
-                best_plate_str = plate_str
-                plate_bbox = [0, bumper_y1, vw, vh - bumper_y1]
-
+        if plate_results.boxes is not None:
+            for box in plate_results.boxes:
+                px1, py1, px2, py2 = map(int, box.xyxy[0].tolist())
+                plate_crop = vehicle_crop[py1:py2, px1:px2]
+                
+                # --- Stage 3 & 4: Rectification & OCR ---
+                plate_str, ocr_conf = run_ocr(ocr_engine, plate_crop)
+                
+                if ocr_conf > best_ocr_conf and len(plate_str) >= 4:
+                    best_ocr_conf = ocr_conf
+                    best_plate_str = plate_str
+                    plate_bbox = [px1, py1, px2 - px1, py2 - py1]
+            
         # Push Result to Stage 5 (Aggregator)
-        if best_ocr_conf > 0.35 and len(best_plate_str) >= 4:
+        if best_ocr_conf > 0.4:
             payload = {
                 "event_id": f"EVT_{int(time.time()*1000)}",
                 "camera_id": camera_id,
@@ -204,7 +120,7 @@ def heavy_inference_worker(input_queue, output_queue, stop_event):
                 "track_id": track_id,
                 "vehicle": {
                     "type": item['vehicle_type'],
-                    "confidence": round(item['det_confidence'], 2)
+                    "confidence": item['det_confidence']
                 },
                 "plate": {
                     "number": best_plate_str,
@@ -216,24 +132,38 @@ def heavy_inference_worker(input_queue, output_queue, stop_event):
 
 
 # ==========================================
-# STAGE 1: RTSP OpenCV Stream Reader & Vehicle Tracker
+# RTSP STREAM CONFIGURATION
+# ==========================================
+# Template for camera endpoints with credential encoding
+BASE_RTSP_URL = "rtsp://shreyanshsharma049%40gmail.com:ETD6-KZJG-VGF4@103.250.160.189:8554/stream"
+
+# Generate camera mapping dictionary for 30 streams (cam01 to cam30)
+camera_sources = {
+    f"Cam_{i:02d}": f"{BASE_RTSP_URL}/cam{i:02d}"
+    for i in range(1, 31)
+}
+
+
+# ==========================================
+# STAGE 1 (UPDATED): RTSP OpenCV Stream Reader
 # ==========================================
 def camera_stream_processor(camera_id, stream_source, input_queue, tracked_cache, stop_event):
-    from ultralytics import YOLO
-
     # Enforce TCP transport for RTSP to prevent packet loss / visual artifacts
+    import os
     os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
     
-    model = YOLO(YOLO_MODEL_PATH)
-    tracker_config = TRACKER_CONFIG_PATH if os.path.exists(TRACKER_CONFIG_PATH) else "bytetrack.yaml"
+    model = YOLO("yolov8n.pt") 
     
+    # Open RTSP stream explicitly via FFMPEG backend
     cap = cv2.VideoCapture(stream_source, cv2.CAP_FFMPEG)
+    
+    # Optional: reduce buffer size to lower real-time latency
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     
     frame_count = 0
     SAMPLE_RATE = 3  # Process every 3rd frame (~10 FPS output from 30 FPS stream)
     
-    while cap.isOpened() and not stop_event.is_set():
+    while cap.isOpened() and not stop_event.set_is_set():
         ret, frame = cap.read()
         
         # Automatic RTSP Reconnection Logic
@@ -246,11 +176,8 @@ def camera_stream_processor(camera_id, stream_source, input_queue, tracked_cache
         if frame_count % SAMPLE_RATE != 0:
             continue
             
-        # Run Tracking & Detection on vehicle classes [2: Car, 3: Motorcycle, 5: Bus, 7: Truck]
-        try:
-            results = model.track(frame, persist=True, classes=[2, 3, 5, 7], tracker=tracker_config, verbose=False)[0]
-        except Exception:
-            continue
+        # Run Tracking & Detection
+        results = model.track(frame, persist=True, classes=[2, 3, 5, 7], tracker="bytetrack.yaml", verbose=False)[0]
         
         if results.boxes is None or results.boxes.id is None:
             continue
@@ -289,11 +216,10 @@ def camera_stream_processor(camera_id, stream_source, input_queue, tracked_cache
 
     cap.release()
 
-
 # ==========================================
 # STAGE 5: Multi-Frame Aggregator & Logger
 # ==========================================
-def multi_frame_aggregator(output_queue, stop_event, callback=None):
+def multi_frame_aggregator(output_queue, stop_event):
     track_history = {}
     
     while not stop_event.is_set():
@@ -301,11 +227,7 @@ def multi_frame_aggregator(output_queue, stop_event, callback=None):
             time.sleep(0.01)
             continue
             
-        try:
-            record = output_queue.get(timeout=0.1)
-        except Exception:
-            continue
-
+        record = output_queue.get()
         track_id = record['track_id']
         
         if track_id not in track_history:
@@ -313,79 +235,17 @@ def multi_frame_aggregator(output_queue, stop_event, callback=None):
             
         track_history[track_id].append(record)
         
-        # Emit final payload after candidate frames collected
-        if len(track_history[track_id]) >= 2:
+        # Emit final payload after 3 candidate frames collected
+        if len(track_history[track_id]) >= 3:
             candidates = track_history[track_id]
             final_record = max(candidates, key=lambda x: x['plate']['confidence'])
+            
             del final_record['track_id']
             
             print("\n[ANPR LOG GENERATED]")
             print(json.dumps(final_record, indent=2))
             
-            if callback:
-                callback(final_record)
-            
             del track_history[track_id]
-
-
-# ==========================================
-# Standalone Single-Image Scanner Utility (Used by API)
-# ==========================================
-def scan_single_frame(frame: np.ndarray, camera_id: str = "CAM-SCAN") -> List[Dict[str, Any]]:
-    """Analyzes a single frame for vehicles and extracts number plates."""
-    from ultralytics import YOLO
-
-    model = YOLO(YOLO_MODEL_PATH)
-    ocr_tuple = get_ocr_engine()
-
-    results = model(frame, classes=[2, 3, 5, 7], verbose=False)[0]
-    detections = []
-
-    if results.boxes is None or len(results.boxes) == 0:
-        # Try full-frame OCR directly if no vehicle box found
-        plate_str, conf = run_ocr(ocr_tuple, frame)
-        if len(plate_str) >= 4 and conf > 0.35:
-            detections.append({
-                "event_id": f"EVT_{int(time.time()*1000)}",
-                "camera_id": camera_id,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "vehicle": {"type": "Vehicle", "confidence": 0.8},
-                "plate": {"number": plate_str, "confidence": round(conf, 2), "bounding_box": [0, 0, frame.shape[1], frame.shape[0]]}
-            })
-        return detections
-
-    boxes = results.boxes.xyxy.cpu().numpy()
-    class_ids = results.boxes.cls.cpu().numpy().astype(int)
-    confidences = results.boxes.conf.cpu().numpy()
-    vehicle_types = {2: "Car", 3: "Motorcycle", 5: "Bus", 7: "Truck"}
-
-    for idx, (box, cls_id, conf) in enumerate(zip(boxes, class_ids, confidences)):
-        x1, y1, x2, y2 = map(int, box)
-        vcrop = frame[max(0, y1):min(frame.shape[0], y2), max(0, x1):min(frame.shape[1], x2)]
-        if vcrop.size == 0:
-            continue
-
-        plate_str, ocr_conf = run_ocr(ocr_tuple, vcrop)
-        
-        # If full vehicle crop OCR was weak, try bumper region
-        if ocr_conf < 0.4 and vcrop.shape[0] > 40:
-            bumper_y1 = int(vcrop.shape[0] * 0.6)
-            bumper_crop = vcrop[bumper_y1:, :]
-            p_str2, conf2 = run_ocr(ocr_tuple, bumper_crop)
-            if conf2 > ocr_conf and len(p_str2) >= 4:
-                plate_str = p_str2
-                ocr_conf = conf2
-
-        if len(plate_str) >= 4:
-            detections.append({
-                "event_id": f"EVT_{int(time.time()*1000)}_{idx}",
-                "camera_id": camera_id,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "vehicle": {"type": vehicle_types.get(cls_id, "Vehicle"), "confidence": round(float(conf), 2)},
-                "plate": {"number": plate_str, "confidence": round(ocr_conf, 2), "bounding_box": [x1, y1, x2 - x1, y2 - y1]}
-            })
-
-    return detections
 
 
 # ==========================================
@@ -398,17 +258,16 @@ if __name__ == "__main__":
     tracked_cache = manager.dict()
     stop_event = manager.Event()
 
-    # RTSP Template for Sentinel cameras
-    BASE_RTSP_URL = "rtsp://shreyanshsharma049%40gmail.com:ETD6-KZJG-VGF4@103.250.160.189:8554/stream"
+    # Define 30 Camera Streams
     camera_sources = {
-        f"Cam_{i:02d}": f"{BASE_RTSP_URL}/cam{i:02d}"
-        for i in range(1, 5) # Default to 4 concurrent streams for testing
+        f"Cam_{i+1:02d}": f"rtsp://192.168.1.{100+i}/live" if i > 0 else "test_video.mp4"
+        for i in range(30)
     }
 
     processes = []
 
     # 1. Start Heavy Inference Worker Processes
-    NUM_WORKERS = 2
+    NUM_WORKERS = 4
     for _ in range(NUM_WORKERS):
         p = Process(target=heavy_inference_worker, args=(input_queue, output_queue, stop_event))
         p.start()

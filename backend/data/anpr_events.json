@@ -1,5 +1,87 @@
 [
   {
+    "event_id": "EVT_1790509822581",
+    "camera_id": "CAM03",
+    "dept_name": "Gujarat Police - Grid CAM03",
+    "timestamp": "2026-09-27T11:50:22.581201+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ01KM9988",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": false,
+    "watchlist_alert": null
+  },
+  {
+    "event_id": "EVT_1790509821330",
+    "camera_id": "CAM01",
+    "dept_name": "Gujarat Police - Grid CAM01",
+    "timestamp": "2026-09-27T11:50:21.330451+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509819855",
+    "camera_id": "CAM03",
+    "dept_name": "Gujarat Police - Grid CAM03",
+    "timestamp": "2026-09-27T11:50:19.855765+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ01AB1234",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ01AB1234",
+      "reason": "STOLEN_VEHICLE",
+      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
+      "fir_number": "FIR-2026/AHD/0491",
+      "district": "Ahmedabad",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-20T10:00:00Z"
+    }
+  },
+  {
     "event_id": "EVT_1790509572517",
     "camera_id": "CAM02",
     "dept_name": "Gujarat Police - Grid CAM02",

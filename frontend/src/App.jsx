@@ -15,13 +15,11 @@ import {
   Wifi,
   AlertTriangle,
   Play,
-  FileSpreadsheet,
-  Car
+  FileSpreadsheet
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
 import CsvImport from "./components/CsvImport";
-import AnprView from "./components/AnprView";
 import CameraFeedModal from "./components/CameraFeedModal";
 import "./App.css";
 
@@ -477,15 +475,6 @@ function App() {
             <MapPin size={16} />
             <span>GIS Live Map</span>
           </button>
-
-          <button
-            type="button"
-            className={`nav-tab-btn ${activeTab === "anpr" ? "active" : ""}`}
-            onClick={() => setActiveTab("anpr")}
-          >
-            <Car size={16} />
-            <span>ANPR & Hotlist</span>
-          </button>
         </nav>
 
         {/* BACKEND SERVER STATUS */}
@@ -521,8 +510,6 @@ function App() {
         <main className="onboarding-main" style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 20px" }}>
           <CsvImport onNavigateToMap={() => setActiveTab("map")} />
         </main>
-      ) : activeTab === "anpr" ? (
-        <AnprView onNavigateToCamera={(camId) => setActiveTab("map")} />
       ) : (
         /* MAIN ONBOARDING VIEW */
         <main className="onboarding-main">
