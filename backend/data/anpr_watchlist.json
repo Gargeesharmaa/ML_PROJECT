@@ -1,0 +1,38 @@
+[
+  {
+    "plate_number": "GJ01AB1234",
+    "reason": "STOLEN_VEHICLE",
+    "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
+    "fir_number": "FIR-2026/AHD/0491",
+    "district": "Ahmedabad",
+    "severity": "CRITICAL",
+    "date_added": "2026-09-20T10:00:00Z"
+  },
+  {
+    "plate_number": "GJ05CD5678",
+    "reason": "WANTED_SUSPECT",
+    "description": "Black Hyundai Creta linked to inter-district gold robbery",
+    "fir_number": "FIR-2026/SRT/1102",
+    "district": "Surat",
+    "severity": "CRITICAL",
+    "date_added": "2026-09-22T14:30:00Z"
+  },
+  {
+    "plate_number": "GJ06EF9012",
+    "reason": "E_CHALLAN_DEFALUTER",
+    "description": "Commercial Bus with 18 unpaid red-light violations",
+    "fir_number": "CHL-2026/VAD/8821",
+    "district": "Vadodara",
+    "severity": "WARNING",
+    "date_added": "2026-09-23T09:15:00Z"
+  },
+  {
+    "plate_number": "GJ03GH3456",
+    "reason": "MISSING_VEHICLE",
+    "description": "Silver Swift Dzire reported missing with elderly driver",
+    "fir_number": "MIS-2026/RJK/0045",
+    "district": "Rajkot",
+    "severity": "HIGH",
+    "date_added": "2026-09-24T18:00:00Z"
+  }
+]

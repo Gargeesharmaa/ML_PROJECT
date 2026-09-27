@@ -1,72 +1,48 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Grid,
   Maximize2,
   Minimize2,
   Camera,
   Play,
+  Volume2,
+  VolumeX,
   RefreshCw,
   AlertTriangle,
+  Sliders,
   Radio,
   Layers,
   Sparkles,
   Shield,
-  Eye,
-  Filter,
-  Trash2,
-  Video,
-  Download,
-  Clock
+  Eye
 } from "lucide-react";
 
-export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStreamModal }) {
+export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
   const [cameras, setCameras] = useState([]);
-  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [layout, setLayout] = useState("2x2"); // "2x2" | "3x3" | "4x4" | "1+5"
+  const [layout, setLayout] = useState("2x2"); // "2x2" | "3x3" | "1+3"
   const [selectedSlots, setSelectedSlots] = useState({}); // slotIndex -> camera object
-  const [currentTime, setCurrentTime] = useState("");
+  const [currentTime, setCurrentTime] = useState(new Date().toUTCString());
   const [fullscreenTile, setFullscreenTile] = useState(null); // slotIndex | null
-  const [deptFilter, setDeptFilter] = useState("ALL");
   const localVideoRefs = useRef({});
 
-  // 1. Fetch Registered Cameras & Departments
+  // 1. Fetch Registered Cameras
   useEffect(() => {
     async function fetchCameras() {
       setLoading(true);
       try {
-        const [camsRes, deptsRes] = await Promise.all([
-          fetch("/api/cameras"),
-          fetch("/api/departments")
-        ]);
-
-        let camList = [];
-        if (camsRes.ok) {
-          const data = await camsRes.json();
-          if (Array.isArray(data)) {
-            camList = data;
-          } else if (data.features && Array.isArray(data.features)) {
-            camList = data.features.map((f) => ({
-              ...(f.properties || {}),
-              latitude: f.geometry?.coordinates?.[1],
-              longitude: f.geometry?.coordinates?.[0],
-            }));
-          } else if (data.cameras) {
-            camList = data.cameras;
-          }
+        const res = await fetch("/api/cameras");
+        if (res.ok) {
+          const data = await res.json();
+          const camList = Array.isArray(data) ? data : (data.cameras || []);
           setCameras(camList);
 
-          // Auto-fill initial 4 slots with the first available cameras
+          // Auto-fill initial slots with available cameras
           const initialSlots = {};
           camList.slice(0, 4).forEach((cam, idx) => {
             initialSlots[idx] = cam;
           });
           setSelectedSlots(initialSlots);
-        }
-
-        if (deptsRes.ok) {
-          const deptsData = await deptsRes.json();
-          setDepartments(deptsData);
         }
       } catch (err) {
         console.error("Error fetching cameras for matrix:", err);
@@ -77,18 +53,18 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
     fetchCameras();
   }, []);
 
-  // 2. Real-time Indian Standard Time (IST) surveillance clock
+  // 2. Real-time UTC surveillance clock
   useEffect(() => {
-    const updateClock = () => {
+    const timer = setInterval(() => {
       const now = new Date();
-      const pad = (n) => String(n).padStart(2, "0");
-      const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-      const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-      setCurrentTime(`${dateStr} ${timeStr} IST`);
-    };
-
-    updateClock();
-    const timer = setInterval(updateClock, 1000);
+      setCurrentTime(
+        `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+          now.getDate()
+        ).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(
+          now.getMinutes()
+        ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")} IST`
+      );
+    }, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -120,82 +96,33 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
 
   // Determine slot count based on layout
   const getSlotCount = () => {
-    if (layout === "4x4") return 16;
     if (layout === "3x3") return 9;
-    if (layout === "1+5") return 6;
+    if (layout === "1+3") return 4;
     return 4; // 2x2
   };
 
   const slotCount = getSlotCount();
   const slotsArray = Array.from({ length: slotCount }, (_, i) => i);
 
-  // Filtered cameras based on department selector
-  const availableCameras = useMemo(() => {
-    if (deptFilter === "ALL") return cameras;
-    return cameras.filter((c) => (c.dept_name || "") === deptFilter);
-  }, [cameras, deptFilter]);
-
-  const [syncingSentinel, setSyncingSentinel] = useState(false);
-  const [streamKeys, setStreamKeys] = useState({});
-
-  const handleSyncSentinel = async () => {
-    setSyncingSentinel(true);
-    try {
-      const res = await fetch("/api/cameras/sync-sentinel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gateway_url: "http://103.250.160.189" })
-      });
-      if (res.ok) {
-        const camsRes = await fetch("/api/cameras");
-        if (camsRes.ok) {
-          const data = await camsRes.json();
-          let camList = [];
-          if (Array.isArray(data)) camList = data;
-          else if (data.features) {
-            camList = data.features.map(f => ({ ...(f.properties || {}), latitude: f.geometry?.coordinates?.[1], longitude: f.geometry?.coordinates?.[0] }));
-          } else if (data.cameras) camList = data.cameras;
-          setCameras(camList);
-          const newSlots = {};
-          camList.slice(0, slotCount).forEach((cam, idx) => {
-            newSlots[idx] = cam;
-          });
-          setSelectedSlots(newSlots);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to sync sentinel cameras:", e);
-    } finally {
-      setSyncingSentinel(false);
-    }
-  };
-
-  const handleReloadTile = (slotIdx) => {
-    setStreamKeys((prev) => ({
-      ...prev,
-      [slotIdx]: Date.now()
-    }));
-  };
-
-  // Quick Action: Tile Online Cameras
-  const handleTileOnline = () => {
-    const onlineCams = availableCameras.filter((c) => (c.status || "ONLINE").toUpperCase() === "ONLINE");
+  // Quick Action: Tile all ANPR Cameras
+  const handleTileAnpr = () => {
+    const anprCams = cameras.filter((c) => (c.camera_type || "").toUpperCase() === "ANPR");
     const newSlots = {};
     slotsArray.forEach((slotIdx) => {
-      if (onlineCams[slotIdx]) {
-        newSlots[slotIdx] = onlineCams[slotIdx];
+      if (anprCams[slotIdx]) {
+        newSlots[slotIdx] = anprCams[slotIdx];
       }
     });
     setSelectedSlots(newSlots);
   };
 
-  // Quick Action: Tile Sentinel H.265 Cameras
-  const handleTileH265 = () => {
-    const h265Cams = availableCameras.filter((c) => (c.codec || "").toUpperCase() === "H.265");
+  // Quick Action: Tile Online Cameras
+  const handleTileOnline = () => {
+    const onlineCams = cameras.filter((c) => (c.status || "ONLINE").toUpperCase() === "ONLINE");
     const newSlots = {};
     slotsArray.forEach((slotIdx) => {
-      if (h265Cams[slotIdx]) {
-        newSlots[slotIdx] = h265Cams[slotIdx];
+      if (onlineCams[slotIdx]) {
+        newSlots[slotIdx] = onlineCams[slotIdx];
       }
     });
     setSelectedSlots(newSlots);
@@ -223,18 +150,6 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
     }
   };
 
-  // Take Snapshot for a specific slot
-  const handleTakeSnapshot = (cam) => {
-    if (!cam) return;
-    const a = document.createElement("a");
-    a.href = `/api/cameras/${cam.camera_code || cam.id}/snapshot?t=${Date.now()}`;
-    a.download = `snapshot_${cam.camera_code || "CAM"}_${Date.now()}.jpg`;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
   return (
     <div className="surveillance-matrix-container">
       {/* MATRIX CONTROL HEADER */}
@@ -244,77 +159,39 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
             <Radio size={14} className="pulse-icon" />
             <span>COMMAND MATRIX LIVE</span>
           </div>
-          <div>
-            <h3>Gujarat Police Surveillance Video Wall</h3>
-            <p className="matrix-subtitle">Simultaneous multi-stream spatial monitoring grid</p>
-          </div>
-          <span className="live-clock">
-            <Clock size={13} />
-            {currentTime}
-          </span>
+          <h3>Surveillance Video Wall</h3>
+          <span className="live-clock">{currentTime}</span>
         </div>
 
         {/* CONTROLS */}
         <div className="matrix-actions-group">
-          {/* Department Filter */}
-          <div className="matrix-dept-filter">
-            <Filter size={13} />
-            <select
-              value={deptFilter}
-              onChange={(e) => setDeptFilter(e.target.value)}
-              className="dept-select"
-            >
-              <option value="ALL">All Departments ({cameras.length})</option>
-              {departments.map((d) => (
-                <option key={d.id || d.dept_name} value={d.dept_name}>
-                  {d.dept_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sync Sentinel Grid Button */}
-          <button
-            type="button"
-            className="matrix-preset-btn"
-            style={{ background: "#059669", color: "#ffffff", borderColor: "#10b981" }}
-            onClick={handleSyncSentinel}
-            disabled={syncingSentinel}
-            title="Synchronize all 30 official Gujarat Police cameras"
-          >
-            <RefreshCw size={14} className={syncingSentinel ? "spin" : ""} />
-            <span>{syncingSentinel ? "Syncing..." : "Sync Gujarat Grid (30 Cams)"}</span>
-          </button>
-
           {/* Quick Presets */}
           <button
             type="button"
             className="matrix-preset-btn"
-            onClick={handleTileOnline}
-            title="Auto-fill video wall with all active online cameras"
+            onClick={handleTileAnpr}
+            title="Auto-fill video wall with all registered ANPR cameras"
           >
-            <Sparkles size={14} />
-            <span>Tile Online ({availableCameras.length})</span>
+            <Shield size={14} />
+            <span>Tile ANPR Cameras</span>
           </button>
 
           <button
             type="button"
             className="matrix-preset-btn"
-            onClick={handleTileH265}
-            title="Auto-fill with Sentinel H.265 (HEVC) cameras"
+            onClick={handleTileOnline}
+            title="Fill tiles with active online cameras"
           >
-            <Shield size={14} />
-            <span>Tile H.265</span>
+            <Sparkles size={14} />
+            <span>Tile Online</span>
           </button>
 
           <button
             type="button"
             className="matrix-preset-btn text-muted"
             onClick={handleClearMatrix}
-            title="Clear all assigned camera feeds from video wall"
           >
-            <Trash2 size={13} />
-            <span>Clear Wall</span>
+            Clear Wall
           </button>
 
           {/* Layout Selector */}
@@ -337,19 +214,11 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
             </button>
             <button
               type="button"
-              className={`layout-btn ${layout === "4x4" ? "active" : ""}`}
-              onClick={() => setLayout("4x4")}
-              title="4x4 Grid (16 Feeds)"
+              className={`layout-btn ${layout === "1+3" ? "active" : ""}`}
+              onClick={() => setLayout("1+3")}
+              title="1 Large + 3 Side Feeds"
             >
-              4x4
-            </button>
-            <button
-              type="button"
-              className={`layout-btn ${layout === "1+5" ? "active" : ""}`}
-              onClick={() => setLayout("1+5")}
-              title="1 Large Focus Feed + 5 Satellite Feeds"
-            >
-              1+5 Focus
+              1+3
             </button>
           </div>
         </div>
@@ -361,7 +230,7 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
           <Camera size={44} />
           <h4>No Registered Cameras in Registry</h4>
           <p>
-            You haven't registered any CCTV cameras yet. Onboard your first camera or sync with the Sentinel Gateway to monitor them simultaneously on this video wall.
+            You haven't registered any CCTV or ANPR cameras yet. Onboard your first camera or import sample cameras via CSV to monitor them simultaneously on this video wall.
           </p>
           <button
             type="button"
@@ -379,9 +248,8 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
           {slotsArray.map((slotIdx) => {
             const cam = selectedSlots[slotIdx];
             const isFullscreen = fullscreenTile === slotIdx;
+            const isAnpr = (cam?.camera_type || "").toUpperCase() === "ANPR";
             const isLocal = cam?.source_type === "LOCAL_WEBCAM";
-            const isOnline = (cam?.status || "ONLINE").toUpperCase() === "ONLINE";
-            const codec = (cam?.codec || "H.264").toUpperCase();
 
             if (fullscreenTile !== null && !isFullscreen) return null;
 
@@ -389,7 +257,7 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
               <div
                 key={slotIdx}
                 className={`matrix-tile ${isFullscreen ? "fullscreen-tile" : ""} ${
-                  layout === "1+5" && slotIdx === 0 ? "focus-tile" : ""
+                  layout === "1+3" && slotIdx === 0 ? "focus-tile" : ""
                 }`}
               >
                 {/* TILE HEADER / CAMERA SELECTOR */}
@@ -397,26 +265,10 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                   <div className="tile-cam-info">
                     {cam ? (
                       <>
-                        <span className={`live-rec-dot ${isOnline ? "online" : "offline"}`}>
-                          ● {isOnline ? "REC" : "OFF"}
-                        </span>
+                        <span className="live-rec-dot">● REC</span>
                         <strong className="tile-code">{cam.camera_code}</strong>
-                        <span
-                          className="tile-codec-pill"
-                          style={{
-                            background: codec === "H.265" ? "#7c3aed" : "#2563eb",
-                            color: "#fff",
-                            fontSize: "9px",
-                            fontWeight: 700,
-                            padding: "1px 5px",
-                            borderRadius: "3px"
-                          }}
-                        >
-                          {codec}
-                        </span>
-                        <span className="tile-dept" title={cam.dept_name}>
-                          {cam.dept_name}
-                        </span>
+                        {isAnpr && <span className="anpr-tile-pill">ANPR</span>}
+                        <span className="tile-dept">{cam.dept_name}</span>
                       </>
                     ) : (
                       <span className="empty-slot-label">Slot #{slotIdx + 1} — Idle</span>
@@ -430,53 +282,22 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                       onChange={(e) => handleAssignCamera(slotIdx, e.target.value)}
                     >
                       <option value="">-- Choose Camera --</option>
-                      {availableCameras.map((c) => (
+                      {cameras.map((c) => (
                         <option key={c.id || c.camera_code} value={c.id || c.camera_code}>
-                          {c.camera_code} ({c.codec || "H.264"}) - {c.dept_name}
+                          {c.camera_code} ({c.camera_type || "CCTV"}) - {c.dept_name}
                         </option>
                       ))}
                     </select>
 
                     {cam && (
-                      <>
-                        {onOpenStreamModal && (
-                          <button
-                            type="button"
-                            className="tile-tool-btn"
-                            onClick={() => onOpenStreamModal(cam)}
-                            title="Inspect in Single Camera Modal (PTZ & Multi-protocol)"
-                          >
-                            <Eye size={13} />
-                          </button>
-                        )}
-
-                        <button
-                          type="button"
-                          className="tile-tool-btn"
-                          onClick={() => handleReloadTile(slotIdx)}
-                          title="Reconnect / Refresh Stream"
-                        >
-                          <RefreshCw size={12} />
-                        </button>
-
-                        <button
-                          type="button"
-                          className="tile-tool-btn"
-                          onClick={() => handleTakeSnapshot(cam)}
-                          title="Capture Snapshot"
-                        >
-                          <Camera size={13} />
-                        </button>
-
-                        <button
-                          type="button"
-                          className="tile-tool-btn"
-                          onClick={() => setFullscreenTile(isFullscreen ? null : slotIdx)}
-                          title={isFullscreen ? "Exit Fullscreen" : "Fullscreen this feed"}
-                        >
-                          {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
-                        </button>
-                      </>
+                      <button
+                        type="button"
+                        className="tile-tool-btn"
+                        onClick={() => setFullscreenTile(isFullscreen ? null : slotIdx)}
+                        title={isFullscreen ? "Exit Fullscreen" : "Fullscreen this feed"}
+                      >
+                        {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+                      </button>
                     )}
                   </div>
                 </div>
@@ -496,8 +317,7 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                         />
                       ) : (
                         <img
-                          key={`${cam.camera_code || cam.id}_${streamKeys[slotIdx] || 0}`}
-                          src={`/api/cameras/${cam.camera_code || cam.id}/stream?t=${streamKeys[slotIdx] || 0}`}
+                          src={`/api/cameras/${cam.id || cam.camera_code}/stream?t=${Date.now()}`}
                           alt={cam.camera_code}
                           className="tile-stream-img"
                           onError={(e) => {
@@ -510,10 +330,10 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                       )}
 
                       {/* Stream Fallback Simulation */}
-                      <div className="tile-fallback-sim" style={{ display: "none" }}>
+                      <div className="tile-fallback-sim" style={{ display: isLocal ? "none" : "none" }}>
                         <div className="sim-scanline"></div>
                         <div className="sim-crosshair"></div>
-                        <p>RTSP TCP GATEWAY CONNECTING</p>
+                        <p>CONNECTING RTSP GATEWAY</p>
                         <span>{cam.rtsp_url || "1080p @ 25 FPS"}</span>
                       </div>
 
@@ -522,13 +342,13 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding, onOpenStrea
                         <span>{currentTime}</span>
                       </div>
                       <div className="tile-osd-top-right">
-                        <span>CH-0{slotIdx + 1} | {codec} @ 25FPS</span>
+                        <span>CH-0{slotIdx + 1} | 1080P @ 25FPS</span>
                       </div>
                       <div className="tile-osd-bottom-left">
-                        <span>{cam.ip_address || "103.250.160.189"}</span>
+                        <span>{cam.ip_address || "NETWORK STREAM"}</span>
                       </div>
                       <div className="tile-osd-bottom-right">
-                        <span>{isOnline ? "ONLINE" : "OFFLINE"}</span>
+                        <span>{cam.status || "ONLINE"}</span>
                       </div>
                     </>
                   ) : (

@@ -1,0 +1,616 @@
+[
+  {
+    "event_id": "EVT_1790509572517",
+    "camera_id": "CAM02",
+    "dept_name": "Gujarat Police - Grid CAM02",
+    "timestamp": "2026-09-27T11:46:12.517154+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509572362",
+    "camera_id": "CAM02",
+    "dept_name": "Gujarat Police - Grid CAM02",
+    "timestamp": "2026-09-27T11:46:12.362618+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509572227",
+    "camera_id": "CAM01",
+    "dept_name": "Gujarat Police - Grid CAM01",
+    "timestamp": "2026-09-27T11:46:12.227301+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509572018",
+    "camera_id": "CAM04",
+    "dept_name": "Gujarat Police - Grid CAM04",
+    "timestamp": "2026-09-27T11:46:12.018651+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509571846",
+    "camera_id": "CAM09",
+    "dept_name": "Gujarat Police - Grid CAM09",
+    "timestamp": "2026-09-27T11:46:11.846551+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509571695",
+    "camera_id": "CAM02",
+    "dept_name": "Gujarat Police - Grid CAM02",
+    "timestamp": "2026-09-27T11:46:11.695071+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509571528",
+    "camera_id": "CAM01",
+    "dept_name": "Gujarat Police - Grid CAM01",
+    "timestamp": "2026-09-27T11:46:11.528188+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509571355",
+    "camera_id": "CAM01",
+    "dept_name": "Gujarat Police - Grid CAM01",
+    "timestamp": "2026-09-27T11:46:11.355893+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509571190",
+    "camera_id": "CAM11",
+    "dept_name": "Gujarat Police - Grid CAM11",
+    "timestamp": "2026-09-27T11:46:11.190250+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509570825",
+    "camera_id": "CAM24",
+    "dept_name": "Gujarat Police - Grid CAM24",
+    "timestamp": "2026-09-27T11:46:10.825983+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509570479",
+    "camera_id": "CAM02",
+    "dept_name": "Gujarat Police - Grid CAM02",
+    "timestamp": "2026-09-27T11:46:10.479537+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509570258",
+    "camera_id": "CAM11",
+    "dept_name": "Gujarat Police - Grid CAM11",
+    "timestamp": "2026-09-27T11:46:10.258802+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509570052",
+    "camera_id": "CAM02",
+    "dept_name": "Gujarat Police - Grid CAM02",
+    "timestamp": "2026-09-27T11:46:10.052190+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509569838",
+    "camera_id": "CAM04",
+    "dept_name": "Gujarat Police - Grid CAM04",
+    "timestamp": "2026-09-27T11:46:09.838004+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509569654",
+    "camera_id": "CAM01",
+    "dept_name": "Gujarat Police - Grid CAM01",
+    "timestamp": "2026-09-27T11:46:09.654291+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509569196",
+    "camera_id": "CAM24",
+    "dept_name": "Gujarat Police - Grid CAM24",
+    "timestamp": "2026-09-27T11:46:09.196492+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ05CD5678",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ05CD5678",
+      "reason": "WANTED_SUSPECT",
+      "description": "Black Hyundai Creta linked to inter-district gold robbery",
+      "fir_number": "FIR-2026/SRT/1102",
+      "district": "Surat",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-22T14:30:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_1790509567688",
+    "camera_id": "CAM09",
+    "dept_name": "Gujarat Police - Grid CAM09",
+    "timestamp": "2026-09-27T11:46:07.688273+00:00",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ01KM9988",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": false,
+    "watchlist_alert": null
+  },
+  {
+    "event_id": "EVT_1790509533773",
+    "camera_id": "CAM-AHM-01",
+    "dept_name": "Gujarat Police - Grid CAM-AHM-01",
+    "timestamp": "2026-09-27T11:45:33.773238+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ01AB1234",
+      "confidence": 0.93,
+      "bounding_box": [
+        280,
+        390,
+        190,
+        50
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ01AB1234",
+      "reason": "STOLEN_VEHICLE",
+      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
+      "fir_number": "FIR-2026/AHD/0491",
+      "district": "Ahmedabad",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-20T10:00:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_17902401",
+    "camera_id": "CAM01",
+    "dept_name": "Gujarat Police - Ahmedabad",
+    "timestamp": "2026-09-27T11:20:15Z",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.94
+    },
+    "plate": {
+      "number": "GJ01AB1234",
+      "confidence": 0.92,
+      "bounding_box": [
+        320,
+        410,
+        180,
+        55
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ01AB1234",
+      "reason": "STOLEN_VEHICLE",
+      "description": "White Mahindra Scorpio stolen from Navrangpura, Ahmedabad",
+      "fir_number": "FIR-2026/AHD/0491",
+      "district": "Ahmedabad",
+      "severity": "CRITICAL",
+      "date_added": "2026-09-20T10:00:00Z"
+    }
+  },
+  {
+    "event_id": "EVT_17902402",
+    "camera_id": "CAM02",
+    "dept_name": "Gujarat Police - Surat Traffic",
+    "timestamp": "2026-09-27T11:22:40Z",
+    "vehicle": {
+      "type": "Motorcycle",
+      "confidence": 0.88
+    },
+    "plate": {
+      "number": "GJ05XY8899",
+      "confidence": 0.85,
+      "bounding_box": [
+        210,
+        360,
+        140,
+        45
+      ]
+    },
+    "is_watchlist_match": false,
+    "watchlist_alert": null
+  },
+  {
+    "event_id": "EVT_17902403",
+    "camera_id": "CAM03",
+    "dept_name": "Gujarat Police - Vadodara",
+    "timestamp": "2026-09-27T11:24:10Z",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.91
+    },
+    "plate": {
+      "number": "GJ06EF9012",
+      "confidence": 0.89,
+      "bounding_box": [
+        150,
+        280,
+        220,
+        70
+      ]
+    },
+    "is_watchlist_match": true,
+    "watchlist_alert": {
+      "plate_number": "GJ06EF9012",
+      "reason": "E_CHALLAN_DEFALUTER",
+      "description": "Commercial Bus with 18 unpaid red-light violations",
+      "fir_number": "CHL-2026/VAD/8821",
+      "district": "Vadodara",
+      "severity": "WARNING",
+      "date_added": "2026-09-23T09:15:00Z"
+    }
+  }
+]

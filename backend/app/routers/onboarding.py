@@ -478,7 +478,7 @@ async def sync_sentinel_grid(payload: Optional[dict] = None, db: Optional[asyncp
                     cam_id = row.get("camera_code", f"CAM{idx:02d}")
                     # Assign mixed H.264 and H.265 as specified in official challenge rules
                     codec = "H.265" if (idx % 3 == 0) else "H.264"
-                    rtsp = row.get("rtsp_url") or f"rtsp://shreyanshsharma049%40gmail.com:ETD6-KZJG-VGF4@103.250.160.189:8554/stream/{cam_id.lower()}"
+                    rtsp = row.get("rtsp_url") or f"rtsp://shreyanshsharma049@gmail.com:ETD6-KZJG-VGF4@103.250.160.189:8554/stream/{cam_id.lower()}"
                     host_ip = "103.250.160.189"
                     remote_cameras.append({
                         "id": cam_id,

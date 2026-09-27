@@ -90,7 +90,7 @@
     "ageing": 0.5
   },
   {
-    "id": "1f081d86-35fc-4f95-8bfd-a030a379d212",
+    "id": "a665bff1-1016-4cea-8d00-62357304cf0c",
     "dept_id": "c8756d32-b02f-4ad2-b1d8-1f918797345a",
     "dept_name": "Gujarat Police - Ahmedabad",
     "camera_code": "CAM01",
@@ -108,7 +108,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam01"
   },
   {
-    "id": "448ddfa9-e1c4-4afe-874f-c3c8023ff268",
+    "id": "3e0e7315-f52e-4386-a54d-99c7a284e91c",
     "dept_id": "31c23a86-918b-48e2-bff8-fb4f5fbea65a",
     "dept_name": "Gujarat Police - Surat Traffic",
     "camera_code": "CAM02",
@@ -126,7 +126,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam02"
   },
   {
-    "id": "772d0364-250a-45a0-be62-03668bbbca29",
+    "id": "fcc98289-af81-41c2-b744-0bda2345d8ef",
     "dept_id": "141629ee-dd80-4b6d-ad1a-2dae8f65c463",
     "dept_name": "Gujarat Police - Vadodara",
     "camera_code": "CAM03",
@@ -144,7 +144,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam03"
   },
   {
-    "id": "acccad46-6d94-4db1-a491-4b13781bfe0b",
+    "id": "826ffb6b-6cbb-4b44-a85e-2c0dc59827d3",
     "dept_id": "dc484193-ada8-438a-9b5c-55550134e60b",
     "dept_name": "Gujarat Police - Rajkot",
     "camera_code": "CAM04",
@@ -162,7 +162,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam04"
   },
   {
-    "id": "4f36db28-f5ec-4fc7-b250-c575e51e22b1",
+    "id": "c50ce173-feaa-412c-888b-ec0518a0bcf8",
     "dept_id": "5032aadb-f4a8-4bd1-9cad-148d20da06b1",
     "dept_name": "Gujarat Police - Bhavnagar",
     "camera_code": "CAM05",
@@ -180,7 +180,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam05"
   },
   {
-    "id": "39ac0441-224d-4759-b40a-dee5029bcd57",
+    "id": "73940579-b163-4faf-9d45-8a57c5ea815b",
     "dept_id": "be044e7c-9cbf-4888-9dd3-ffba1d03e719",
     "dept_name": "Gujarat Police - Jamnagar",
     "camera_code": "CAM06",
@@ -198,7 +198,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam06"
   },
   {
-    "id": "123a7758-7ec9-49e1-9fcc-1fe16cf76492",
+    "id": "96a8c143-c1c5-42ba-80de-521fcd7d7c2b",
     "dept_id": "d6af00ee-06b3-42af-a4ff-108dc5a40540",
     "dept_name": "Gujarat Police - Dwarka",
     "camera_code": "CAM07",
@@ -216,7 +216,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam07"
   },
   {
-    "id": "3dd251b3-2d1a-46a8-b1ea-c211eb99128a",
+    "id": "3065e679-412a-424b-8909-93f9e720cd90",
     "dept_id": "9e25af52-806d-4c0f-b848-1be3bb0999f9",
     "dept_name": "Gujarat Police - Somnath",
     "camera_code": "CAM08",
@@ -234,7 +234,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam08"
   },
   {
-    "id": "c8dc0334-c6ce-47c9-bde9-d84fa8fbffe2",
+    "id": "05033c97-9651-45f9-a9e5-f6b82face5f7",
     "dept_id": "f3586e5f-ce33-4829-9132-2ed8326fdd04",
     "dept_name": "Gujarat Police - Ahmedabad Police",
     "camera_code": "CAM09",
@@ -252,7 +252,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam09"
   },
   {
-    "id": "c2b6fcab-e475-41df-8691-eddac3304270",
+    "id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
     "dept_id": "3eaaf898-dc78-4142-a035-63643c7cdadf",
     "dept_name": "Gujarat Police - Ahmedabad Municipal",
     "camera_code": "CAM10",
@@ -270,7 +270,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam10"
   },
   {
-    "id": "5923e2cb-2525-46cf-aba0-fdd426cc7781",
+    "id": "4125f496-0784-4b7f-9ac7-4dcea040884f",
     "dept_id": "2e66ab8d-ee8a-43c4-a475-21bb696cfcb5",
     "dept_name": "Gujarat Police - Surat Police",
     "camera_code": "CAM11",
@@ -288,7 +288,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam11"
   },
   {
-    "id": "3e007564-d732-4421-8237-ff5f9dc631eb",
+    "id": "b674bc56-34b2-4084-b4d4-62f6834f750c",
     "dept_id": "da85d300-2645-432c-9a3b-c4df28dbea4a",
     "dept_name": "Gujarat Police - Surat Municipal",
     "camera_code": "CAM12",
@@ -306,7 +306,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam12"
   },
   {
-    "id": "18784bcb-b703-4f87-981d-744e00e37443",
+    "id": "64bce51c-1339-4021-8f05-f33ec8f37220",
     "dept_id": "e793f70f-0841-4dbb-b1ec-44a632e15a09",
     "dept_name": "Gujarat Police - Vadodara Police",
     "camera_code": "CAM13",
@@ -324,7 +324,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam13"
   },
   {
-    "id": "e28e6266-f498-4b0b-b2ff-ca7fd3a9e234",
+    "id": "02fb8c15-2829-4198-84f5-661754ac6c61",
     "dept_id": "e0f46d71-69d0-4f0d-a9f9-5a81cf37e168",
     "dept_name": "Gujarat Police - Vadodara Municipal",
     "camera_code": "CAM14",
@@ -342,7 +342,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam14"
   },
   {
-    "id": "4bb057ba-7915-4af6-9b98-2d4ae4eeb133",
+    "id": "354524ad-fd19-40df-b939-4ef30429125f",
     "dept_id": "ad226ba7-4b26-4979-9a36-973d9daed572",
     "dept_name": "Gujarat Police - Rajkot Police",
     "camera_code": "CAM15",
@@ -360,7 +360,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam15"
   },
   {
-    "id": "88891eb6-3cf4-4cc7-9970-ae110d872ba9",
+    "id": "9e7c0dde-5cfb-4adc-9791-9704f803aaf6",
     "dept_id": "0d26cab6-c6cc-4b9b-a01a-948052086eb9",
     "dept_name": "Gujarat Police - Rajkot Municipal",
     "camera_code": "CAM16",
@@ -378,7 +378,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam16"
   },
   {
-    "id": "a2aa0ae9-79b8-4b20-a585-43a2b3f8dbf9",
+    "id": "40ca86fe-8181-441f-9dba-6f212e947473",
     "dept_id": "b6800f01-3caa-4529-93e0-aef0f08f9c2d",
     "dept_name": "Gujarat Police - Bhavnagar Police",
     "camera_code": "CAM17",
@@ -396,7 +396,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam17"
   },
   {
-    "id": "137afbe6-f6b5-4e6f-8ec2-1f100763fd35",
+    "id": "9c5014d8-9afd-476c-bab6-d38a8db55842",
     "dept_id": "fb3e7bb9-c543-4ab2-a763-60ce1df6862a",
     "dept_name": "Gujarat Police - Bhavnagar Municipal",
     "camera_code": "CAM18",
@@ -414,7 +414,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam18"
   },
   {
-    "id": "ebf12868-771a-4059-8644-09af22694013",
+    "id": "356a9313-082f-441a-ad13-9e42c169b43e",
     "dept_id": "1e56fbcd-67d6-4b1b-8e16-b7bf3acf9a88",
     "dept_name": "Gujarat Police - Jamnagar Police",
     "camera_code": "CAM19",
@@ -432,7 +432,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam19"
   },
   {
-    "id": "22290837-e30a-4937-9066-a5b936a5bfa9",
+    "id": "2ac1a86e-1568-4b23-ae9e-c42efb3eac7a",
     "dept_id": "36cc953b-56ab-4b83-8b31-ed4f22697f4a",
     "dept_name": "Gujarat Police - Jamnagar Municipal",
     "camera_code": "CAM20",
@@ -450,7 +450,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam20"
   },
   {
-    "id": "15d64714-836e-4af1-a072-06eb46258d12",
+    "id": "a6f42c63-c56c-49d8-9606-3971b0d45878",
     "dept_id": "30caecee-b6b9-4fd5-82e8-4ba8489b97b1",
     "dept_name": "Gujarat Police - Dwarka Police",
     "camera_code": "CAM21",
@@ -468,7 +468,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam21"
   },
   {
-    "id": "29fad08e-e2de-4e26-96f5-2e331c7d8b3b",
+    "id": "98af05d4-9924-4d38-b94e-7d86984c1fcd",
     "dept_id": "78061ac5-7bd1-4f7c-b7e7-081f5dfb0891",
     "dept_name": "Gujarat Police - Devbhumi Dwarka",
     "camera_code": "CAM22",
@@ -486,7 +486,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam22"
   },
   {
-    "id": "ca77b67a-0b01-4005-8acc-0e7b5d1318c0",
+    "id": "254ac958-e72c-4967-a70f-33a4c78f84ab",
     "dept_id": "d40b6ccd-bcab-4651-b0eb-cb8b2759b614",
     "dept_name": "Gujarat Police - Somnath Police",
     "camera_code": "CAM23",
@@ -504,7 +504,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam23"
   },
   {
-    "id": "3d559ffa-c30d-4191-8113-0a8c2d89dc3e",
+    "id": "c7779115-622a-48b7-9bbb-b2034771d0b6",
     "dept_id": "9c953ec0-ee55-4dac-bc6c-3b69e03ff23f",
     "dept_name": "Gujarat Police - Gir Somnath",
     "camera_code": "CAM24",
@@ -522,7 +522,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam24"
   },
   {
-    "id": "6b7e6b72-15c9-4613-909a-8830628ecd2e",
+    "id": "e9f745e1-8301-462b-8d9f-9aa4ef527df7",
     "dept_id": "f1312917-53fb-46c3-9dc1-b18fcd36975a",
     "dept_name": "Gujarat Police - Ahmedabad Traffic",
     "camera_code": "CAM25",
@@ -540,7 +540,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam25"
   },
   {
-    "id": "fe78650f-3f87-4972-92ee-5c36e3ecc462",
+    "id": "c469f00f-d006-48ec-b8d8-5228359a9594",
     "dept_id": "4c9505fb-ac17-4c85-ae36-dbfe84def963",
     "dept_name": "Gujarat Police - Ahmedabad Transport",
     "camera_code": "CAM26",
@@ -558,7 +558,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam26"
   },
   {
-    "id": "6b47721d-a5bd-4c90-a0af-40c248356c0a",
+    "id": "86eac0bc-275a-4823-8e41-827c4de446b5",
     "dept_id": "31c23a86-918b-48e2-bff8-fb4f5fbea65a",
     "dept_name": "Gujarat Police - Surat Traffic",
     "camera_code": "CAM27",
@@ -576,7 +576,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam27"
   },
   {
-    "id": "bea88250-62cb-44a2-9b48-3a2d98939a5b",
+    "id": "145f2ea3-57d4-4413-b837-88296d825edb",
     "dept_id": "2e66ab8d-ee8a-43c4-a475-21bb696cfcb5",
     "dept_name": "Gujarat Police - Surat Police",
     "camera_code": "CAM28",
@@ -594,7 +594,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam28"
   },
   {
-    "id": "b8647992-5bc2-45a4-b91a-bf02892781c9",
+    "id": "2bd899d9-f9f7-42e8-b357-785b740c17a6",
     "dept_id": "a5e59462-01e2-4961-bf10-6e158101c9cb",
     "dept_name": "Gujarat Police - Vadodara Traffic",
     "camera_code": "CAM29",
@@ -612,7 +612,7 @@
     "http_stream_url": "http://103.250.160.189/stream/cam29"
   },
   {
-    "id": "27c90eba-255d-4e21-9f34-67fa5603d094",
+    "id": "a2971fbb-22b1-48fe-88a2-23000d0b2ce1",
     "dept_id": "257e9718-6e56-493a-adcd-b7a7756d249e",
     "dept_name": "Gujarat Police - Rajkot Traffic",
     "camera_code": "CAM30",
