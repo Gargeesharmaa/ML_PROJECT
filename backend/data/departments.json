@@ -363,5 +363,10 @@
     "id": "257e9718-6e56-493a-adcd-b7a7756d249e",
     "dept_name": "Gujarat Police - Rajkot Traffic",
     "zone_code": "ZONE-GUJ"
+  },
+  {
+    "id": "6989836d-d226-429a-9efa-a82813e6172e",
+    "dept_name": "gfbf",
+    "zone_code": "ghghg"
   }
 ]
