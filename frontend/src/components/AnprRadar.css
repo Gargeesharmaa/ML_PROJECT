@@ -1,0 +1,1183 @@
+/* ============================================================
+   ANPR RADAR & AI SURVEILLANCE STYLES (UPDATED & FIXED)
+   ============================================================ */
+
+.anpr-radar-container {
+  background: #0b1329;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 28px;
+  color: #f8fafc;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6);
+  font-family: "Inter", sans-serif;
+}
+
+/* HOTLIST CRITICAL ALERT BANNER */
+.anpr-hotlist-alert-banner {
+  background: linear-gradient(135deg, #7f1d1d, #991b1b);
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+  animation: bannerPulse 1.8s infinite;
+}
+
+@keyframes bannerPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.7);
+  }
+}
+
+.alert-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #dc2626;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.alert-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #fee2e2;
+  font-size: 13px;
+}
+
+.alert-details strong {
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.alert-details em {
+  color: #fca5a5;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.dismiss-alert-btn {
+  background: #ffffff;
+  color: #991b1b;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.dismiss-alert-btn:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+/* TOP HEADER CONTROLS */
+.anpr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.header-info {
+  flex: 1;
+  min-width: 320px;
+}
+
+.eyebrow-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 0.6px;
+}
+
+.anpr-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.anpr-header .page-description {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.anpr-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.anpr-cam-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #131d38;
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+}
+
+.anpr-cam-picker label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.anpr-cam-picker select {
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  max-width: 320px;
+}
+
+.anpr-cam-picker select:focus {
+  border-color: #38bdf8;
+}
+
+.anpr-scan-btn {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 9px;
+  border: 1px solid #6366f1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.anpr-scan-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+  transform: translateY(-1px);
+}
+
+.anpr-scan-btn:active {
+  transform: scale(0.98);
+}
+
+.anpr-toggle-btn {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.anpr-toggle-btn:hover {
+  background: #334155;
+  color: white;
+}
+
+.anpr-toggle-btn.active {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: #10b981;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+}
+
+.return-cam-btn {
+  background: #0284c7;
+  color: white;
+  border: 1px solid #38bdf8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.return-cam-btn:hover {
+  background: #0369a1;
+}
+
+/* KPI METRICS ROW */
+.anpr-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.anpr-kpi-card {
+  background: #111c38;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.2s ease;
+}
+
+.anpr-kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: #334155;
+}
+
+.kpi-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.kpi-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #f8fafc;
+  font-family: "JetBrains Mono", monospace, sans-serif;
+}
+
+.kpi-sub {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.anpr-kpi-card.alert {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.anpr-kpi-card.alert .kpi-val {
+  color: #f87171;
+}
+
+/* SPLIT LAYOUT: LIVE VIDEO FEED (LEFT) + LOG TABLE (RIGHT) */
+.anpr-split-layout {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .anpr-split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* LEFT: VIDEO VIEWPORT CARD */
+.anpr-video-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+.video-card-header {
+  padding: 12px 18px;
+  background: #17233f;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cam-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.live-dot {
+  color: #ef4444;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  animation: liveBlink 1.4s infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.dept-tag {
+  color: #94a3b8;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.feed-specs {
+  font-size: 11px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.anpr-viewport {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  background: #030712;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.upload-indicator-dot {
+  color: #38bdf8;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  animation: liveBlink 2s infinite;
+}
+
+/* Video & Images explicitly layered ABOVE fallback */
+.anpr-media-frame {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  max-height: 100%;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.anpr-media-frame.webcam-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.anpr-display-media {
+  max-width: 100%;
+  max-height: 440px;
+  object-fit: contain;
+  display: block;
+}
+
+.anpr-display-media.video-mode {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.anpr-webcam-error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 24px;
+  text-align: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px dashed rgba(248, 113, 113, 0.4);
+  border-radius: 12px;
+  margin: 20px;
+  z-index: 3;
+}
+
+.webcam-error-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f87171;
+  margin: 0;
+}
+
+.webcam-error-sub {
+  font-size: 12px;
+  color: #94a3b8;
+  max-width: 380px;
+}
+
+.webcam-help-hint {
+  font-size: 12px;
+  color: #38bdf8;
+  max-width: 400px;
+  margin-top: 6px;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+/* Fallback Radar Scanline Screen (shown only when no active stream) */
+.anpr-fallback-sim {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+  color: #38bdf8;
+  z-index: 1;
+}
+
+.sim-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+  box-shadow: 0 0 15px #38bdf8;
+  animation: scanlineMove 3.5s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes scanlineMove {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+
+.anpr-hud-target {
+  width: 180px;
+  height: 180px;
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  border-radius: 50%;
+  margin-bottom: 14px;
+  animation: spinSlow 12s linear infinite;
+  display: grid;
+  place-items: center;
+}
+
+.anpr-hud-target::after {
+  content: "";
+  width: 70px;
+  height: 70px;
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  border-radius: 50%;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.anpr-fallback-sim p {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #38bdf8;
+  margin: 0;
+}
+
+.anpr-fallback-sim span {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  font-family: monospace;
+}
+
+/* DYNAMIC ANPR BOUNDING BOX OVERLAY */
+.anpr-bounding-box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #10b981;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px;
+  animation: boxPopIn 0.3s ease-out;
+}
+
+@keyframes boxPopIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.anpr-bounding-box.box-alert {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.7) !important;
+}
+
+/* Realistic Indian HSRP Plate Badge */
+.detected-plate-badge {
+  background: #ffffff;
+  color: #0f172a;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  align-self: flex-start;
+  margin-top: -34px;
+}
+
+.hsrp-flag {
+  background: #003399;
+  color: #ffcc00;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 1.5px solid #000;
+}
+
+.ind-text {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.plate-text {
+  font-family: "JetBrains Mono", monospace, sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  padding: 4px 10px;
+  letter-spacing: 1.5px;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.detection-meta-tag {
+  background: rgba(15, 23, 42, 0.94);
+  color: #34d399;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  gap: 8px;
+  align-self: flex-start;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  backdrop-filter: blur(4px);
+  margin-bottom: -22px;
+}
+
+.box-alert .detection-meta-tag {
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* STATIC HUD OSD (On-Screen Display) */
+.anpr-hud-osd {
+  position: absolute;
+  font-family: monospace;
+  font-size: 11px;
+  color: #34d399;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.anpr-hud-osd.top-left {
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.anpr-hud-osd.top-left code {
+  color: #38bdf8;
+  font-size: 10px;
+}
+
+.anpr-hud-osd.bottom-left {
+  bottom: 14px;
+  left: 14px;
+  color: #94a3b8;
+}
+
+/* RIGHT: REAL-TIME LOG CARD */
+.anpr-log-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+}
+
+.log-card-header {
+  padding: 14px 18px;
+  background: #17233f;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.log-header-left h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.log-count {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.export-log-btn {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-log-btn:hover {
+  background: #334155;
+  color: white;
+}
+
+.log-filter-bar {
+  padding: 12px 16px;
+  background: #111c33;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: #94a3b8;
+}
+
+.search-wrap input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 12px;
+  width: 100%;
+}
+
+.search-wrap input::placeholder {
+  color: #64748b;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-chip {
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-chip:hover {
+  background: #334155;
+  color: white;
+}
+
+.filter-chip.active {
+  background: #38bdf8;
+  color: #0f172a;
+  border-color: #38bdf8;
+  font-weight: 700;
+}
+
+.filter-chip.hotlist.active {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+/* TABLE STYLING */
+.anpr-table-scroll {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.anpr-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.anpr-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.anpr-table th {
+  background: #17233f;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.anpr-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  vertical-align: middle;
+}
+
+.anpr-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.anpr-table tr.row-alert {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.anpr-table tr.row-alert:hover {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.time-cell {
+  font-family: monospace;
+  color: #94a3b8;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.location-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.location-name {
+  font-weight: 600;
+  color: #f1f5f9;
+  font-size: 12px;
+}
+
+.camera-code-tag {
+  font-size: 10px;
+  color: #38bdf8;
+  font-family: monospace;
+}
+
+/* Miniature Indian HSRP Badge in Table */
+.hsrp-plate-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hsrp-blue-band {
+  background: #003399;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #000;
+}
+
+.hsrp-ind {
+  color: #ffcc00;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.hsrp-number {
+  font-family: "JetBrains Mono", monospace, sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 2px 8px;
+  color: #0f172a;
+  letter-spacing: 1px;
+}
+
+.vehicle-class-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #cbd5e1;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pill.status-normal {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-pill.status-hotlist {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+}
+
+.status-pill.status-target {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border: 1px solid #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  font-weight: 800;
+  animation: targetPulse 1.2s infinite alternate;
+}
+
+/* ============================================================
+   TARGET HUNTING & OPTICAL RETICLE STYLES
+   ============================================================ */
+
+.anpr-target-hunt-bar {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+  border: 1.5px solid #0284c7;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.3);
+  animation: huntBarGlow 3s infinite alternate;
+}
+
+@keyframes huntBarGlow {
+  0% { box-shadow: 0 0 15px rgba(2, 132, 199, 0.25); border-color: #0284c7; }
+  100% { box-shadow: 0 0 30px rgba(2, 132, 199, 0.55); border-color: #38bdf8; }
+}
+
+.hunt-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hunt-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #0369a1;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.hunt-plate {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 2px solid #000;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hunt-ind {
+  background: #003399;
+  color: #ffcc00;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 3px 5px;
+}
+
+.hunt-plate strong {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  color: #0f172a;
+  padding: 3px 10px;
+  letter-spacing: 1px;
+}
+
+.hunt-status {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-hunting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #38bdf8;
+}
+
+.status-intercepted {
+  color: #10b981;
+  font-weight: 800;
+  animation: blinkFast 0.8s infinite;
+}
+
+.pulsar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38bdf8;
+  animation: liveBlink 1s infinite;
+}
+
+.clear-target-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-target-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+/* TARGET INTERCEPTED MASSIVE BANNER */
+.anpr-target-intercepted-banner {
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  padding: 16px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.6);
+  animation: interceptGlow 1.4s infinite alternate;
+}
+
+@keyframes interceptGlow {
+  0% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+  100% { box-shadow: 0 0 45px rgba(16, 185, 129, 0.85); }
+}
+
+.intercept-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.intercept-content {
+  flex: 1;
+}
+
+.intercept-content h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #ecfdf5;
+  letter-spacing: 0.5px;
+}
+
+.intercept-content p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #a7f3d0;
+}
+
+.highlight-plate {
+  background: #ffffff;
+  color: #0f172a;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.intercept-meta-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #d1fae5;
+}
+
+.intercept-ack-btn {
+  background: #ffffff;
+  color: #065f46;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.intercept-ack-btn:hover {
+  background: #a7f3d0;
+  transform: translateY(-1px);
+}
+
+/* RETICLE SCANNER OVERLAY ON LIVE CAMERA */
+.anpr-target-scanner-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 140px;
+  border: 1.5px dashed rgba(56, 189, 248, 0.6);
+  border-radius: 8px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.reticle-line-scan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  animation: scanLine 2s infinite ease-in-out;
+}
+
+@keyframes scanLine {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
+
+.reticle-text {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* INTERCEPTED TARGET BOUNDING BOX */
+.anpr-bounding-box.box-target-intercepted {
+  border: 2.5px solid #10b981 !important;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.85) !important;
+  animation: targetBoxFlash 0.8s infinite alternate;
+}
+
+@keyframes targetBoxFlash {
+  0% { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); }
+  100% { border-color: #facc15; box-shadow: 0 0 35px rgba(250, 204, 21, 0.9); }
+}

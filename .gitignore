@@ -20,3 +20,6 @@ Thumbs.db
 
 # Logs & Temporary
 *.log
+*.mp4
+*.avi
+*.mkv

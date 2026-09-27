@@ -24,6 +24,12 @@ from queue import Empty, Full
 
 import cv2
 import numpy as np
+
+try:
+    import torch
+except ImportError:
+    pass
+
 from paddleocr import PaddleOCR
 from ultralytics import YOLO
 
@@ -109,7 +115,10 @@ def load_camera_sources():
 
 
 def open_capture(source):
-    """Open local file or RTSP source with reasonable retry behavior."""
+    """Open local file, webcam index or RTSP source with reasonable retry behavior."""
+    if str(source).isdigit():
+        return cv2.VideoCapture(int(source))
+
     is_rtsp = str(source).lower().startswith(("rtsp://", "rtsps://"))
 
     if is_rtsp:
@@ -294,10 +303,13 @@ def heavy_inference_worker(input_queue, output_queue, stop_event):
         model_path_check(PLATE_MODEL, "Plate model")
         plate_detector = YOLO(PLATE_MODEL)
 
-        # PaddleOCR 3.x constructor.
+        # PaddleOCR 3.x constructor with MKLDNN disabled for CPU stability.
         ocr_engine = PaddleOCR(
             use_textline_orientation=False,
+            use_doc_orientation_classify=False,
+            use_doc_unwarping=False,
             lang="en",
+            enable_mkldnn=False,
         )
 
         print(
@@ -645,6 +657,18 @@ def multi_frame_aggregator(output_queue, stop_event):
                 ),
                 flush=True,
             )
+
+            # Sync event with FastAPI backend (Port 8000)
+            try:
+                import urllib.request
+                req = urllib.request.Request(
+                    "http://127.0.0.1:8000/api/anpr/events",
+                    data=json.dumps(final_record).encode("utf-8"),
+                    headers={"Content-Type": "application/json"}
+                )
+                urllib.request.urlopen(req, timeout=1.5)
+            except Exception as e:
+                pass
 
             del track_history[track_id]
 

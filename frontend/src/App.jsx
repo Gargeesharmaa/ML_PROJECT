@@ -15,12 +15,14 @@ import {
   Wifi,
   AlertTriangle,
   Play,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Radio
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
 import CsvImport from "./components/CsvImport";
 import CameraFeedModal from "./components/CameraFeedModal";
+import AnprRadar from "./components/AnprRadar";
 import "./App.css";
 
 const fallbackDepartments = [
@@ -475,6 +477,15 @@ function App() {
             <MapPin size={16} />
             <span>GIS Live Map</span>
           </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "anpr" ? "active" : ""}`}
+            onClick={() => setActiveTab("anpr")}
+          >
+            <Radio size={16} />
+            <span>ANPR Radar</span>
+          </button>
         </nav>
 
         {/* BACKEND SERVER STATUS */}
@@ -509,6 +520,10 @@ function App() {
       ) : activeTab === "bulk_csv" ? (
         <main className="onboarding-main" style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 20px" }}>
           <CsvImport onNavigateToMap={() => setActiveTab("map")} />
+        </main>
+      ) : activeTab === "anpr" ? (
+        <main style={{ width: "min(100% - 48px, 1400px)", margin: "0 auto", padding: "28px 0 60px" }}>
+          <AnprRadar onNavigateToOnboarding={() => setActiveTab("onboarding")} />
         </main>
       ) : (
         /* MAIN ONBOARDING VIEW */
