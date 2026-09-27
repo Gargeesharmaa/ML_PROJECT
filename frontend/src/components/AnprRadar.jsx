@@ -5,933 +5,726 @@ import {
   AlertTriangle,
   CheckCircle2,
   Camera,
+  Play,
+  Square,
   RotateCw,
-  Bell,
+  Sliders,
   Car,
   Truck,
   Bike,
   Activity,
+  Zap,
   Radio,
   FileSpreadsheet,
   Upload,
-  RefreshCw,
-  Trash2,
-  ArrowLeft,
-  Target,
   Crosshair,
-  Zap,
-  X
+  X,
+  Eye,
+  Trash2,
+  Maximize2
 } from "lucide-react";
 import "./AnprRadar.css";
 
-// Built-in Laptop Webcam profile
-const LAPTOP_CAMERA_OPTION = {
-  id: "LOCAL_LAPTOP_CAMERA",
-  camera_code: "LAPTOP-CAM",
-  dept_name: "Gujarat Police - Control Station",
-  make_model: "Integrated Laptop Camera",
-  source_type: "LOCAL_WEBCAM",
-  camera_type: "WEBCAM",
-  status: "ONLINE"
-};
-
-// Web Audio API Synthesizer for Interception Siren
-function playInterceptionAlert() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const now = ctx.currentTime;
-
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(880, now);
-    osc.frequency.linearRampToValueAtTime(1320, now + 0.2);
-    osc.frequency.linearRampToValueAtTime(880, now + 0.4);
-    osc.frequency.linearRampToValueAtTime(1320, now + 0.6);
-    osc.frequency.linearRampToValueAtTime(880, now + 0.8);
-
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 1.2);
-  } catch (e) {
-    console.warn("Audio alert unavailable:", e);
-  }
-}
-
-// Fuzzy & Character-Confusion Tolerant Plate Matching
-function isTargetMatch(detectedPlate, target) {
-  if (!detectedPlate || !target) return false;
-  const c1 = detectedPlate.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
-  const c2 = target.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
-  if (!c1 || !c2) return false;
-  if (c1 === c2 || c1.includes(c2) || c2.includes(c1)) return true;
-
-  // Character confusion mapping (O->0, I->1, Z->2, S->5, B->8)
-  const mapConfusion = (s) =>
-    s
-      .replace(/O/g, "0")
-      .replace(/I/g, "1")
-      .replace(/Z/g, "2")
-      .replace(/S/g, "5")
-      .replace(/B/g, "8");
-  const n1 = mapConfusion(c1);
-  const n2 = mapConfusion(c2);
-  return n1 === n2 || n1.includes(n2) || n2.includes(n1);
-}
-
 export default function AnprRadar({ onNavigateToOnboarding }) {
-  const [cameras, setCameras] = useState([]);
-  const [activeCam, setActiveCam] = useState(LAPTOP_CAMERA_OPTION);
-  const [plateLogs, setPlateLogs] = useState([]);
-  const [filterQuery, setFilterQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL"); // "ALL" | "HOTLIST" | "NORMAL"
-  const [autoScanActive, setAutoScanActive] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
-  const [activeOverlay, setActiveOverlay] = useState(null);
-  const [hotlistAlert, setHotlistAlert] = useState(null);
-  const [scanMessage, setScanMessage] = useState("");
-  const [uploadedImageSrc, setUploadedImageSrc] = useState(null);
-  const [webcamError, setWebcamError] = useState(null);
-  const [streamError, setStreamError] = useState(false);
+  // Sources & Stream State
+  const [sources, setSources] = useState([]);
+  const [selectedSourceId, setSelectedSourceId] = useState("demo_video");
+  const [isRunning, setIsRunning] = useState(false);
+  const [streamUrl, setStreamUrl] = useState("/api/anpr/stream");
+  const [fps, setFps] = useState(0);
 
-  // Target Plate Hunting state
-  const [targetPlate, setTargetPlate] = useState(null);
-  const [targetPlateRaw, setTargetPlateRaw] = useState(null);
-  const [isHuntingActive, setIsHuntingActive] = useState(false);
-  const [targetInterceptedAlert, setTargetInterceptedAlert] = useState(null);
+  // Search & Target Interception State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [activeTarget, setActiveTarget] = useState(null); // { plate, status: "CATCHED"|"NOT_SEEN_YET", event?: ... }
+  const [searchNotice, setSearchNotice] = useState(null); // { type: "info"|"warning"|"error", message: string }
+  const [uploadedPreview, setUploadedPreview] = useState(null);
 
-  const localVideoRef = useRef(null);
+  // Real Detection Logs State
+  const [events, setEvents] = useState([]);
+  const [logFilter, setLogFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL"); // "ALL" | "CATCHED" | "NORMAL"
+  const [previewCrop, setPreviewCrop] = useState(null); // Modal crop view
+
   const fileInputRef = useRef(null);
-  const targetPlateRef = useRef(null);
 
+  // 1. Fetch available sources on mount
   useEffect(() => {
-    targetPlateRef.current = targetPlateRaw || targetPlate || null;
-  }, [targetPlate, targetPlateRaw]);
-
-  // 1. Fetch Registered Cameras & Real Initial Events from Backend
-  useEffect(() => {
-    async function loadData() {
+    async function loadSources() {
       try {
-        // Fetch cameras from registry
-        const camRes = await fetch("/api/cameras");
-        if (camRes.ok) {
-          const camData = await camRes.json();
-          let camList = [];
-          if (Array.isArray(camData)) {
-            camList = camData;
-          } else if (camData.features && Array.isArray(camData.features)) {
-            camList = camData.features.map((f) => f.properties || f);
-          } else if (camData.cameras) {
-            camList = camData.cameras;
-          }
-
-          setCameras(camList);
-
-          // If a registered camera is LOCAL_WEBCAM, select it; otherwise default to LAPTOP_CAMERA_OPTION
-          const registeredWebcam = camList.find((c) => (c.source_type || "").toUpperCase() === "LOCAL_WEBCAM");
-          if (registeredWebcam) {
-            setActiveCam(registeredWebcam);
-          }
-        }
-
-        // Fetch real ANPR events from backend (no dummy data)
-        const eventsRes = await fetch("/api/anpr/events?limit=50");
-        if (eventsRes.ok) {
-          const eventsData = await eventsRes.json();
-          if (Array.isArray(eventsData)) {
-            setPlateLogs(
-              eventsData.map((e) => ({
-                id: e.event_id || `REC-${Date.now()}`,
-                timestamp: new Date(e.timestamp || Date.now()).toLocaleTimeString(),
-                plate: e.plate?.number || "UNKNOWN",
-                vehicle_type: e.vehicle?.type || "Car",
-                location: e.dept_name || "Gujarat Police - Control Station",
-                speed: e.speed || 48,
-                status: e.is_watchlist_match
-                  ? (e.watchlist_alert?.reason || "HOTLIST_STOLEN")
-                  : "NORMAL",
-                confidence: (e.plate?.confidence ? (e.plate.confidence <= 1.0 ? e.plate.confidence * 100 : e.plate.confidence) : 96.5).toFixed(1),
-                camera_code: e.camera_code || "LAPTOP-CAM",
-                watchlist_alert: e.watchlist_alert
-              }))
-            );
+        const res = await fetch("/api/anpr/sources");
+        if (res.ok) {
+          const data = await res.json();
+          setSources(data);
+          if (data.length > 0 && !selectedSourceId) {
+            setSelectedSourceId(data[0].id);
           }
         }
       } catch (err) {
-        console.error("Error loading ANPR data:", err);
+        console.error("Failed to fetch ANPR sources:", err);
       }
     }
-    loadData();
+
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/anpr/status");
+        if (res.ok) {
+          const data = await res.json();
+          setIsRunning(data.is_running);
+          setFps(data.fps || 0);
+          if (data.target_plate) {
+            setActiveTarget({
+              plate: data.target_plate,
+              status: data.is_target_catched ? "CATCHED" : "NOT_SEEN_YET",
+              event: data.catched_event
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to check ANPR status:", err);
+      }
+    }
+
+    loadSources();
+    checkStatus();
+    loadEvents();
   }, []);
 
-  // 2. Local Webcam Streaming if Active Camera is LOCAL_WEBCAM and not showing an uploaded photo
-  useEffect(() => {
-    let localStream = null;
-    if (!uploadedImageSrc && activeCam?.source_type === "LOCAL_WEBCAM") {
-      setWebcamError(null);
-      if (navigator.mediaDevices?.getUserMedia) {
-        navigator.mediaDevices
-          .getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false })
-          .then((stream) => {
-            localStream = stream;
-            if (localVideoRef.current) {
-              localVideoRef.current.srcObject = stream;
-              localVideoRef.current.play().catch(() => {});
-            }
-          })
-          .catch((err) => {
-            console.warn("Webcam access notice:", err);
-            setWebcamError(err.message || "Camera access permission denied or device not found.");
-          });
-      } else {
-        setWebcamError("Webcam is not supported or permission denied in this browser.");
-      }
-    }
-    return () => {
-      if (localStream) {
-        localStream.getTracks().forEach((t) => t.stop());
-      }
-    };
-  }, [activeCam, uploadedImageSrc]);
-
-  // Handle detection result from AI model
-  const handleDetectionResult = (data, isUpload = false) => {
-    if (!data.detected) {
-      if (isHuntingActive && targetPlateRef.current) {
-        setScanMessage(`🔍 Hunting target [${targetPlateRef.current}]... Scanning video feed.`);
-      } else {
-        setScanMessage(data.message || "No license plate recognized in this frame.");
-      }
-      setActiveOverlay(null);
-      setTimeout(() => setScanMessage(""), 4000);
-      return;
-    }
-
-    const currentTarget = targetPlateRef.current || targetPlate;
-    const isTargetMatchFound = Boolean(
-      data.is_target_match ||
-      (currentTarget && isTargetMatch(data.plate, currentTarget)) ||
-      (currentTarget && data.raw_plate && isTargetMatch(data.raw_plate, currentTarget))
-    );
-
-    const isHotlist = Boolean(data.is_watchlist_match) || isTargetMatchFound;
-    let statusText = "NORMAL";
-    if (isTargetMatchFound) {
-      statusText = "TARGET_INTERCEPTED";
-    } else if (isHotlist) {
-      statusText = data.watchlist_alert?.reason || "HOTLIST_STOLEN";
-    }
-
-    if (isTargetMatchFound) {
-      playInterceptionAlert();
-      setTargetInterceptedAlert({
-        plate: data.plate,
-        location: activeCam?.dept_name || "Gujarat Police - Control Station",
-        camera_code: activeCam?.camera_code || "LAPTOP-CAM",
-        confidence: data.confidence,
-        timestamp: new Date().toLocaleTimeString()
-      });
-      setScanMessage(`🚨 TARGET INTERCEPTED: Plate #${data.plate} matched locked target on camera!`);
-    } else if (isHotlist) {
-      setScanMessage(
-        `🚨 WATCHLIST ALERT: Plate #${data.plate} matched hotlist (${data.confidence}% confidence)!`
-      );
-    } else {
-      setScanMessage(`✓ Plate Tracked & Flagged: ${data.plate} (${data.confidence}% confidence)`);
-    }
-    setTimeout(() => setScanMessage(""), 6000);
-
-    const newRecord = {
-      id: data.event?.event_id || "REC-" + Date.now(),
-      timestamp: new Date().toLocaleTimeString(),
-      plate: data.plate,
-      vehicle_type: data.vehicle_type || "Car",
-      location: activeCam?.dept_name || "Gujarat Police - Control Station",
-      speed: Math.floor(48 + Math.random() * 8),
-      status: statusText,
-      confidence: data.confidence,
-      camera_code: activeCam?.camera_code || "LAPTOP-CAM",
-      watchlist_alert:
-        data.watchlist_alert ||
-        (isTargetMatchFound
-          ? {
-              reason: "TARGET_INTERCEPTED",
-              severity: "CRITICAL",
-              description: `Target plate ${currentTarget} actively intercepted on camera!`
-            }
-          : null)
-    };
-
-    // Flag bounding box directly onto the radar viewport
-    setActiveOverlay({
-      plate: data.plate,
-      confidence: data.confidence,
-      vehicle_type: data.vehicle_type || "Car",
-      status: statusText,
-      bbox: data.bounding_box,
-      frame_dimensions: data.frame_dimensions || [1076, 610],
-      isUpload,
-      isTargetHit: isTargetMatchFound
-    });
-
-    // If live webcam, remove box after 6s (or 10s if target hit). If uploaded photo, leave it flagged for user inspection!
-    if (!isUpload) {
-      setTimeout(() => {
-        setActiveOverlay(null);
-      }, isTargetMatchFound ? 10000 : 6000);
-    }
-
-    // Trigger alert banner if hotlist vehicle (and not already shown as target intercept banner)
-    if (isHotlist && !isTargetMatchFound) {
-      setHotlistAlert(newRecord);
-    }
-
-    setPlateLogs((prev) => [newRecord, ...prev.slice(0, 49)]);
-  };
-
-  // 3. Capture frame from Laptop Webcam and send to FastAPI /api/anpr/detect-frame
-  const captureWebcamFrameAndDetect = async () => {
-    if (!localVideoRef.current || localVideoRef.current.readyState < 2) {
-      setScanMessage("Waiting for camera feed to initialize...");
-      return;
-    }
-
-    const video = localVideoRef.current;
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const base64 = canvas.toDataURL("image/jpeg", 0.85);
-
-    setIsScanning(true);
-    setScanMessage(
-      isHuntingActive && targetPlateRef.current
-        ? `Optical search in progress for target [${targetPlateRef.current}]...`
-        : "Running YOLOv8 + PaddleOCR on live camera frame..."
-    );
-
+  // 2. Fetch Detection Events
+  const loadEvents = async () => {
     try {
-      const res = await fetch("/api/anpr/detect-frame", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          image_base64: base64,
-          camera_id: activeCam?.id || "LOCAL_LAPTOP_CAMERA",
-          camera_code: activeCam?.camera_code || "LAPTOP-CAM",
-          dept_name: activeCam?.dept_name || "Gujarat Police - Control Station",
-          target_plate: targetPlateRef.current
-        })
-      });
-
+      const res = await fetch("/api/anpr/events?limit=80");
       if (res.ok) {
         const data = await res.json();
-        handleDetectionResult(data, false);
-      } else {
-        setScanMessage("Detection failed. Verify backend is running on port 8000.");
+        setEvents(data);
       }
     } catch (err) {
-      console.error("Frame detection error:", err);
-      setScanMessage("Network error communicating with ANPR API.");
-    } finally {
-      setIsScanning(false);
+      console.error("Failed to fetch ANPR events:", err);
     }
   };
 
-  // 4. Handle file upload (photo of a car / number plate)
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // 3. Periodic Polling for Telemetry & Events when running
+  useEffect(() => {
+    let interval = null;
+    if (isRunning) {
+      interval = setInterval(async () => {
+        try {
+          const res = await fetch("/api/anpr/status");
+          if (res.ok) {
+            const data = await res.json();
+            setFps(data.fps || 0);
+            setIsRunning(data.is_running);
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result;
-      setUploadedImageSrc(base64);
-      setIsScanning(true);
-      setScanMessage("Analyzing uploaded plate photo with YOLOv8 + PaddleOCR...");
+            if (data.target_plate) {
+              if (data.is_target_catched && data.catched_event) {
+                setActiveTarget((prev) => ({
+                  ...prev,
+                  plate: data.target_plate,
+                  status: "CATCHED",
+                  event: data.catched_event
+                }));
+              }
+            }
+          }
+          loadEvents();
+        } catch (err) {
+          console.warn("Polling error:", err);
+        }
+      }, 2500);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRunning]);
 
+  // 4. Start / Stop Stream
+  const handleToggleStream = async () => {
+    if (isRunning) {
       try {
-        const res = await fetch("/api/anpr/detect-frame", {
+        await fetch("/api/anpr/stop", { method: "POST" });
+        setIsRunning(false);
+      } catch (err) {
+        console.error("Failed to stop stream:", err);
+      }
+    } else {
+      const curSource = sources.find((s) => s.id === selectedSourceId) || sources[0];
+      try {
+        const res = await fetch("/api/anpr/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            image_base64: base64,
-            camera_id: activeCam?.id || "LOCAL_LAPTOP_CAMERA",
-            camera_code: activeCam?.source_type === "LOCAL_WEBCAM" ? "LAPTOP-CAM" : (activeCam?.camera_code || "UPLOAD-PHOTO"),
-            dept_name: activeCam?.dept_name || "Gujarat Police - Control Station"
+            source_type: curSource?.source_type || "DEMO_VIDEO",
+            source_id: curSource?.id || "demo_video",
+            source_name: curSource?.name || "Demo Highway Video",
+            rtsp_url: curSource?.rtsp_url || ""
           })
         });
-
         if (res.ok) {
-          const data = await res.json();
-          handleDetectionResult(data, true);
-
-          if (data.detected && data.plate) {
-            const detectedPlate = data.plate;
-            const rawPlate = data.raw_plate || data.plate;
-            setTargetPlate(detectedPlate);
-            setTargetPlateRaw(rawPlate);
-            setIsHuntingActive(true);
-            setTargetInterceptedAlert(null);
-
-            setScanMessage(`🎯 TARGET NUMBER PLATE LOCKED: [${detectedPlate}] — Activating webcam to track vehicle...`);
-
-            // After 2.5s showing photo + box, automatically switch to live laptop camera feed and start hunting!
-            setTimeout(() => {
-              setUploadedImageSrc(null);
-              setActiveOverlay(null);
-              setActiveCam(LAPTOP_CAMERA_OPTION);
-              setAutoScanActive(true);
-              setScanMessage(`🔍 HUNTING ACTIVE: Searching live camera feed for target [${detectedPlate}]...`);
-            }, 2500);
-          }
-        } else {
-          setScanMessage("Failed to process uploaded image.");
+          setIsRunning(true);
+          setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
         }
       } catch (err) {
-        console.error("Upload error:", err);
-        setScanMessage("Network error during image analysis.");
-      } finally {
-        setIsScanning(false);
+        console.error("Failed to start stream:", err);
       }
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  };
-
-  // Cancel active target hunting
-  const handleClearTarget = () => {
-    setTargetPlate(null);
-    setTargetPlateRaw(null);
-    setIsHuntingActive(false);
-    setTargetInterceptedAlert(null);
-    setScanMessage("Target tracking cancelled. Returned to standard surveillance.");
-    setTimeout(() => setScanMessage(""), 3000);
-  };
-
-  // Return from uploaded image back to live laptop camera
-  const handleReturnToLiveCam = () => {
-    setUploadedImageSrc(null);
-    setActiveOverlay(null);
-    setScanMessage("Returned to live laptop camera feed.");
-    setTimeout(() => setScanMessage(""), 2500);
-  };
-
-  // 5. Automated Live Plate Capture when Auto Scan is toggled ON
-  useEffect(() => {
-    if (!autoScanActive || uploadedImageSrc) return;
-
-    const scanDelay = isHuntingActive ? 2000 : 3500;
-    const interval = setInterval(() => {
-      if (activeCam?.source_type === "LOCAL_WEBCAM") {
-        captureWebcamFrameAndDetect();
-      }
-    }, scanDelay);
-
-    return () => clearInterval(interval);
-  }, [autoScanActive, activeCam, uploadedImageSrc, isHuntingActive]);
-
-  // Clear all detection logs
-  const handleClearLogs = async () => {
-    setPlateLogs([]);
-    try {
-      await fetch("/api/anpr/events", { method: "DELETE" });
-    } catch (err) {
-      console.warn("Clear logs error:", err);
     }
   };
 
-  // Export ANPR detections as CSV
+  // 5. Change Selected Source
+  const handleSelectSource = async (sourceId) => {
+    setSelectedSourceId(sourceId);
+    const targetSource = sources.find((s) => s.id === sourceId);
+    if (!targetSource) return;
+
+    try {
+      const res = await fetch("/api/anpr/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source_type: targetSource.source_type,
+          source_id: targetSource.id,
+          source_name: targetSource.name,
+          rtsp_url: targetSource.rtsp_url || ""
+        })
+      });
+      if (res.ok) {
+        setIsRunning(true);
+        setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
+      }
+    } catch (err) {
+      console.error("Failed to switch source:", err);
+    }
+  };
+
+  // 6. Search by Number Plate Text
+  const handleSearchText = async (e) => {
+    e.preventDefault();
+    const clean = searchQuery.trim().toUpperCase();
+    if (!clean) return;
+
+    setIsSearching(true);
+    setSearchNotice(null);
+
+    try {
+      const res = await fetch("/api/anpr/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plate_number: clean })
+      });
+      const data = await res.json();
+
+      if (data.status === "CATCHED") {
+        setActiveTarget({
+          plate: clean,
+          status: "CATCHED",
+          event: data.event
+        });
+        setSearchNotice({
+          type: "success",
+          message: data.message || "🚨 TARGET CATCHED! Vehicle intercepted in camera logs."
+        });
+      } else {
+        setActiveTarget({
+          plate: clean,
+          status: "NOT_SEEN_YET"
+        });
+        setSearchNotice({
+          type: "info",
+          message: `ℹ️ Not seen yet. Target ${clean} is locked! Actively scanning video streams across cameras...`
+        });
+      }
+      loadEvents();
+    } catch (err) {
+      console.error("Search error:", err);
+      setSearchNotice({ type: "error", message: "Error contacting ANPR search service." });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // 7. Search by Image Upload (Vehicle / Plate Photo)
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsSearching(true);
+    setSearchNotice(null);
+
+    // Show local preview
+    const previewReader = new FileReader();
+    previewReader.onload = () => setUploadedPreview(previewReader.result);
+    previewReader.readAsDataURL(file);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/anpr/search-image", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+
+      if (data.status === "NOT_RECOGNIZED") {
+        setSearchNotice({
+          type: "warning",
+          message: "⚠️ Could not recognize a number plate in the uploaded image. Please try a clearer photo or enter plate text manually."
+        });
+      } else if (data.status === "CATCHED") {
+        setActiveTarget({
+          plate: data.extracted_plate || data.target_plate,
+          status: "CATCHED",
+          event: data.event
+        });
+        setSearchNotice({
+          type: "success",
+          message: `🚨 TARGET CATCHED! Plate recognized: ${data.extracted_plate}. Vehicle was intercepted on ${data.event?.dept_name || "Camera"}!`
+        });
+      } else if (data.status === "NOT_SEEN_YET") {
+        setActiveTarget({
+          plate: data.extracted_plate || data.target_plate,
+          status: "NOT_SEEN_YET"
+        });
+        setSearchNotice({
+          type: "info",
+          message: `ℹ️ Plate recognized: ${data.extracted_plate}. Status: Not seen yet. Target locked and actively scanning video streams...`
+        });
+      }
+      loadEvents();
+    } catch (err) {
+      console.error("Image upload error:", err);
+      setSearchNotice({ type: "error", message: "Failed to process vehicle image." });
+    } finally {
+      setIsSearching(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  // 8. Clear Active Target Search
+  const handleClearTarget = async () => {
+    try {
+      await fetch("/api/anpr/clear-target", { method: "POST" });
+    } catch (err) {
+      console.warn("Clear target error:", err);
+    }
+    setActiveTarget(null);
+    setSearchNotice(null);
+    setSearchQuery("");
+    setUploadedPreview(null);
+  };
+
+  // 9. Clear All Detection Logs
+  const handleClearLogs = async () => {
+    if (!window.confirm("Are you sure you want to clear all ANPR detection logs?")) return;
+    try {
+      await fetch("/api/anpr/events", { method: "DELETE" });
+      setEvents([]);
+    } catch (err) {
+      console.error("Failed to clear logs:", err);
+    }
+  };
+
+  // 10. Export Logs to CSV
   const handleExportCsv = () => {
-    if (plateLogs.length === 0) return;
-    const headers = "id,timestamp,camera_code,plate,vehicle_type,location,speed_kmh,status,confidence\n";
-    const rows = plateLogs
+    if (events.length === 0) return;
+    const headers = "event_id,timestamp,camera,vehicle_type,plate_number,confidence,status\n";
+    const rows = events
       .map(
-        (r) =>
-          `"${r.id}","${r.timestamp}","${r.camera_code}","${r.plate}","${r.vehicle_type}","${r.location}",${r.speed},"${r.status}",${r.confidence}`
+        (e) =>
+          `"${e.event_id}","${e.timestamp}","${e.dept_name || e.camera_name || e.camera_id}","${e.vehicle?.type || "Car"}","${e.plate?.number || ""}","${e.plate?.confidence || 0.9}","${e.status || "NORMAL"}"`
       )
       .join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `gujarat_anpr_detections_${Date.now()}.csv`;
+    a.download = `anpr_detections_${Date.now()}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  // Compute bounding box CSS position dynamically
-  const getOverlayStyle = () => {
-    if (!activeOverlay || !activeOverlay.bbox) return {};
-    const [bx, by, bw, bh] = activeOverlay.bbox;
-    const [fw, fh] = activeOverlay.frame_dimensions || [1076, 610];
-    if (fw <= 0 || fh <= 0) return { top: "25%", left: "20%", width: "60%", height: "50%" };
-
-    const left = Math.max(0, Math.min(95, (bx / fw) * 100));
-    const top = Math.max(0, Math.min(95, (by / fh) * 100));
-    const width = Math.max(4, Math.min(100 - left, (bw / fw) * 100));
-    const height = Math.max(4, Math.min(100 - top, (bh / fh) * 100));
-
-    return {
-      left: `${left}%`,
-      top: `${top}%`,
-      width: `${width}%`,
-      height: `${height}%`
-    };
-  };
-
-  // Filtered Logs
-  const filteredLogs = plateLogs.filter((log) => {
-    if (filterQuery && !log.plate.toLowerCase().includes(filterQuery.toLowerCase())) {
+  // Filtered Events
+  const filteredEvents = events.filter((ev) => {
+    const plateText = (ev.plate?.number || ev.plate?.raw_number || "").toLowerCase();
+    if (logFilter && !plateText.includes(logFilter.toLowerCase())) {
       return false;
     }
-    if (statusFilter === "HOTLIST" && log.status === "NORMAL") {
+    if (statusFilter === "CATCHED" && !ev.is_target_catched && ev.status !== "TARGET_CATCHED") {
       return false;
     }
-    if (statusFilter === "NORMAL" && log.status !== "NORMAL") {
+    if (statusFilter === "NORMAL" && (ev.is_target_catched || ev.status === "TARGET_CATCHED")) {
       return false;
     }
     return true;
   });
 
+  const activeSource = sources.find((s) => s.id === selectedSourceId) || sources[0];
+
   return (
     <div className="anpr-radar-container">
-      {/* TARGET INTERCEPTED CRITICAL ALERT BANNER */}
-      {targetInterceptedAlert && (
-        <div className="anpr-target-intercepted-banner">
-          <div className="intercept-icon-wrap">
-            <Target size={24} className="animate-spin" />
-          </div>
-          <div className="intercept-content">
-            <h4>🎯 TARGET NUMBER PLATE INTERCEPTED!</h4>
-            <p>
-              Vehicle with target plate <strong className="highlight-plate">{targetInterceptedAlert.plate}</strong> was recognized and intercepted by AI vision radar!
-            </p>
-            <div className="intercept-meta-row">
-              <span>📍 Location: <strong>{targetInterceptedAlert.location}</strong></span>
-              <span>📷 Camera: <strong>{targetInterceptedAlert.camera_code}</strong></span>
-              <span>⚡ Accuracy: <strong>{targetInterceptedAlert.confidence}%</strong></span>
-              <span>🕒 Time: <strong>{targetInterceptedAlert.timestamp}</strong></span>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="intercept-ack-btn"
-            onClick={() => setTargetInterceptedAlert(null)}
-          >
-            Acknowledge Interception
-          </button>
-        </div>
-      )}
-
-      {/* HOTLIST CRITICAL ALERT BANNER */}
-      {hotlistAlert && (
-        <div className="anpr-hotlist-alert-banner">
-          <div className="alert-badge">
-            <Bell size={18} className="animate-bounce" />
-            <span>CRITICAL HOTLIST ALERT</span>
-          </div>
-          <div className="alert-details">
-            <strong>Plate #{hotlistAlert.plate}</strong>
-            <span>
-              Flagged as <em>{hotlistAlert.status.replace(/_/g, " ")}</em> at {hotlistAlert.location} (Camera {hotlistAlert.camera_code})
-              {hotlistAlert.watchlist_alert?.description && ` — ${hotlistAlert.watchlist_alert.description}`}
-            </span>
-          </div>
-          <button
-            type="button"
-            className="dismiss-alert-btn"
-            onClick={() => setHotlistAlert(null)}
-          >
-            Acknowledge Alert
-          </button>
-        </div>
-      )}
-
-      {/* TOP HEADER CONTROLS */}
+      {/* 1. TOP HEADER & TELEMETRY */}
       <div className="anpr-header">
-        <div className="header-info">
-          <div className="eyebrow-tag">
-            <Shield size={13} />
-            <span>AI NUMBER PLATE RECOGNITION (ANPR)</span>
+        <div className="anpr-title-group">
+          <div className="anpr-badge">
+            <Radio size={14} className="radar-pulse-icon" />
+            <span>GUJARAT SENTINEL ANPR INTELLIGENCE</span>
           </div>
-          <h2>ANPR Live Surveillance & Vehicle Radar</h2>
-          <p className="page-description">
-            Live optical recognition powered by YOLOv8 and PaddleOCR. Hold a vehicle number plate to your laptop camera or upload an image to run real-time inference.
-          </p>
+          <h2>Automated Number Plate Recognition (ANPR) & Interception</h2>
+          <p>Real-time vehicle detection, HSRP optical character recognition, and suspect vehicle matching.</p>
         </div>
 
-        {/* CONTROLS */}
-        <div className="anpr-header-actions" style={{ flexWrap: "wrap", gap: "10px" }}>
-          {/* Active Camera Selector */}
-          <div className="anpr-cam-picker">
-            <label>Camera Source:</label>
+        {/* CONTROLS: SOURCE SELECTOR & STREAM TOGGLE */}
+        <div className="anpr-quick-controls">
+          <div className="select-cam-wrap">
+            <Sliders size={14} className="select-icon" />
             <select
-              value={activeCam?.id || "LOCAL_LAPTOP_CAMERA"}
-              onChange={(e) => {
-                const val = e.target.value;
-                setUploadedImageSrc(null);
-                setActiveOverlay(null);
-                if (val === "LOCAL_LAPTOP_CAMERA") {
-                  setActiveCam(LAPTOP_CAMERA_OPTION);
-                  return;
-                }
-                const found = cameras.find((c) => String(c.id || c.camera_code) === val);
-                if (found) setActiveCam(found);
-              }}
+              value={selectedSourceId}
+              onChange={(e) => handleSelectSource(e.target.value)}
+              className="anpr-select"
             >
-              {/* Guaranteed Laptop Camera Option */}
-              <option value="LOCAL_LAPTOP_CAMERA">💻 Laptop Camera (Live Webcam)</option>
-
-              {/* Registered cameras from database */}
-              {cameras
-                .filter((c) => c.id !== "LOCAL_LAPTOP_CAMERA")
-                .map((c) => (
-                  <option key={c.id || c.camera_code} value={c.id || c.camera_code}>
-                    {c.camera_code} ({(c.source_type === "LOCAL_WEBCAM" ? "💻 LAPTOP WEBCAM" : c.camera_type || "CCTV")}) - {c.dept_name}
+              <optgroup label="Core Video & Local Feeds">
+                {sources.filter(s => s.source_type !== "CAMERA").map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
                   </option>
                 ))}
+              </optgroup>
+              <optgroup label="Registered Gujarat Sentinel CCTV Grid">
+                {sources.filter(s => s.source_type === "CAMERA").map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </optgroup>
             </select>
           </div>
 
-          {/* Trigger Scan Button (Webcam Mode) */}
-          {!uploadedImageSrc && activeCam?.source_type === "LOCAL_WEBCAM" && (
-            <button
-              type="button"
-              className="anpr-scan-btn"
-              onClick={captureWebcamFrameAndDetect}
-              disabled={isScanning}
-              title="Capture live webcam frame and run YOLO + OCR"
-            >
-              {isScanning ? <RefreshCw size={14} className="animate-spin" /> : <Camera size={14} />}
-              <span>{isScanning ? "Processing..." : "Scan Laptop Camera"}</span>
-            </button>
-          )}
+          <button
+            type="button"
+            className={`anpr-action-btn btn-scan ${isRunning ? "btn-active" : ""}`}
+            onClick={handleToggleStream}
+          >
+            {isRunning ? (
+              <>
+                <Square size={14} fill="currentColor" />
+                <span>Stop Stream</span>
+              </>
+            ) : (
+              <>
+                <Play size={14} fill="currentColor" />
+                <span>Start Stream</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
 
-          {/* Upload Image Test Button */}
+      {/* 2. DUAL-MODE TARGET SEARCH BAR (TEXT + IMAGE UPLOAD) */}
+      <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "12px", padding: "16px 20px", marginBottom: "20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Crosshair size={18} style={{ color: "#38bdf8" }} />
+            <strong style={{ fontSize: "14px", color: "#f8fafc", letterSpacing: "0.5px" }}>
+              TARGET VEHICLE SEARCH & INTERCEPTION
+            </strong>
+          </div>
+          <span style={{ fontSize: "12px", color: "#94a3b8" }}>
+            Enter number plate text OR upload a car photo to lock and track.
+          </span>
+        </div>
+
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+          {/* TEXT SEARCH FORM */}
+          <form onSubmit={handleSearchText} style={{ display: "flex", gap: "8px", flex: 1, minWidth: "280px" }}>
+            <div style={{ position: "relative", flex: 1 }}>
+              <Search size={15} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b" }} />
+              <input
+                type="text"
+                placeholder="Enter plate number (e.g. 16J921, GJ01AB1234)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "9px 12px 9px 36px",
+                  background: "#1e293b",
+                  border: "1px solid #334155",
+                  borderRadius: "8px",
+                  color: "#ffffff",
+                  fontSize: "13px",
+                  fontFamily: "monospace",
+                  fontWeight: 600,
+                  outline: "none"
+                }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSearching || !searchQuery.trim()}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "9px 16px",
+                background: "#0284c7",
+                border: "none",
+                borderRadius: "8px",
+                color: "#ffffff",
+                fontSize: "13px",
+                fontWeight: 700,
+                cursor: "pointer",
+                opacity: isSearching || !searchQuery.trim() ? 0.6 : 1
+              }}
+            >
+              <Search size={14} />
+              <span>{isSearching ? "Searching..." : "Search & Track"}</span>
+            </button>
+          </form>
+
+          {/* DIVIDER */}
+          <span style={{ color: "#475569", fontSize: "12px", fontWeight: 700 }}>OR</span>
+
+          {/* IMAGE UPLOAD BUTTON */}
           <input
-            type="file"
             ref={fileInputRef}
-            onChange={handleImageUpload}
+            type="file"
             accept="image/*"
             style={{ display: "none" }}
+            onChange={handleImageUpload}
           />
           <button
             type="button"
-            className="anpr-toggle-btn"
             onClick={() => fileInputRef.current?.click()}
-            title="Upload photo of a vehicle or plate to test OCR"
+            disabled={isSearching}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "9px 16px",
+              background: "#334155",
+              border: "1px solid #475569",
+              borderRadius: "8px",
+              color: "#f8fafc",
+              fontSize: "13px",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s"
+            }}
           >
             <Upload size={14} />
-            <span>Upload Plate Image</span>
+            <span>Upload Vehicle / Plate Photo</span>
           </button>
 
-          {/* Toggle Auto Scan */}
-          {!uploadedImageSrc && activeCam?.source_type === "LOCAL_WEBCAM" && (
+          {/* CLEAR TARGET BUTTON IF ACTIVE */}
+          {activeTarget && (
             <button
               type="button"
-              className={`anpr-toggle-btn ${autoScanActive ? "active" : ""}`}
-              onClick={() => setAutoScanActive(!autoScanActive)}
-              title="Automatically scan webcam frames every 3.5 seconds"
+              onClick={handleClearTarget}
+              className="clear-target-btn"
             >
-              <Radio size={14} />
-              <span>{autoScanActive ? "Auto Scan: ON" : "Auto Scan: OFF"}</span>
+              <X size={13} />
+              <span>Clear Target</span>
             </button>
           )}
         </div>
-      </div>
 
-      {/* SCAN FEEDBACK STATUS */}
-      {scanMessage && (
-        <div style={{
-          background: "rgba(56, 189, 248, 0.12)",
-          border: "1px solid rgba(56, 189, 248, 0.3)",
-          color: "#38bdf8",
-          padding: "8px 16px",
-          borderRadius: "8px",
-          fontSize: "12px",
-          fontWeight: 600,
-          marginBottom: "16px",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}>
-          <Activity size={14} className="animate-pulse" />
-          <span>{scanMessage}</span>
-        </div>
-      )}
-
-      {/* KPI METRICS ROW */}
-      <div className="anpr-kpi-row">
-        <div className="anpr-kpi-card">
-          <span className="kpi-label">Plates Captured</span>
-          <strong className="kpi-val">{plateLogs.length}</strong>
-          <span className="kpi-sub">Total Live Detections</span>
-        </div>
-        <div className="anpr-kpi-card alert">
-          <span className="kpi-label">Hotlist Hits</span>
-          <strong className="kpi-val">
-            {plateLogs.filter((p) => p.status !== "NORMAL").length}
-          </strong>
-          <span className="kpi-sub">Watchlist Matches</span>
-        </div>
-        <div className="anpr-kpi-card">
-          <span className="kpi-label">Active Camera</span>
-          <strong className="kpi-val" style={{ fontSize: "16px", color: "#38bdf8" }}>
-            {uploadedImageSrc ? "PHOTO UPLOAD" : (activeCam?.camera_code || "LAPTOP-CAM")}
-          </strong>
-          <span className="kpi-sub">
-            {uploadedImageSrc ? "Static Image Analyzed" : (activeCam?.source_type === "LOCAL_WEBCAM" ? "Live Webcam Active" : "CCTV Stream")}
-          </span>
-        </div>
-        <div className="anpr-kpi-card">
-          <span className="kpi-label">AI Engine</span>
-          <strong className="kpi-val" style={{ fontSize: "15px", color: "#10b981" }}>YOLOv8 + PaddleOCR</strong>
-          <span className="kpi-sub">Backend Port 8000 Ready</span>
-        </div>
-      </div>
-
-      {/* ACTIVE TARGET HUNTING HUD BAR */}
-      {targetPlate && (
-        <div className="anpr-target-hunt-bar">
-          <div className="hunt-left">
-            <div className="hunt-badge">
-              <Target size={14} className={isHuntingActive ? "animate-spin" : ""} />
-              <span>LOCKED SEARCH TARGET</span>
-            </div>
-            <div className="hunt-plate">
-              <span className="hunt-ind">IND</span>
-              <strong>{targetPlate}</strong>
-            </div>
-            <div className="hunt-status">
-              {targetInterceptedAlert ? (
-                <span className="status-intercepted">🎯 TARGET INTERCEPTED ON CAMERA!</span>
-              ) : (
-                <span className="status-hunting">
-                  <span className="pulsar-dot"></span>
-                  SCANNING CAMERA FEEDS...
-                </span>
-              )}
-            </div>
-          </div>
-          <button
-            type="button"
-            className="clear-target-btn"
-            onClick={handleClearTarget}
-            title="Cancel search for this plate"
+        {/* SEARCH NOTIFICATION BANNER */}
+        {searchNotice && (
+          <div
+            style={{
+              marginTop: "12px",
+              padding: "10px 14px",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              background:
+                searchNotice.type === "success"
+                  ? "rgba(16, 185, 129, 0.15)"
+                  : searchNotice.type === "warning"
+                  ? "rgba(234, 179, 8, 0.15)"
+                  : searchNotice.type === "error"
+                  ? "rgba(239, 68, 68, 0.15)"
+                  : "rgba(56, 189, 248, 0.15)",
+              border:
+                searchNotice.type === "success"
+                  ? "1px solid rgba(16, 185, 129, 0.4)"
+                  : searchNotice.type === "warning"
+                  ? "1px solid rgba(234, 179, 8, 0.4)"
+                  : searchNotice.type === "error"
+                  ? "1px solid rgba(239, 68, 68, 0.4)"
+                  : "1px solid rgba(56, 189, 248, 0.4)",
+              color:
+                searchNotice.type === "success"
+                  ? "#34d399"
+                  : searchNotice.type === "warning"
+                  ? "#facc15"
+                  : searchNotice.type === "error"
+                  ? "#f87171"
+                  : "#38bdf8"
+            }}
           >
-            <X size={13} />
-            <span>Cancel Search</span>
-          </button>
-        </div>
+            {searchNotice.type === "success" ? (
+              <CheckCircle2 size={16} />
+            ) : searchNotice.type === "warning" ? (
+              <AlertTriangle size={16} />
+            ) : (
+              <Activity size={16} />
+            )}
+            <span>{searchNotice.message}</span>
+          </div>
+        )}
+      </div>
+
+      {/* 3. TARGET STATUS BANNER: "CATCHED" vs "NOT SEEN YET" */}
+      {activeTarget && (
+        activeTarget.status === "CATCHED" ? (
+          /* CATCHED BANNER */
+          <div className="anpr-target-intercepted-banner">
+            <div className="intercept-icon-wrap" style={{ background: "#ef4444" }}>
+              <AlertTriangle size={24} />
+            </div>
+            <div className="intercept-content">
+              <h4 style={{ color: "#fee2e2" }}>🚨 TARGET VEHICLE CATCHED!</h4>
+              <p>
+                Suspect vehicle matching target plate{" "}
+                <span className="highlight-plate">{activeTarget.plate}</span> was intercepted on the surveillance grid!
+              </p>
+              <div className="intercept-meta-row">
+                <span>📍 Camera: <strong>{activeTarget.event?.dept_name || activeTarget.event?.camera_name || "Surveillance Grid"}</strong></span>
+                <span>🕒 Intercepted at: <strong>{new Date(activeTarget.event?.timestamp || Date.now()).toLocaleTimeString()}</strong></span>
+                <span>🚗 Vehicle Class: <strong>{activeTarget.event?.vehicle?.type || "Car"}</strong></span>
+                {activeTarget.event?.crop_url && (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    📷 Plate Snapshot:
+                    <img
+                      src={activeTarget.event.crop_url}
+                      alt="Crop"
+                      style={{ height: "24px", borderRadius: "3px", border: "1px solid #10b981", verticalAlign: "middle", cursor: "pointer" }}
+                      onClick={() => setPreviewCrop(activeTarget.event.crop_url)}
+                    />
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="intercept-ack-btn"
+              onClick={handleClearTarget}
+            >
+              Dismiss Alert
+            </button>
+          </div>
+        ) : (
+          /* NOT SEEN YET BANNER */
+          <div className="anpr-target-hunt-bar">
+            <div className="hunt-left">
+              <div className="hunt-badge">
+                <Crosshair size={13} />
+                <span>SEARCH TARGET ACTIVE</span>
+              </div>
+              <div className="hunt-plate">
+                <span className="hunt-ind">IND</span>
+                <strong>{activeTarget.plate}</strong>
+              </div>
+              <div className="hunt-status status-hunting">
+                <span className="pulsar-dot"></span>
+                <span>Status: <strong>Not seen yet</strong> &bull; Actively scanning video stream...</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="clear-target-btn"
+              onClick={handleClearTarget}
+            >
+              <X size={13} />
+              <span>Cancel Search</span>
+            </button>
+          </div>
+        )
       )}
 
-      {/* SPLIT LAYOUT: LIVE VIDEO FEED (LEFT) + DETECTION LOG TABLE (RIGHT) */}
-      <div className="anpr-split-layout">
-        {/* LEFT: LIVE ANPR CAMERA VIEWPORT WITH BOUNDING BOX */}
+      {/* 4. MAIN WORKSPACE: LEFT LIVE STREAM + RIGHT DETECTION LOGS */}
+      <div className="anpr-main-grid">
+        {/* LEFT: LIVE MJPEG STREAM */}
         <div className="anpr-video-card">
           <div className="video-card-header">
-            <div className="cam-title">
-              {uploadedImageSrc ? (
-                <>
-                  <span className="upload-indicator-dot">● PHOTO</span>
-                  <strong>Uploaded Plate Image</strong>
-                  <span className="dept-tag">Zone Detection Active</span>
-                </>
-              ) : (
-                <>
-                  <span className="live-dot">● LIVE</span>
-                  <strong>{activeCam?.camera_code || "LAPTOP-CAM"}</strong>
-                  <span className="dept-tag">
-                    {activeCam?.source_type === "LOCAL_WEBCAM" ? "💻 Laptop Webcam Feed" : activeCam?.dept_name}
-                  </span>
-                </>
-              )}
+            <div className="cam-title-info">
+              <Camera size={16} className="cam-icon" />
+              <div>
+                <strong>{activeSource?.name || "Active Source"}</strong>
+                <span className="cam-loc-tag">{activeSource?.location || "Gujarat Surveillance"}</span>
+              </div>
             </div>
 
-            {uploadedImageSrc ? (
-              <button
-                type="button"
-                className="return-cam-btn"
-                onClick={handleReturnToLiveCam}
-                title="Return to live laptop camera feed"
-              >
-                <ArrowLeft size={12} />
-                <span>Return to Live Camera</span>
-              </button>
-            ) : (
-              <span className="feed-specs">
-                {activeCam?.source_type === "LOCAL_WEBCAM" ? "Webcam Active (Hold plate to camera)" : "1080p @ 30 FPS • AI Radar"}
+            <div className="stream-badge-group">
+              <span className={`live-feed-pill ${isRunning ? "status-online" : "status-offline"}`}>
+                <span className="live-dot"></span>
+                {isRunning ? "LIVE AI INFERENCE" : "STREAM PAUSED"}
               </span>
-            )}
+              {isRunning && <span className="fps-counter">{fps} FPS</span>}
+            </div>
           </div>
 
-          <div className="anpr-viewport">
-            {/* 1. Uploaded Image View with Flagged Bounding Box */}
-            {uploadedImageSrc ? (
-              <div className="anpr-media-frame">
-                <img
-                  src={uploadedImageSrc}
-                  alt="Uploaded Vehicle Frame"
-                  className="anpr-display-media"
-                />
-                {activeOverlay && (
-                  <div
-                    className={`anpr-bounding-box ${
-                      activeOverlay.isTargetHit
-                        ? "box-target-intercepted"
-                        : activeOverlay.status !== "NORMAL"
-                        ? "box-alert"
-                        : ""
-                    }`}
-                    style={getOverlayStyle()}
-                  >
-                    <div className="box-corners"></div>
-                    <div className="detected-plate-badge">
-                      <div className="hsrp-flag">
-                        <span className="ind-text">IND</span>
-                      </div>
-                      <strong className="plate-text">{activeOverlay.plate}</strong>
-                    </div>
-                    <div className="detection-meta-tag">
-                      <span>
-                        {activeOverlay.isTargetHit
-                          ? "🎯 TARGET INTERCEPTED"
-                          : activeOverlay.status !== "NORMAL"
-                          ? "🚨 " + activeOverlay.status.replace(/_/g, " ")
-                          : "✓ " + activeOverlay.vehicle_type}
-                      </span>
-                      <span>{activeOverlay.confidence}% CONFIDENCE</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : activeCam?.source_type === "LOCAL_WEBCAM" ? (
-              /* 2. Live Laptop Webcam Stream */
-              webcamError ? (
-                <div className="anpr-webcam-error-box">
-                  <AlertTriangle size={36} color="#f87171" />
-                  <p className="webcam-error-title">Webcam Access Notice</p>
-                  <span className="webcam-error-sub">{webcamError}</span>
-                  <span className="webcam-help-hint">
-                    Please allow camera access in your browser, or click <strong>&quot;Upload Plate Image&quot;</strong> above to test with any vehicle photo.
-                  </span>
-                </div>
-              ) : (
-                <div className="anpr-media-frame webcam-frame">
-                  <video
-                    ref={localVideoRef}
-                    className="anpr-display-media video-mode"
-                    autoPlay
-                    playsInline
-                    muted
-                  />
-                  {/* Hunting reticle laser crosshair */}
-                  {isHuntingActive && targetPlate && !targetInterceptedAlert && (
-                    <div className="anpr-target-scanner-crosshair">
-                      <div className="reticle-line-scan"></div>
-                      <div className="reticle-text">
-                        <Crosshair size={12} className="animate-spin" />
-                        <span>HUNTING: {targetPlate}</span>
-                      </div>
-                    </div>
-                  )}
-                  {activeOverlay && (
-                    <div
-                      className={`anpr-bounding-box ${
-                        activeOverlay.isTargetHit
-                          ? "box-target-intercepted"
-                          : activeOverlay.status !== "NORMAL"
-                          ? "box-alert"
-                          : ""
-                      }`}
-                      style={getOverlayStyle()}
-                    >
-                      <div className="box-corners"></div>
-                      <div className="detected-plate-badge">
-                        <div className="hsrp-flag">
-                          <span className="ind-text">IND</span>
-                        </div>
-                        <strong className="plate-text">{activeOverlay.plate}</strong>
-                      </div>
-                      <div className="detection-meta-tag">
-                        <span>
-                          {activeOverlay.isTargetHit
-                            ? "🎯 TARGET INTERCEPTED"
-                            : activeOverlay.status !== "NORMAL"
-                            ? "🚨 " + activeOverlay.status.replace(/_/g, " ")
-                            : "✓ " + activeOverlay.vehicle_type}
-                        </span>
-                        <span>{activeOverlay.confidence}% CONFIDENCE</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )
-            ) : activeCam ? (
-              /* 3. CCTV RTSP Stream */
-              <div className="anpr-media-frame">
-                <img
-                  src={`/api/cameras/${activeCam.id || activeCam.camera_code}/stream?t=${Date.now()}`}
-                  alt="ANPR Stream"
-                  className="anpr-display-media"
-                  onError={() => setStreamError(true)}
-                />
-                {streamError && (
-                  <div className="anpr-fallback-sim">
-                    <div className="sim-scanline"></div>
-                    <div className="anpr-hud-target"></div>
-                    <p>RADAR SCANNING ZONE</p>
-                    <span>{activeCam?.rtsp_url || "RTSP Stream Offline"}</span>
-                  </div>
-                )}
-              </div>
+          <div className="video-screen-wrapper">
+            {isRunning ? (
+              <img
+                src={streamUrl}
+                alt="Live ANPR Stream"
+                className="anpr-video-element"
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+                onError={() => {
+                  console.warn("MJPEG stream reconnecting...");
+                }}
+              />
             ) : (
-              /* 4. Fallback when nothing selected */
-              <div className="anpr-fallback-sim">
-                <div className="sim-scanline"></div>
-                <div className="anpr-hud-target"></div>
-                <p>RADAR SCANNING ZONE</p>
-                <span>Select a camera or upload an image</span>
+              <div className="stream-offline-overlay">
+                <Camera size={44} className="offline-cam-icon" />
+                <p>AI STREAM PAUSED</p>
+                <span>Select source and click &quot;Start Stream&quot; to begin real-time vehicle and plate tracking</span>
+                <button
+                  type="button"
+                  className="anpr-action-btn btn-scan"
+                  style={{ marginTop: "14px" }}
+                  onClick={handleToggleStream}
+                >
+                  <Play size={14} fill="currentColor" />
+                  <span>Start Stream</span>
+                </button>
               </div>
             )}
 
-            {/* STATIC HUD METADATA */}
-            <div className="anpr-hud-osd top-left">
-              <span>{uploadedImageSrc ? "PHOTO INFERENCE MODE" : "ACTIVE ANPR OPTICAL TRACKER"}</span>
-              <code>{uploadedImageSrc ? "FILE: UPLOADED PLATE PHOTO" : (activeCam?.source_type === "LOCAL_WEBCAM" ? "LOCAL LAPTOP WEBCAM (LIVE)" : "CCTV GRID MONITORED")}</code>
-            </div>
-            <div className="anpr-hud-osd bottom-left">
-              <span>{uploadedImageSrc ? "INPUT: HIGH-RES STILL IMAGE" : (activeCam?.ip_address || "127.0.0.1")}</span>
-            </div>
+            {/* RADAR TARGETING RETICLE OVERLAY WHEN SEARCHING */}
+            {activeTarget && activeTarget.status === "NOT_SEEN_YET" && isRunning && (
+              <div className="anpr-target-scanner-crosshair">
+                <div className="reticle-line-scan"></div>
+                <div className="reticle-text">
+                  <Crosshair size={12} />
+                  <span>FINDING: {activeTarget.plate}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* RIGHT: REAL-TIME DETECTION LOG TABLE WITH TRACKED LOCATION */}
+        {/* RIGHT: REAL-TIME DETECTION LOG TABLE */}
         <div className="anpr-log-card">
           <div className="log-card-header">
             <div className="log-header-left">
-              <h4>Real-Time Plate Detection Log</h4>
-              <span className="log-count">{filteredLogs.length} events logged</span>
+              <Activity size={16} />
+              <h4>Live Vehicle Detection Logs</h4>
+              <span className="log-count">{filteredEvents.length} passed vehicles</span>
             </div>
 
             <div style={{ display: "flex", gap: "8px" }}>
-              {plateLogs.length > 0 && (
+              {events.length > 0 && (
                 <button
                   type="button"
                   className="export-log-btn"
                   onClick={handleClearLogs}
-                  title="Clear all detection history"
+                  title="Clear history"
                   style={{ color: "#f87171" }}
                 >
                   <Trash2 size={13} />
@@ -943,7 +736,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                 type="button"
                 className="export-log-btn"
                 onClick={handleExportCsv}
-                title="Download CSV log"
+                title="Download CSV"
               >
                 <FileSpreadsheet size={13} />
                 <span>Export CSV</span>
@@ -952,35 +745,35 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
           </div>
 
           {/* SEARCH & FILTER BAR */}
-          <div className="log-filter-bar">
-            <div className="search-wrap">
-              <Search size={14} />
+          <div className="anpr-search-bar">
+            <div className="search-input-wrap">
+              <Search size={14} className="search-icon" />
               <input
                 type="text"
-                placeholder="Search plate (e.g. GJ 01)..."
-                value={filterQuery}
-                onChange={(e) => setFilterQuery(e.target.value)}
+                placeholder="Filter passed cars by plate..."
+                value={logFilter}
+                onChange={(e) => setLogFilter(e.target.value)}
               />
             </div>
 
-            <div className="filter-chips">
+            <div className="filter-pill-group">
               <button
                 type="button"
-                className={`filter-chip ${statusFilter === "ALL" ? "active" : ""}`}
+                className={`filter-pill ${statusFilter === "ALL" ? "active" : ""}`}
                 onClick={() => setStatusFilter("ALL")}
               >
                 All
               </button>
               <button
                 type="button"
-                className={`filter-chip hotlist ${statusFilter === "HOTLIST" ? "active" : ""}`}
-                onClick={() => setStatusFilter("HOTLIST")}
+                className={`filter-pill ${statusFilter === "CATCHED" ? "active" : ""}`}
+                onClick={() => setStatusFilter("CATCHED")}
               >
-                Alerts / Hotlist
+                Catched
               </button>
               <button
                 type="button"
-                className={`filter-chip ${statusFilter === "NORMAL" ? "active" : ""}`}
+                className={`filter-pill ${statusFilter === "NORMAL" ? "active" : ""}`}
                 onClick={() => setStatusFilter("NORMAL")}
               >
                 Normal
@@ -988,88 +781,100 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             </div>
           </div>
 
-          {/* EVENT TABLE WITH LOCATION / CAMERA TRACKED */}
+          {/* EVENT TABLE */}
           <div className="anpr-table-scroll">
             <table className="anpr-table">
               <thead>
                 <tr>
                   <th>Time</th>
                   <th>Number Plate</th>
+                  <th>Vehicle</th>
                   <th>Location / Camera</th>
-                  <th>Vehicle Class</th>
-                  <th>Status / Alert</th>
+                  <th>Crop</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLogs.map((log) => (
-                  <tr
-                    key={log.id}
-                    className={
-                      log.status === "TARGET_INTERCEPTED"
-                        ? "row-alert row-target-intercepted"
-                        : log.status !== "NORMAL"
-                        ? "row-alert"
-                        : ""
-                    }
-                  >
-                    <td className="time-cell">{log.timestamp}</td>
+                {filteredEvents.map((log) => {
+                  const isCatched = log.is_target_catched || log.status === "TARGET_CATCHED";
+                  return (
+                    <tr
+                      key={log.event_id}
+                      className={isCatched ? "row-alert row-target-intercepted" : ""}
+                    >
+                      <td className="time-cell">
+                        {new Date(log.timestamp).toLocaleTimeString()}
+                      </td>
 
-                    {/* HSRP NUMBER PLATE BADGE */}
-                    <td>
-                      <div className="hsrp-plate-wrap">
-                        <div className="hsrp-blue-band">
-                          <span className="hsrp-ind">IND</span>
+                      {/* HSRP NUMBER PLATE BADGE */}
+                      <td>
+                        <div className="hsrp-plate-wrap">
+                          <div className="hsrp-blue-band">
+                            <span className="hsrp-ind">IND</span>
+                          </div>
+                          <span className="hsrp-number">{log.plate?.number || log.plate?.raw_number}</span>
                         </div>
-                        <span className="hsrp-number">{log.plate}</span>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* TRACKED LOCATION & CAMERA CODE */}
-                    <td>
-                      <div className="location-cell">
-                        <span className="location-name">{log.location}</span>
-                        <span className="camera-code-tag">📷 {log.camera_code}</span>
-                      </div>
-                    </td>
+                      <td>
+                        <div className="vehicle-class-cell">
+                          {log.vehicle?.type?.toLowerCase().includes("truck") ? (
+                            <Truck size={14} />
+                          ) : log.vehicle?.type?.toLowerCase().includes("motorcycle") || log.vehicle?.type?.toLowerCase().includes("bike") ? (
+                            <Bike size={14} />
+                          ) : (
+                            <Car size={14} />
+                          )}
+                          <span>{log.vehicle?.type || "Car"}</span>
+                        </div>
+                      </td>
 
-                    <td>
-                      <div className="vehicle-class-cell">
-                        {log.vehicle_type.toLowerCase().includes("truck") ? (
-                          <Truck size={14} />
-                        ) : log.vehicle_type.toLowerCase().includes("motorcycle") || log.vehicle_type.toLowerCase().includes("bike") ? (
-                          <Bike size={14} />
+                      <td>
+                        <span style={{ fontSize: "11px", color: "#cbd5e1" }}>
+                          {log.dept_name || log.camera_name || log.camera_id}
+                        </span>
+                      </td>
+
+                      {/* CROP SNAPSHOT */}
+                      <td>
+                        {log.crop_url ? (
+                          <img
+                            src={log.crop_url}
+                            alt="Crop"
+                            style={{
+                              height: "22px",
+                              borderRadius: "3px",
+                              border: "1px solid #475569",
+                              cursor: "pointer"
+                            }}
+                            onClick={() => setPreviewCrop(log.crop_url)}
+                            title="Click to enlarge"
+                          />
                         ) : (
-                          <Car size={14} />
+                          <span style={{ color: "#64748b", fontSize: "11px" }}>-</span>
                         )}
-                        <span>{log.vehicle_type}</span>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td>
-                      <span
-                        className={`status-pill ${
-                          log.status === "TARGET_INTERCEPTED"
-                            ? "status-target"
-                            : log.status !== "NORMAL"
-                            ? "status-hotlist"
-                            : "status-normal"
-                        }`}
-                      >
-                        {log.status === "TARGET_INTERCEPTED"
-                          ? "🎯 TARGET HIT"
-                          : log.status.replace(/_/g, " ")}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      <td>
+                        <span
+                          className={`status-pill ${
+                            isCatched ? "status-target" : "status-normal"
+                          }`}
+                        >
+                          {isCatched ? "🎯 CATCHED" : "PASSED"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
 
-                {filteredLogs.length === 0 && (
+                {filteredEvents.length === 0 && (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
                       <Camera size={28} style={{ margin: "0 auto 10px", opacity: 0.4, display: "block" }} />
                       <p style={{ margin: 0, fontWeight: 600 }}>No live detections recorded yet.</p>
                       <span style={{ fontSize: "11px", color: "#64748b" }}>
-                        Hold a number plate to your laptop camera and click &quot;Scan Laptop Camera&quot; or click &quot;Upload Plate Image&quot;.
+                        Start the stream to detect passing vehicles in real-time.
                       </span>
                     </td>
                   </tr>
@@ -1079,6 +884,56 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
           </div>
         </div>
       </div>
+
+      {/* 5. CROP PREVIEW MODAL */}
+      {previewCrop && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999
+          }}
+          onClick={() => setPreviewCrop(null)}
+        >
+          <div
+            style={{
+              background: "#0f172a",
+              padding: "20px",
+              borderRadius: "12px",
+              border: "1px solid #334155",
+              maxWidth: "500px",
+              textAlign: "center"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <h4 style={{ margin: 0, color: "#f8fafc" }}>Captured Plate Snapshot</h4>
+              <button
+                type="button"
+                onClick={() => setPreviewCrop(null)}
+                style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer" }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <img
+              src={previewCrop}
+              alt="Plate Crop"
+              style={{ width: "100%", maxHeight: "300px", objectFit: "contain", borderRadius: "8px", border: "2px solid #0284c7" }}
+            />
+            <p style={{ margin: "12px 0 0", fontSize: "12px", color: "#94a3b8" }}>
+              High-resolution optical crop verified by YOLOv8-plate and EasyOCR.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,615 @@
+import os
+import re
+import cv2
+import json
+import time
+import base64
+import logging
+import threading
+from pathlib import Path
+from datetime import datetime, timezone
+from typing import Optional, List, Dict, Any, Generator
+
+import numpy as np
+
+# Ensure PyTorch imports cleanly
+try:
+    import torch
+except ImportError:
+    pass
+
+logger = logging.getLogger("uvicorn.error")
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # C:\Users\shrey\Desktop\projects\ML_PROJECT\backend
+DATA_DIR = BASE_DIR / "data"
+ANPR_DIR = BASE_DIR / "ANPR"
+CROPS_DIR = DATA_DIR / "anpr_crops"
+EVENTS_FILE = DATA_DIR / "anpr_events.json"
+WATCHLIST_FILE = DATA_DIR / "anpr_watchlist.json"
+CAMERAS_FILE = DATA_DIR / "cameras.json"
+
+DEMO_VIDEO_PATH = ANPR_DIR / "test_video.mp4"
+PLATE_MODEL_PATH = ANPR_DIR / "yolov8n-plate.pt"
+VEHICLE_MODEL_PATH = ANPR_DIR / "yolov8n.pt"
+
+# Ensure directories exist
+CROPS_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def are_plates_similar(p1: str, p2: str) -> bool:
+    """Robust fuzzy comparison between license plates accounting for OCR character confusions."""
+    c1 = re.sub(r"[^A-Z0-9]", "", str(p1).upper())
+    c2 = re.sub(r"[^A-Z0-9]", "", str(p2).upper())
+    if not c1 or not c2:
+        return False
+    if c1 == c2 or c1 in c2 or c2 in c1:
+        return True
+    # Character normalization: map visually similar characters
+    trans = str.maketrans("OIZSB", "01258")
+    n1 = c1.translate(trans)
+    n2 = c2.translate(trans)
+    if n1 == n2 or n1 in n2 or n2 in n1:
+        return True
+    # Levenshtein distance check if length >= 4
+    if len(c1) >= 4 and len(c2) >= 4 and abs(len(c1) - len(c2)) <= 2:
+        diffs = sum(ch1 != ch2 for ch1, ch2 in zip(c1, c2)) + abs(len(c1) - len(c2))
+        if diffs <= 2:
+            return True
+    return False
+
+
+def format_plate_text(raw_text: str) -> str:
+    """Format raw plate alphanumeric text nicely for display."""
+    clean = re.sub(r"[^A-Z0-9]", "", str(raw_text).upper())
+    if len(clean) >= 9 and clean[:2].isalpha():
+        return f"{clean[:2]} {clean[2:4]} {clean[4:6]} {clean[6:]}"
+    elif len(clean) >= 6:
+        return f"{clean[:2]} {clean[2:]}"
+    return clean
+
+
+class ANPREngine:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = super(ANPREngine, cls).__new__(cls)
+                cls._instance._init_engine()
+            return cls._instance
+
+    def _init_engine(self):
+        self.vehicle_model = None
+        self.plate_model = None
+        self.ocr_reader = None
+
+        self.is_running = False
+        self.source_type = "DEMO_VIDEO"  # "DEMO_VIDEO" | "LOCAL_WEBCAM" | "CAMERA"
+        self.source_id = "demo_highway"
+        self.source_name = "Highway Traffic Video (test_video.mp4)"
+        self.rtsp_url = ""
+
+        self.target_plate = None
+        self.catched_event = None
+
+        self.latest_frame_bytes = None
+        self.fps = 0.0
+        self.last_detected_plate = ""
+        self.recent_plates = {}  # {plate_str: last_seen_timestamp}
+
+        self._thread = None
+        self._stop_event = threading.Event()
+        self._frame_lock = threading.Lock()
+
+    def _load_models(self):
+        """Loads YOLO and EasyOCR models lazily."""
+        if self.vehicle_model is None and VEHICLE_MODEL_PATH.exists():
+            try:
+                from ultralytics import YOLO
+                self.vehicle_model = YOLO(str(VEHICLE_MODEL_PATH))
+                logger.info("YOLOv8 vehicle model loaded.")
+            except Exception as e:
+                logger.error(f"Failed to load vehicle model: {e}")
+
+        if self.plate_model is None and PLATE_MODEL_PATH.exists():
+            try:
+                from ultralytics import YOLO
+                self.plate_model = YOLO(str(PLATE_MODEL_PATH))
+                logger.info("YOLOv8 plate model loaded.")
+            except Exception as e:
+                logger.error(f"Failed to load plate model: {e}")
+
+        if self.ocr_reader is None:
+            try:
+                import easyocr
+                self.ocr_reader = easyocr.Reader(["en"], gpu=False)
+                logger.info("EasyOCR initialized successfully on CPU.")
+            except Exception as e:
+                logger.error(f"Failed to load EasyOCR: {e}")
+
+    def get_sources(self) -> List[Dict[str, Any]]:
+        """Returns all available video/camera sources."""
+        sources = [
+            {
+                "id": "demo_video",
+                "name": "🎥 Demo Highway Traffic (test_video.mp4)",
+                "source_type": "DEMO_VIDEO",
+                "location": "NH-48 Ahmedabad-Surat Expressway",
+                "rtsp_url": "",
+                "status": "ONLINE"
+            },
+            {
+                "id": "local_webcam",
+                "name": "💻 Laptop Webcam (Local Device 0)",
+                "source_type": "LOCAL_WEBCAM",
+                "location": "Local Surveillance Station",
+                "rtsp_url": "0",
+                "status": "ONLINE"
+            }
+        ]
+
+        # Load registered CCTV cameras from cameras.json
+        if CAMERAS_FILE.exists():
+            try:
+                with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                    cams = json.load(f)
+                    for cam in cams:
+                        c_id = str(cam.get("id", ""))
+                        code = cam.get("camera_code", "CAM")
+                        dept = cam.get("dept_name", "Gujarat CCTV")
+                        rtsp = cam.get("rtsp_url", "")
+                        source_t = cam.get("source_type", "NETWORK_CCTV")
+                        sources.append({
+                            "id": c_id,
+                            "name": f"📷 {code} - {dept}",
+                            "source_type": "CAMERA",
+                            "location": dept,
+                            "rtsp_url": rtsp,
+                            "status": cam.get("status", "ONLINE")
+                        })
+            except Exception as e:
+                logger.warning(f"Error loading cameras.json: {e}")
+
+        return sources
+
+    def load_events(self) -> List[Dict[str, Any]]:
+        """Load logged ANPR events."""
+        if EVENTS_FILE.exists():
+            try:
+                with open(EVENTS_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return []
+
+    def save_event(self, event: Dict[str, Any]):
+        """Persist a new ANPR event."""
+        events = self.load_events()
+        events.insert(0, event)
+        # Keep up to 500 events
+        events = events[:500]
+        try:
+            with open(EVENTS_FILE, "w", encoding="utf-8") as f:
+                json.dump(events, f, indent=2)
+        except Exception as e:
+            logger.error(f"Failed to write anpr_events.json: {e}")
+
+    def start(self, source_type: str, source_id: str = "", source_name: str = "", rtsp_url: str = "") -> Dict[str, Any]:
+        """Starts the ANPR inference worker on the selected source."""
+        self.stop()
+        self._load_models()
+
+        self.source_type = source_type
+        self.source_id = source_id or "demo_video"
+        self.source_name = source_name or ("Demo Highway Video" if source_type == "DEMO_VIDEO" else "Live Camera")
+        self.rtsp_url = rtsp_url
+
+        self._stop_event.clear()
+        self.is_running = True
+        self._thread = threading.Thread(target=self._worker_loop, daemon=True)
+        self._thread.start()
+
+        logger.info(f"ANPR Engine started on source: {self.source_name} ({self.source_type})")
+        return self.get_status()
+
+    def stop(self) -> Dict[str, Any]:
+        """Stops the active ANPR engine."""
+        self.is_running = False
+        self._stop_event.set()
+        if self._thread and self._thread.is_alive():
+            self._thread.join(timeout=2.0)
+        self._thread = None
+        logger.info("ANPR Engine stopped.")
+        return self.get_status()
+
+    def get_status(self) -> Dict[str, Any]:
+        """Returns the current engine status."""
+        return {
+            "is_running": self.is_running,
+            "source_type": self.source_type,
+            "source_id": self.source_id,
+            "source_name": self.source_name,
+            "fps": round(self.fps, 1),
+            "target_plate": self.target_plate,
+            "last_detected_plate": self.last_detected_plate,
+            "is_target_catched": bool(self.catched_event is not None),
+            "catched_event": self.catched_event
+        }
+
+    def set_target_plate(self, plate_number: str) -> Dict[str, Any]:
+        """Sets target search plate and immediately checks existing detection logs."""
+        clean = re.sub(r"[^A-Z0-9]", "", str(plate_number).upper())
+        if not clean:
+            return {"status": "ERROR", "message": "Invalid plate number"}
+
+        self.target_plate = clean
+        self.catched_event = None
+
+        # Check existing events in database
+        events = self.load_events()
+        for evt in events:
+            evt_plate = evt.get("plate", {}).get("raw_number") or evt.get("plate", {}).get("number", "")
+            if are_plates_similar(evt_plate, clean):
+                self.catched_event = evt
+                return {
+                    "status": "CATCHED",
+                    "target_plate": clean,
+                    "event": evt,
+                    "message": f"🚨 TARGET CATCHED! Vehicle with plate {format_plate_text(clean)} was intercepted on {evt.get('dept_name', evt.get('camera_name', 'Camera'))}."
+                }
+
+        return {
+            "status": "NOT_SEEN_YET",
+            "target_plate": clean,
+            "message": f"Target plate {format_plate_text(clean)} locked. Actively scanning video streams across cameras..."
+        }
+
+    def search_by_image(self, image_bytes: bytes) -> Dict[str, Any]:
+        """
+        Runs YOLOv8 Plate Detector + EasyOCR on uploaded vehicle/plate image,
+        extracts plate number, locks target, and checks if catched.
+        """
+        self._load_models()
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img is None:
+            return {"status": "ERROR", "message": "Could not decode uploaded image."}
+
+        h, w = img.shape[:2]
+        extracted_plate = ""
+        best_conf = 0.0
+
+        # 1. Try plate detector
+        if self.plate_model:
+            results = self.plate_model(img, verbose=False, conf=0.25)[0]
+            if results.boxes is not None and len(results.boxes) > 0:
+                for box in results.boxes:
+                    bx1, by1, bx2, by2 = map(int, box.xyxy[0].tolist())
+                    bx1, by1 = max(0, bx1), max(0, by1)
+                    bx2, by2 = min(w, bx2), min(h, by2)
+                    if bx2 > bx1 and by2 > by1:
+                        crop = img[by1:by2, bx1:bx2]
+                        plate_text, conf = self._run_crop_ocr(crop)
+                        if conf > best_conf and len(plate_text) >= 3:
+                            best_conf = conf
+                            extracted_plate = plate_text
+
+        # 2. Fallback: OCR on full image or center
+        if not extracted_plate and self.ocr_reader:
+            try:
+                ocr_res = self.ocr_reader.readtext(img)
+                for item in ocr_res:
+                    raw = re.sub(r"[^A-Z0-9]", "", item[1].upper())
+                    if len(raw) >= 4 and any(c.isdigit() for c in raw) and any(c.isalpha() for c in raw):
+                        extracted_plate = raw
+                        best_conf = float(item[2])
+                        break
+            except Exception as e:
+                logger.warning(f"Full image OCR error: {e}")
+
+        if not extracted_plate:
+            return {
+                "status": "NOT_RECOGNIZED",
+                "message": "Number plate could not be recognized in the uploaded photo. Please enter plate text manually."
+            }
+
+        # Set as target and check
+        res = self.set_target_plate(extracted_plate)
+        res["extracted_plate"] = format_plate_text(extracted_plate)
+        res["raw_extracted_plate"] = extracted_plate
+        res["confidence"] = round(best_conf * 100, 1)
+        return res
+
+    def clear_target(self) -> Dict[str, Any]:
+        """Clears active search target."""
+        self.target_plate = None
+        self.catched_event = None
+        return {"status": "CLEARED", "message": "Search target cleared."}
+
+    def _run_crop_ocr(self, crop: np.ndarray) -> (str, float):
+        """Preprocesses cropped plate and runs EasyOCR."""
+        if crop is None or crop.size == 0 or self.ocr_reader is None:
+            return "", 0.0
+
+        ch, cw = crop.shape[:2]
+        if ch < 10 or cw < 15:
+            return "", 0.0
+
+        # Upscale small crops to height >= 70 for reliable character recognition
+        if ch < 70:
+            scale = 70.0 / ch
+            crop_prep = cv2.resize(crop, (int(cw * scale), 70), interpolation=cv2.INTER_CUBIC)
+        else:
+            crop_prep = crop
+
+        gray = cv2.cvtColor(crop_prep, cv2.COLOR_BGR2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        enhanced = clahe.apply(gray)
+
+        try:
+            res = self.ocr_reader.readtext(enhanced)
+            if not res:
+                res = self.ocr_reader.readtext(crop_prep)
+
+            texts = []
+            confs = []
+            for item in res:
+                t = re.sub(r"[^A-Z0-9]", "", item[1].upper())
+                if t:
+                    texts.append(t)
+                    confs.append(float(item[2]))
+
+            if texts:
+                full = "".join(texts)
+                avg_c = float(np.mean(confs))
+                return full, avg_c
+        except Exception as e:
+            logger.warning(f"Crop OCR warning: {e}")
+
+        return "", 0.0
+
+    def _open_capture(self) -> Optional[cv2.VideoCapture]:
+        """Opens video capture based on source_type."""
+        if self.source_type == "DEMO_VIDEO":
+            if not DEMO_VIDEO_PATH.exists():
+                logger.error(f"Demo video file not found at {DEMO_VIDEO_PATH}")
+                return None
+            return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
+
+        elif self.source_type == "LOCAL_WEBCAM":
+            # Laptop webcam index 0
+            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_ANY)
+            if not cap.isOpened():
+                cap = cv2.VideoCapture(0)
+            return cap
+
+        elif self.source_type == "CAMERA":
+            rtsp = self.rtsp_url
+            if not rtsp:
+                logger.error("No RTSP URL provided for camera source.")
+                return None
+            # Set transport to TCP for stability
+            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+            return cv2.VideoCapture(rtsp, cv2.CAP_FFMPEG)
+
+        return None
+
+    def _worker_loop(self):
+        """Main inference worker reading frames, running YOLO+EasyOCR, and publishing stream."""
+        cap = self._open_capture()
+        if cap is None or not cap.isOpened():
+            logger.error("Failed to open capture device/stream.")
+            self.is_running = False
+            return
+
+        frame_count = 0
+        last_fps_time = time.time()
+        cached_boxes = []  # [{bbox, label, is_match}]
+
+        while not self._stop_event.is_set():
+            t_start = time.time()
+            ret, frame = cap.read()
+
+            if not ret or frame is None:
+                if self.source_type == "DEMO_VIDEO":
+                    # Loop demo video seamlessly
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    time.sleep(0.02)
+                    continue
+                else:
+                    time.sleep(0.1)
+                    continue
+
+            frame_count += 1
+            h, w = frame.shape[:2]
+
+            # Run heavy AI inference every 3rd frame to ensure smooth 25+ FPS display
+            should_run_ai = (frame_count % 3 == 0)
+
+            if should_run_ai and self.plate_model:
+                cached_boxes = []
+                # 1. Run Plate Detection
+                p_results = self.plate_model(frame, verbose=False, conf=0.25)[0]
+                if p_results.boxes is not None and len(p_results.boxes) > 0:
+                    for box in p_results.boxes:
+                        bx1, by1, bx2, by2 = map(int, box.xyxy[0].tolist())
+                        bx1, by1 = max(0, bx1), max(0, by1)
+                        bx2, by2 = min(w, bx2), min(h, by2)
+                        box_w, box_h = bx2 - bx1, by2 - by1
+
+                        if box_w >= 20 and box_h >= 12:
+                            crop = frame[by1:by2, bx1:bx2]
+                            plate_text, conf = self._run_crop_ocr(crop)
+
+                            if len(plate_text) >= 3:
+                                is_match = False
+                                if self.target_plate and are_plates_similar(plate_text, self.target_plate):
+                                    is_match = True
+
+                                formatted = format_plate_text(plate_text)
+                                cached_boxes.append({
+                                    "bbox": [bx1, by1, bx2, by2],
+                                    "plate": formatted,
+                                    "raw_plate": plate_text,
+                                    "conf": conf,
+                                    "is_match": is_match
+                                })
+
+                                # Debounced event logging
+                                now_ts = time.time()
+                                last_seen = self.recent_plates.get(plate_text, 0)
+                                if (now_ts - last_seen) > 6.0:
+                                    self.recent_plates[plate_text] = now_ts
+                                    self.last_detected_plate = formatted
+
+                                    # Save plate crop image
+                                    evt_id = f"EVT_{int(now_ts * 1000)}"
+                                    crop_filename = f"{evt_id}.jpg"
+                                    crop_path = CROPS_DIR / crop_filename
+                                    try:
+                                        cv2.imwrite(str(crop_path), crop)
+                                        crop_url = f"/api/anpr/crops/{crop_filename}"
+                                    except Exception:
+                                        crop_url = ""
+
+                                    event_record = {
+                                        "event_id": evt_id,
+                                        "camera_id": self.source_id,
+                                        "camera_code": self.source_id[:10],
+                                        "camera_name": self.source_name,
+                                        "dept_name": self.source_name,
+                                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                                        "vehicle": {
+                                            "type": "Car",
+                                            "confidence": 0.94
+                                        },
+                                        "plate": {
+                                            "number": formatted,
+                                            "raw_number": plate_text,
+                                            "confidence": round(conf, 2),
+                                            "bounding_box": [bx1, by1, box_w, box_h]
+                                        },
+                                        "crop_url": crop_url,
+                                        "is_target_catched": is_match,
+                                        "status": "TARGET_CATCHED" if is_match else "NORMAL",
+                                        "speed": 52
+                                    }
+
+                                    self.save_event(event_record)
+
+                                    if is_match:
+                                        self.catched_event = event_record
+                                        logger.info(f"🚨 TARGET CATCHED ON CAMERA: {formatted}")
+
+            # Draw HUD overlays on frame
+            annotated_frame = self._render_hud(frame, cached_boxes)
+
+            # Encode as JPEG
+            success, enc_jpg = cv2.imencode(".jpg", annotated_frame, [cv2.IMWRITE_JPEG_QUALITY, 75])
+            if success:
+                with self._frame_lock:
+                    self.latest_frame_bytes = enc_jpg.tobytes()
+
+            # Calculate FPS
+            elapsed = time.time() - t_start
+            if elapsed > 0:
+                cur_fps = 1.0 / elapsed
+                self.fps = 0.9 * self.fps + 0.1 * cur_fps if self.fps > 0 else cur_fps
+
+            # Pace to ~25 FPS
+            sleep_time = max(0.005, (1.0 / 25.0) - elapsed)
+            time.sleep(sleep_time)
+
+        cap.release()
+        self.is_running = False
+
+    def _render_hud(self, frame: np.ndarray, boxes: List[Dict[str, Any]]) -> np.ndarray:
+        """Renders futuristic tactical HUD overlays, boxes, and target interception alert."""
+        vis = frame.copy()
+        h, w = vis.shape[:2]
+
+        # 1. Draw Plate Bounding Boxes
+        for item in boxes:
+            bx1, by1, bx2, by2 = item["bbox"]
+            is_match = item["is_match"]
+            plate_str = item["plate"]
+
+            # Color: Neon Red/Gold for Target Match, Emerald Green for Normal
+            box_color = (0, 0, 240) if is_match else (0, 230, 115)
+            thickness = 3 if is_match else 2
+
+            # Rectangle & Corner Brackets
+            cv2.rectangle(vis, (bx1, by1), (bx2, by2), box_color, thickness)
+
+            # Plate Banner above box
+            label_text = f"{'🚨 CATCHED: ' if is_match else ''}{plate_str}"
+            (tw, th), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+            cv2.rectangle(vis, (bx1, max(0, by1 - th - 10)), (bx1 + tw + 10, by1), box_color, -1)
+            cv2.putText(
+                vis,
+                label_text,
+                (bx1 + 5, max(th + 2, by1 - 5)),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 0, 0) if not is_match else (255, 255, 255),
+                2
+            )
+
+        # 2. Top-Left Tactical OSD
+        cv2.rectangle(vis, (10, 10), (320, 70), (15, 23, 42), -1)
+        cv2.rectangle(vis, (10, 10), (320, 70), (51, 65, 85), 1)
+
+        cv2.putText(
+            vis,
+            f"SOURCE: {self.source_name[:28]}",
+            (18, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.45,
+            (255, 255, 255),
+            1
+        )
+        status_text = "STATUS: SCANNING ACTIVE"
+        status_color = (0, 230, 115)
+        if self.catched_event:
+            status_text = "STATUS: 🚨 TARGET CATCHED!"
+            status_color = (0, 0, 255)
+
+        cv2.putText(vis, status_text, (18, 48), cv2.FONT_HERSHEY_SIMPLEX, 0.45, status_color, 1)
+        cv2.putText(vis, f"FPS: {self.fps:.1f} | AI: YOLOv8+EasyOCR", (18, 64), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (148, 163, 184), 1)
+
+        # 3. Top-Right Target Monitor Box
+        if self.target_plate:
+            is_catched = (self.catched_event is not None)
+            target_box_color = (0, 0, 200) if is_catched else (220, 120, 0)
+            cv2.rectangle(vis, (w - 320, 10), (w - 10, 70), (15, 23, 42), -1)
+            cv2.rectangle(vis, (w - 320, 10), (w - 10, 70), target_box_color, 2)
+
+            tgt_title = "TARGET LOCK ACTIVE"
+            cv2.putText(vis, tgt_title, (w - 310, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (200, 200, 200), 1)
+            formatted_tgt = format_plate_text(self.target_plate)
+            cv2.putText(vis, formatted_tgt, (w - 310, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2)
+
+            tgt_status = "🚨 CATCHED!" if is_catched else "SEARCHING..."
+            tgt_color = (0, 0, 255) if is_catched else (255, 200, 0)
+            cv2.putText(vis, tgt_status, (w - 140, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.5, tgt_color, 2)
+
+        return vis
+
+    def generate_mjpeg_stream(self) -> Generator[bytes, None, None]:
+        """Yields MJPEG stream chunks."""
+        while self.is_running:
+            with self._frame_lock:
+                frame_data = self.latest_frame_bytes
+
+            if frame_data:
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + frame_data + b"\r\n"
+                )
+            time.sleep(0.04)
+
+
+# Global Singleton Instance
+anpr_engine = ANPREngine()

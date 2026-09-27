@@ -484,7 +484,7 @@ function App() {
             onClick={() => setActiveTab("anpr")}
           >
             <Radio size={16} />
-            <span>ANPR Radar</span>
+            <span>ANPR Intelligence</span>
           </button>
         </nav>
 
@@ -522,7 +522,7 @@ function App() {
           <CsvImport onNavigateToMap={() => setActiveTab("map")} />
         </main>
       ) : activeTab === "anpr" ? (
-        <main style={{ width: "min(100% - 48px, 1400px)", margin: "0 auto", padding: "28px 0 60px" }}>
+        <main className="onboarding-main" style={{ maxWidth: "1440px", margin: "0 auto", padding: "24px 20px" }}>
           <AnprRadar onNavigateToOnboarding={() => setActiveTab("onboarding")} />
         </main>
       ) : (
