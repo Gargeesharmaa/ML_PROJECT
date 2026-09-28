@@ -103,20 +103,38 @@ async def get_events(camera_id: Optional[str] = None, camera_code: Optional[str]
     If camera_id or camera_code is provided, strictly filters detections for that camera.
     """
     events = anpr_engine.load_events()
-    if camera_id:
+    target_id = camera_id or camera_code
+    if target_id:
+        target_str = str(target_id).strip().lower()
+        target_identifiers = {target_str}
+
+        if target_str in ["demo_video", "demo_highway", "demo-01"]:
+            target_identifiers.update(["demo_video", "demo_highway", "demo-01"])
+        elif target_str in ["local_webcam", "webcam", "webcam-01"]:
+            target_identifiers.update(["local_webcam", "webcam", "webcam-01"])
+
+        from app.services.anpr_engine import CAMERAS_FILE
+        if CAMERAS_FILE.exists():
+            try:
+                with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                    cams = json.load(f)
+                    for c in cams:
+                        c_id = str(c.get("id", "")).strip().lower()
+                        c_code = str(c.get("camera_code", "")).strip().lower()
+                        if c_id in target_identifiers or c_code in target_identifiers:
+                            if c_id:
+                                target_identifiers.add(c_id)
+                            if c_code:
+                                target_identifiers.add(c_code)
+            except Exception:
+                pass
+
         def match_cam(e):
-            e_cam = str(e.get("camera_id", ""))
-            if e_cam == str(camera_id):
-                return True
-            if camera_id in ["demo_video", "demo_highway"] and e_cam in ["demo_video", "demo_highway"]:
-                return True
-            return False
+            e_cam = str(e.get("camera_id", "")).strip().lower()
+            e_code = str(e.get("camera_code", "")).strip().lower()
+            return e_cam in target_identifiers or e_code in target_identifiers
+
         events = [e for e in events if match_cam(e)]
-    elif camera_code:
-        events = [
-            e for e in events
-            if str(e.get("camera_code", "")).lower() == str(camera_code).lower()
-        ]
     return events[:limit]
 
 

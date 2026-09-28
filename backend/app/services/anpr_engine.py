@@ -489,7 +489,10 @@ class ANPREngine:
                     with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
                         cams = json.load(f)
                         for c in cams:
-                            if str(c.get("id")) == str(self.source_id):
+                            c_id = str(c.get("id", "")).strip().lower()
+                            c_code = str(c.get("camera_code", "")).strip().lower()
+                            s_id = str(self.source_id).strip().lower()
+                            if c_id == s_id or (c_code and c_code == s_id):
                                 if not self.rtsp_url:
                                     self.rtsp_url = c.get("rtsp_url", "")
                                 self.camera_code = c.get("camera_code", "CAM")
@@ -501,8 +504,18 @@ class ANPREngine:
                 except Exception as e:
                     logger.warning(f"Error looking up camera {self.source_id}: {e}")
 
+        # Reset state & purge any stale frame from previously active camera
+        self.fps = 0.0
+        self.last_detected_plate = ""
         self.recent_plates = {}
         self.recent_vehicles = {}
+        with self._frame_lock:
+            self.latest_frame_bytes = self._make_status_frame(
+                f"CONNECTING TO {self.source_name[:28]}...",
+                "Initializing video stream & AI inference...",
+                (56, 189, 248)
+            )
+
         self._stop_event.clear()
         self.is_running = True
         self._thread = threading.Thread(target=self._worker_loop, daemon=True)
@@ -876,8 +889,25 @@ class ANPREngine:
             # Sort detections in ascending chronological order
             evts.sort(key=lambda x: str(x.get("timestamp", "")))
 
+            # Collapse consecutive detections at the exact same camera visit into 1 checkpoint
+            collapsed_evts = []
+            for e in evts:
+                c_id = str(e.get("camera_id", "")).strip().lower()
+                c_code = str(e.get("camera_code", "")).strip().lower()
+                if not collapsed_evts:
+                    collapsed_evts.append(e)
+                else:
+                    prev_c_id = str(collapsed_evts[-1].get("camera_id", "")).strip().lower()
+                    prev_c_code = str(collapsed_evts[-1].get("camera_code", "")).strip().lower()
+                    if c_id != prev_c_id and (not c_code or c_code != prev_c_code):
+                        collapsed_evts.append(e)
+                    else:
+                        # Same camera visit: keep event with a crop image if available
+                        if not collapsed_evts[-1].get("crop_url") and e.get("crop_url"):
+                            collapsed_evts[-1]["crop_url"] = e.get("crop_url")
+
             points = []
-            for idx, e in enumerate(evts):
+            for idx, e in enumerate(collapsed_evts):
                 c_id = str(e.get("camera_id", ""))
                 c_code = str(e.get("camera_code", "CAM"))
 
@@ -927,6 +957,9 @@ class ANPREngine:
                 points[i]["distance_from_prev_km"] = dist
                 total_dist_km += dist
 
+            distinct_cams = set(p["camera_id"] for p in points)
+            is_multi = len(distinct_cams) > 1 and len(points) >= 2
+
             routes.append({
                 "plate_number": format_plate_text(rep_p),
                 "raw_plate": rep_p,
@@ -934,8 +967,8 @@ class ANPREngine:
                 "first_seen": points[0]["timestamp"] if points else None,
                 "last_seen": points[-1]["timestamp"] if points else None,
                 "total_checkpoints": len(points),
-                "total_distance_km": round(total_dist_km, 1),
-                "is_multi_camera": len(set(p["camera_id"] for p in points)) > 1 or len(points) >= 2,
+                "total_distance_km": round(total_dist_km, 1) if is_multi else 0.0,
+                "is_multi_camera": is_multi,
                 "points": points
             })
 
@@ -1105,7 +1138,10 @@ class ANPREngine:
                     with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
                         cams = json.load(f)
                         for c in cams:
-                            if str(c.get("id")) == str(self.source_id):
+                            c_id = str(c.get("id", "")).strip().lower()
+                            c_code = str(c.get("camera_code", "")).strip().lower()
+                            s_id = str(self.source_id).strip().lower()
+                            if c_id == s_id or (c_code and c_code == s_id):
                                 rtsp = c.get("rtsp_url", "")
                                 self.rtsp_url = rtsp
                                 break
@@ -1183,10 +1219,14 @@ class ANPREngine:
                     consecutive_empty += 1
                     if consecutive_empty > 30:
                         logger.warning(f"RTSP stream empty frames, reconnecting to {self.source_name}...")
-                        cap.release()
-                        time.sleep(0.5)
-                        cap = self._open_capture()
-                        consecutive_empty = 0
+                        new_cap = self._open_capture()
+                        if new_cap is not None and new_cap.isOpened():
+                            if cap is not None:
+                                cap.release()
+                            cap = new_cap
+                            consecutive_empty = 0
+                        else:
+                            consecutive_empty = 20
                     time.sleep(0.1)
                     continue
 
@@ -1350,11 +1390,12 @@ class ANPREngine:
                                             self.catched_event = event_record
                                             logger.info(f"🚨 TARGET CATCHED ON CAMERA: {formatted} ({matched_vtype})")
 
-                                        # Suspect Vehicle Watchlist Alert with 12s debouncing
+                                        # Suspect Vehicle Watchlist Alert with 20s debouncing
                                         if is_wl_match:
-                                            last_alert_time = self.recent_watchlist_alerts.get(clean_text, 0)
-                                            if (now_ts - last_alert_time) > 12.0:
-                                                self.recent_watchlist_alerts[clean_text] = now_ts
+                                            target_key = (wl_match or {}).get("plate_number") or clean_text
+                                            last_alert_time = self.recent_watchlist_alerts.get(target_key, 0)
+                                            if (now_ts - last_alert_time) > 20.0:
+                                                self.recent_watchlist_alerts[target_key] = now_ts
                                                 self.active_alert = {
                                                     "alert_id": f"ALT_{int(now_ts * 1000)}",
                                                     "plate": formatted,
