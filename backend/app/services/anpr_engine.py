@@ -4,11 +4,9 @@ import cv2
 import json
 import time
 import base64
-import socket
 import logging
 import threading
 from pathlib import Path
-from urllib.parse import urlparse
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any, Generator
 
@@ -189,10 +187,6 @@ class ANPREngine:
         self.source_name = "Highway Traffic Video (test_video.mp4)"
         self.rtsp_url = ""
 
-        self.feed_mode = "LIVE"  # "LIVE" | "STANDBY"
-        self.camera_online = True
-        self.feed_status_text = "LIVE FEED"
-
         self.target_plate = None
         self.catched_event = None
 
@@ -203,7 +197,6 @@ class ANPREngine:
         self.recent_vehicles = {}  # {v_signature: last_seen_timestamp}
 
         self._thread = None
-        self._active_cap: Optional[cv2.VideoCapture] = None
         self._stop_event = threading.Event()
         self._frame_lock = threading.Lock()
 
@@ -234,27 +227,23 @@ class ANPREngine:
                 logger.error(f"Failed to load EasyOCR: {e}")
 
     def get_sources(self) -> List[Dict[str, Any]]:
-        """Returns all available video/camera sources with full metadata."""
+        """Returns all available video/camera sources."""
         sources = [
             {
                 "id": "demo_video",
-                "code": "DEMO-01",
                 "name": "🎥 Demo Highway Traffic (test_video.mp4)",
                 "source_type": "DEMO_VIDEO",
                 "location": "NH-48 Ahmedabad-Surat Expressway",
                 "rtsp_url": "",
-                "status": "ONLINE",
-                "make_model": "Optical Simulation Feed"
+                "status": "ONLINE"
             },
             {
                 "id": "local_webcam",
-                "code": "WEBCAM-01",
-                "name": "💻 Laptop Live Webcam (Device 0)",
+                "name": "💻 Laptop Webcam (Local Device 0)",
                 "source_type": "LOCAL_WEBCAM",
-                "location": "Local Command Station",
+                "location": "Local Surveillance Station",
                 "rtsp_url": "0",
-                "status": "ONLINE",
-                "make_model": "Integrated HD Camera"
+                "status": "ONLINE"
             }
         ]
 
@@ -267,17 +256,13 @@ class ANPREngine:
                         code = cam.get("camera_code", "CAM")
                         dept = cam.get("dept_name", "Gujarat CCTV")
                         rtsp = cam.get("rtsp_url", "")
-                        source_t = cam.get("source_type", "NETWORK_CCTV")
                         sources.append({
                             "id": c_id,
-                            "code": code,
                             "name": f"📷 {code} - {dept}",
                             "source_type": "CAMERA",
                             "location": dept,
                             "rtsp_url": rtsp,
-                            "status": cam.get("status", "ONLINE"),
-                            "make_model": cam.get("make_model", "Generic CCTV"),
-                            "ip_address": cam.get("ip_address", "")
+                            "status": cam.get("status", "ONLINE")
                         })
             except Exception as e:
                 logger.warning(f"Error loading cameras.json: {e}")
@@ -313,8 +298,6 @@ class ANPREngine:
         self.source_type = source_type
         self.source_id = source_id or "demo_video"
         self.source_name = source_name or ("Demo Highway Video" if source_type == "DEMO_VIDEO" else "Live Camera")
-        self.rtsp_url = rtsp_url
-
         self.recent_plates = {}
         self.recent_vehicles = {}
         self._stop_event.clear()
@@ -329,20 +312,14 @@ class ANPREngine:
         """Stops the active ANPR engine."""
         self.is_running = False
         self._stop_event.set()
-        if self._active_cap is not None:
-            try:
-                self._active_cap.release()
-            except Exception:
-                pass
-            self._active_cap = None
         if self._thread and self._thread.is_alive():
-            self._thread.join(timeout=1.5)
+            self._thread.join(timeout=2.0)
         self._thread = None
         logger.info("ANPR Engine stopped.")
         return self.get_status()
 
     def get_status(self) -> Dict[str, Any]:
-        """Returns the current engine status and telemetry."""
+        """Returns the current engine status."""
         return {
             "is_running": self.is_running,
             "source_type": self.source_type,
@@ -352,10 +329,7 @@ class ANPREngine:
             "target_plate": self.target_plate,
             "last_detected_plate": self.last_detected_plate,
             "is_target_catched": bool(self.catched_event is not None),
-            "catched_event": self.catched_event,
-            "feed_mode": self.feed_mode,
-            "camera_online": self.camera_online,
-            "feed_status_text": self.feed_status_text
+            "catched_event": self.catched_event
         }
 
     def set_target_plate(self, plate_number: str) -> Dict[str, Any]:
@@ -465,8 +439,10 @@ class ANPREngine:
         best_conf = 0.0
 
         try:
+            # First attempt on CLAHE enhanced
             res = self.ocr_reader.readtext(enhanced)
             if not res:
+                # Fallback to direct resized crop
                 res = self.ocr_reader.readtext(crop_prep)
 
             texts = []
@@ -485,114 +461,29 @@ class ANPREngine:
 
         return best_text, best_conf
 
-    def _is_rtsp_reachable(self, rtsp_url: str, timeout: float = 0.8) -> bool:
-        """Fast non-blocking TCP socket probe to prevent 30-second OpenCV hangs."""
-        try:
-            parsed = urlparse(rtsp_url)
-            host = parsed.hostname
-            port = parsed.port or 554
-            if not host:
-                return False
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.settimeout(timeout)
-                res = s.connect_ex((host, port))
-                return res == 0
-        except Exception:
-            return False
-
-    def _open_capture(self) -> cv2.VideoCapture:
-        """
-        Opens video capture based on source_type with instant socket probe & fallback.
-        Guarantees that capture never hangs or leaves screen black.
-        """
+    def _open_capture(self) -> Optional[cv2.VideoCapture]:
+        """Opens video capture based on source_type."""
         if self.source_type == "DEMO_VIDEO":
-            self.feed_mode = "LIVE"
-            self.camera_online = True
-            self.feed_status_text = "DEMO TRAFFIC STREAM"
+            if not DEMO_VIDEO_PATH.exists():
+                logger.error(f"Demo video file not found at {DEMO_VIDEO_PATH}")
+                return None
             return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
 
         elif self.source_type == "LOCAL_WEBCAM":
             cap = cv2.VideoCapture(0, cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_ANY)
             if not cap.isOpened():
                 cap = cv2.VideoCapture(0)
-            if cap.isOpened():
-                self.feed_mode = "LIVE"
-                self.camera_online = True
-                self.feed_status_text = "LAPTOP WEBCAM LIVE"
-                return cap
-            else:
-                logger.warning("Local webcam device 0 not accessible. Using standby optical feed.")
-                self.feed_mode = "STANDBY"
-                self.camera_online = False
-                self.feed_status_text = "WEBCAM OFFLINE (STANDBY)"
-                return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
+            return cap
 
         elif self.source_type == "CAMERA":
-            rtsp = (self.rtsp_url or "").strip()
+            rtsp = self.rtsp_url
+            if not rtsp:
+                logger.error("No RTSP URL provided for camera source.")
+                return None
+            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+            return cv2.VideoCapture(rtsp, cv2.CAP_FFMPEG)
 
-            # Check if this registered camera is a local webcam device
-            if rtsp.startswith("webrtc://") or "local" in rtsp.lower() or "webcam" in rtsp.lower():
-                cap = cv2.VideoCapture(0, cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_ANY)
-                if not cap.isOpened():
-                    cap = cv2.VideoCapture(0)
-                if cap.isOpened():
-                    self.feed_mode = "LIVE"
-                    self.camera_online = True
-                    self.feed_status_text = f"📷 {self.source_id} (LOCAL WEBCAM)"
-                    return cap
-                self.feed_mode = "STANDBY"
-                self.camera_online = False
-                self.feed_status_text = f"📷 {self.source_id} (STANDBY)"
-                return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
-
-            if not rtsp or not rtsp.lower().startswith(("rtsp://", "rtsps://", "http://", "https://")):
-                logger.info(f"No valid RTSP URL for {self.source_id}. Running in optical standby mode.")
-                self.feed_mode = "STANDBY"
-                self.camera_online = False
-                self.feed_status_text = f"📷 {self.source_id} (STANDBY)"
-                return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
-
-            # Fast 0.8s TCP socket probe to prevent 30-second OpenCV hang!
-            if not self._is_rtsp_reachable(rtsp, timeout=0.8):
-                logger.warning(f"RTSP unreachable ({rtsp}). Running in optical standby mode.")
-                self.feed_mode = "STANDBY"
-                self.camera_online = False
-                self.feed_status_text = f"📷 {self.source_id} (CONNECTING / STANDBY)"
-                return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
-
-            try:
-                os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|stimeout;2500000"
-                urls_to_try = [rtsp]
-                if "%40" in rtsp:
-                    urls_to_try.append(rtsp.replace("%40", "@"))
-                elif "@" in rtsp and rtsp.count("@") > 1:
-                    first_at = rtsp.find("@")
-                    last_at = rtsp.rfind("@")
-                    if first_at != last_at:
-                        alt = rtsp[:first_at] + "%40" + rtsp[first_at + 1:]
-                        urls_to_try.append(alt)
-
-                for u in urls_to_try:
-                    cap = cv2.VideoCapture(u, cv2.CAP_FFMPEG)
-                    if cap.isOpened():
-                        ret, _ = cap.read()
-                        if ret:
-                            self.feed_mode = "LIVE"
-                            self.camera_online = True
-                            self.feed_status_text = f"📷 {self.source_id} (LIVE CCTV)"
-                            return cap
-                        cap.release()
-            except Exception as e:
-                logger.warning(f"Error opening RTSP {rtsp}: {e}")
-
-            self.feed_mode = "STANDBY"
-            self.camera_online = False
-            self.feed_status_text = f"📷 {self.source_id} (STANDBY)"
-            return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
-
-        self.feed_mode = "STANDBY"
-        self.camera_online = False
-        return cv2.VideoCapture(str(DEMO_VIDEO_PATH))
+        return None
 
     def _worker_loop(self):
         """
@@ -603,13 +494,11 @@ class ANPREngine:
         4. Logs events and saves high-resolution plate crops.
         5. Renders tactical HUD overlay on stream.
         """
-        self._active_cap = self._open_capture()
-        cap = self._active_cap
+        cap = self._open_capture()
         if cap is None or not cap.isOpened():
-            logger.error("Failed to open capture device. Using demo video fallback.")
-            cap = cv2.VideoCapture(str(DEMO_VIDEO_PATH))
-            self._active_cap = cap
-            self.feed_mode = "STANDBY"
+            logger.error("Failed to open capture device/stream.")
+            self.is_running = False
+            return
 
         frame_count = 0
         cached_vehicles = []  # [(vtype, bbox, conf)]
@@ -620,19 +509,12 @@ class ANPREngine:
             ret, frame = cap.read()
 
             if not ret or frame is None:
-                if self.feed_mode == "STANDBY" or self.source_type == "DEMO_VIDEO":
+                if self.source_type == "DEMO_VIDEO":
                     cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                     time.sleep(0.02)
                     continue
                 else:
-                    # Live RTSP stream frame dropped: smoothly switch to standby so stream never crashes
-                    logger.warning("Stream frame read failed, switching to standby capture.")
-                    cap.release()
-                    cap = cv2.VideoCapture(str(DEMO_VIDEO_PATH))
-                    self.feed_mode = "STANDBY"
-                    self.camera_online = False
-                    self.feed_status_text = f"📷 {self.source_id} (RECONNECTING...)"
-                    time.sleep(0.05)
+                    time.sleep(0.1)
                     continue
 
             frame_count += 1
@@ -750,22 +632,26 @@ class ANPREngine:
                                             self.catched_event = event_record
                                             logger.info(f"🚨 TARGET CATCHED ON CAMERA: {formatted} ({matched_vtype})")
 
-                # Also track passing Auto-Rickshaws, Motorcycles, or Buses
+                # Also track passing Auto-Rickshaws or Motorcycles even if plate was obscured
                 for v in current_v_boxes:
                     vtype, vbox, vconf = v
                     if vtype in ["Auto-Rickshaw", "Motorcycle", "Bus"]:
+                        # Center of vehicle
                         vcx = (vbox[0] + vbox[2]) // 2
                         vcy = (vbox[1] + vbox[3]) // 2
+                        # Trigger log when passing through road tracking zone
                         if (0.12 * h) <= vcy <= (0.88 * h) and (0.10 * w) <= vcx <= (0.90 * w):
                             sig = f"{vtype}_{vcx // 120}"
                             now_ts = time.time()
                             if (now_ts - self.recent_vehicles.get(sig, 0)) > 8.0:
                                 self.recent_vehicles[sig] = now_ts
+                                # Check if any plate was logged nearby
                                 has_plate_nearby = any(
                                     abs((p["bbox"][0] + p["bbox"][2]) // 2 - vcx) < 100
                                     for p in current_p_boxes
                                 )
                                 if not has_plate_nearby:
+                                    # Log passing vehicle event
                                     evt_id = f"EVT_{int(now_ts * 1000)}"
                                     vcrop = frame[vbox[1]:vbox[3], vbox[0]:vbox[2]]
                                     crop_filename = f"{evt_id}.jpg"
@@ -819,12 +705,7 @@ class ANPREngine:
             sleep_time = max(0.005, (1.0 / 25.0) - elapsed)
             time.sleep(sleep_time)
 
-        if self._active_cap is not None:
-            try:
-                self._active_cap.release()
-            except Exception:
-                pass
-            self._active_cap = None
+        cap.release()
         self.is_running = False
 
     def _render_hud(self, frame: np.ndarray, vehicles: List[Any], plates: List[Dict[str, Any]]) -> np.ndarray:
@@ -837,6 +718,7 @@ class ANPREngine:
             vtype, vbox, vconf = v
             vx1, vy1, vx2, vy2 = vbox
 
+            # Specific colors for vehicle classes
             if vtype == "Auto-Rickshaw":
                 v_color = (0, 180, 255)  # Amber / Yellow
             elif vtype == "Motorcycle":
@@ -868,7 +750,7 @@ class ANPREngine:
 
             cv2.rectangle(vis, (bx1, by1), (bx2, by2), box_color, thickness)
 
-            label_text = f"{'🚨 CATCHED: ' if is_match else ''}{plate_str} ({v_type})"
+            label_text = f"{'TARGET HIT: ' if is_match else ''}{plate_str} ({v_type})"
             (tw, th), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.55, 2)
             cv2.rectangle(vis, (bx1, max(0, by1 - th - 10)), (bx1 + tw + 10, by1), box_color, -1)
             cv2.putText(
@@ -881,31 +763,21 @@ class ANPREngine:
                 2
             )
 
-        # 3. TOP-LEFT TACTICAL HUD WITH FEED STATUS
-        cv2.rectangle(vis, (10, 10), (370, 80), (15, 23, 42), -1)
-        cv2.rectangle(vis, (10, 10), (370, 80), (51, 65, 85), 1)
+        # 3. TOP-LEFT TACTICAL HUD
+        cv2.rectangle(vis, (10, 10), (340, 75), (15, 23, 42), -1)
+        cv2.rectangle(vis, (10, 10), (340, 75), (51, 65, 85), 1)
 
-        source_label = f"SOURCE: {self.source_name[:26]}"
-        cv2.putText(vis, source_label, (18, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+        clean_src = re.sub(r"[^\x00-\x7F]+", "", self.source_name).strip() or "Camera Feed"
+        cv2.putText(vis, f"CAM: {clean_src[:26]}", (18, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
 
-        if self.feed_mode == "LIVE":
-            mode_text = "FEED: 🟢 LIVE STREAM ACQUIRED"
-            mode_color = (0, 230, 115)
-        else:
-            mode_text = "FEED: 🟡 STANDBY OPTICAL FEED"
-            mode_color = (0, 200, 255)
-
-        cv2.putText(vis, mode_text, (18, 46), cv2.FONT_HERSHEY_SIMPLEX, 0.42, mode_color, 1)
-
+        status_text = "STATUS: SCANNING ACTIVE"
+        status_color = (0, 230, 115)
         if self.catched_event:
-            status_text = "STATUS: 🚨 TARGET CATCHED!"
+            status_text = "STATUS: TARGET CATCHED!"
             status_color = (0, 0, 255)
-        else:
-            status_text = "STATUS: SCANNING ACTIVE"
-            status_color = (0, 230, 115)
 
-        cv2.putText(vis, status_text, (18, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.42, status_color, 1)
-        cv2.putText(vis, f"FPS: {self.fps:.1f} | VEHICLES: {len(vehicles)} | PLATES: {len(plates)}", (18, 76), cv2.FONT_HERSHEY_SIMPLEX, 0.38, (148, 163, 184), 1)
+        cv2.putText(vis, status_text, (18, 48), cv2.FONT_HERSHEY_SIMPLEX, 0.45, status_color, 1)
+        cv2.putText(vis, f"FPS: {self.fps:.1f} | VEHICLES: {len(vehicles)} | PLATES: {len(plates)}", (18, 66), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (148, 163, 184), 1)
 
         # 4. TOP-RIGHT TARGET MONITOR HUD
         if self.target_plate:
@@ -919,7 +791,7 @@ class ANPREngine:
             formatted_tgt = format_plate_text(self.target_plate)
             cv2.putText(vis, formatted_tgt, (w - 310, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2)
 
-            tgt_status = "🚨 CATCHED!" if is_catched else "SEARCHING..."
+            tgt_status = "TARGET HIT!" if is_catched else "SEARCHING..."
             tgt_color = (0, 0, 255) if is_catched else (255, 200, 0)
             cv2.putText(vis, tgt_status, (w - 140, 52), cv2.FONT_HERSHEY_SIMPLEX, 0.5, tgt_color, 2)
 

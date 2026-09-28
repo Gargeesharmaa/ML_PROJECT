@@ -522,7 +522,7 @@ function App() {
           <CsvImport onNavigateToMap={() => setActiveTab("map")} />
         </main>
       ) : activeTab === "anpr" ? (
-        <main className="onboarding-main" style={{ maxWidth: "1440px", margin: "0 auto", padding: "24px 20px" }}>
+        <main className="anpr-page-main">
           <AnprRadar onNavigateToOnboarding={() => setActiveTab("onboarding")} />
         </main>
       ) : (
