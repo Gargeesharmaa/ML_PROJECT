@@ -1152,7 +1152,10 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
                 className="anpr-video-element"
                 style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
                 onError={() => {
-                  console.warn("MJPEG stream reconnecting...");
+                  console.warn("MJPEG stream disconnected, retrying connection...");
+                  setTimeout(() => {
+                    setStreamUrl(apiUrl(`/api/anpr/stream?t=${Date.now()}`));
+                  }, 2000);
                 }}
               />
             ) : (

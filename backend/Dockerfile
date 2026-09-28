@@ -24,6 +24,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Pre-download EasyOCR models during Docker build into image cache so runtime has 0 network latency
+RUN python -c "import easyocr; easyocr.Reader(['en'], gpu=False)" || true
+
 # Copy entire backend source code, models, and demo video
 COPY backend/ .
 

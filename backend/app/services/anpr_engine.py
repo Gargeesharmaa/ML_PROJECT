@@ -359,7 +359,13 @@ class ANPREngine:
         self._frame_lock = threading.Lock()
 
     def _load_models(self):
-        """Loads YOLO and EasyOCR models lazily."""
+        """Loads YOLO and EasyOCR models lazily with memory and thread optimizations."""
+        try:
+            import torch
+            torch.set_num_threads(1)
+        except Exception:
+            pass
+
         if self.vehicle_model is None and VEHICLE_MODEL_PATH.exists():
             try:
                 from ultralytics import YOLO
@@ -382,7 +388,7 @@ class ANPREngine:
                 self.ocr_reader = easyocr.Reader(["en"], gpu=False)
                 logger.info("EasyOCR initialized successfully on CPU.")
             except Exception as e:
-                logger.error(f"Failed to load EasyOCR: {e}")
+                logger.error(f"Failed to load EasyOCR (ANPR will continue with plate detection): {e}")
 
     def get_sources(self) -> List[Dict[str, Any]]:
         """Returns all available video/camera sources."""
@@ -454,7 +460,6 @@ class ANPREngine:
     def start(self, source_type: str, source_id: str = "", source_name: str = "", rtsp_url: str = "") -> Dict[str, Any]:
         """Starts the ANPR inference worker on the selected source."""
         self.stop()
-        self._load_models()
 
         self.source_type = source_type
         self.source_id = source_id or "demo_video"
@@ -1083,8 +1088,8 @@ class ANPREngine:
                     best_candidate_text = full_text
                     best_candidate_conf = avg_conf
 
-                    # Early exit if high confidence and valid format
-                    if avg_conf >= 0.70 and is_valid:
+                    # Early exit if satisfactory confidence and valid format to preserve CPU & memory
+                    if (avg_conf >= 0.40 and is_valid) or (avg_conf >= 0.60):
                         break
 
             except Exception as e:
@@ -1200,6 +1205,15 @@ class ANPREngine:
             if cap:
                 cap.release()
             return
+
+        # Asynchronously load neural models inside worker thread without blocking HTTP response
+        with self._frame_lock:
+            self.latest_frame_bytes = self._make_status_frame(
+                f"{self.source_name[:28]} CONNECTED",
+                "Initializing AI vision neural models...",
+                (56, 189, 248)
+            )
+        self._load_models()
 
         frame_count = 0
         consecutive_empty = 0

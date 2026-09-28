@@ -95,7 +95,13 @@ async def get_stream():
 
     return StreamingResponse(
         anpr_engine.generate_mjpeg_stream(),
-        media_type="multipart/x-mixed-replace; boundary=frame"
+        media_type="multipart/x-mixed-replace; boundary=frame",
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "Connection": "keep-alive"
+        }
     )
 
 
