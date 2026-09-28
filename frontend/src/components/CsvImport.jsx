@@ -22,6 +22,7 @@ import {
   HelpCircle
 } from "lucide-react";
 import "./CsvImport.css";
+import { apiUrl } from "../utils/apiConfig";
 
 export default function CsvImport({ onNavigateToMap }) {
   const fileInputRef = useRef(null);
@@ -54,7 +55,7 @@ export default function CsvImport({ onNavigateToMap }) {
   // 1. Download CSV Template
   const handleDownloadTemplate = async () => {
     try {
-      const response = await fetch("/api/cameras/csv-template");
+      const response = await fetch(apiUrl("/api/cameras/csv-template"));
       if (!response.ok) throw new Error("Template download failed");
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -129,7 +130,7 @@ CAM-GJ-003,Surat Municipal Corporation,PTZ,Axis PTZ Dome,NETWORK_CCTV,103.250.16
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("/api/cameras/validate-csv", {
+      const response = await fetch(apiUrl("/api/cameras/validate-csv"), {
         method: "POST",
         body: formData,
       });
@@ -152,7 +153,7 @@ CAM-GJ-003,Surat Municipal Corporation,PTZ,Axis PTZ Dome,NETWORK_CCTV,103.250.16
   const revalidateCurrentRows = async (rows) => {
     setIsValidating(true);
     try {
-      const response = await fetch("/api/cameras/validate-records", {
+      const response = await fetch(apiUrl("/api/cameras/validate-records"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ records: rows }),
@@ -249,7 +250,7 @@ CAM-GJ-003,Surat Municipal Corporation,PTZ,Axis PTZ Dome,NETWORK_CCTV,103.250.16
         throw new Error("No valid camera rows to import. Please correct row errors first.");
       }
 
-      const response = await fetch("/api/cameras/bulk-import-json", {
+      const response = await fetch(apiUrl("/api/cameras/bulk-import-json"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cameras: validRowsToImport }),
@@ -295,7 +296,7 @@ CAM-GJ-003,Surat Municipal Corporation,PTZ,Axis PTZ Dome,NETWORK_CCTV,103.250.16
     setSyncError("");
     setImportError("");
     try {
-      const response = await fetch("/api/cameras/sync-sentinel", {
+      const response = await fetch(apiUrl("/api/cameras/sync-sentinel"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gateway_url: sentinelGatewayUrl }),

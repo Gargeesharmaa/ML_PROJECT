@@ -30,6 +30,7 @@ import {
   Compass
 } from "lucide-react";
 import "./AnprRadar.css";
+import { apiUrl } from "../utils/apiConfig";
 
 // Synthesizes a high-urgency alternating police siren sound via Web Audio API
 function playSirenSound() {
@@ -148,7 +149,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   const [sources, setSources] = useState([]);
   const [selectedSourceId, setSelectedSourceId] = useState("demo_video");
   const [isRunning, setIsRunning] = useState(false);
-  const [streamUrl, setStreamUrl] = useState("/api/anpr/stream");
+  const [streamUrl, setStreamUrl] = useState(() => apiUrl("/api/anpr/stream"));
   const [fps, setFps] = useState(0);
 
   // Search & Target Interception State
@@ -183,7 +184,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   // Load Suspect Vehicles Watchlist
   const loadWatchlist = async () => {
     try {
-      const res = await fetch("/api/anpr/watchlist");
+      const res = await fetch(apiUrl("/api/anpr/watchlist"));
       if (res.ok) {
         const data = await res.json();
         setWatchlist(data);
@@ -203,7 +204,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     setWatchlistNotice(null);
 
     try {
-      const res = await fetch("/api/anpr/watchlist", {
+      const res = await fetch(apiUrl("/api/anpr/watchlist"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -239,7 +240,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   const handleDeleteWatchlist = async (id, plateStr) => {
     if (!window.confirm(`Remove ${plateStr || "vehicle"} from suspect watchlist?`)) return;
     try {
-      const res = await fetch(`/api/anpr/watchlist/${encodeURIComponent(id)}`, { method: "DELETE" });
+      const res = await fetch(apiUrl(`/api/anpr/watchlist/${encodeURIComponent(id)}`), { method: "DELETE" });
       if (res.ok) {
         loadWatchlist();
       }
@@ -255,7 +256,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     }
     setActiveAlert(null);
     try {
-      await fetch("/api/anpr/alert/acknowledge", { method: "POST" });
+      await fetch(apiUrl("/api/anpr/alert/acknowledge"), { method: "POST" });
     } catch (err) {
       console.warn("Acknowledge alert error:", err);
     }
@@ -265,7 +266,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   useEffect(() => {
     async function loadSources() {
       try {
-        const res = await fetch("/api/anpr/sources");
+        const res = await fetch(apiUrl("/api/anpr/sources"));
         if (res.ok) {
           const data = await res.json();
           setSources(data);
@@ -280,7 +281,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
 
     async function checkStatus() {
       try {
-        const res = await fetch("/api/anpr/status");
+        const res = await fetch(apiUrl("/api/anpr/status"));
         if (res.ok) {
           const data = await res.json();
           setIsRunning(data.is_running);
@@ -316,7 +317,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
       const url = targetCamId
         ? `/api/anpr/events?camera_id=${encodeURIComponent(targetCamId)}&limit=100`
         : `/api/anpr/events?limit=100`;
-      const res = await fetch(url);
+      const res = await fetch(apiUrl(url));
       if (res.ok) {
         const data = await res.json();
         setEvents(data);
@@ -335,7 +336,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     if (isRunning) {
       interval = setInterval(async () => {
         try {
-          const res = await fetch("/api/anpr/status");
+          const res = await fetch(apiUrl("/api/anpr/status"));
           if (res.ok) {
             const data = await res.json();
             setFps(data.fps || 0);
@@ -375,7 +376,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   const handleToggleStream = async () => {
     if (isRunning) {
       try {
-        await fetch("/api/anpr/stop", { method: "POST" });
+        await fetch(apiUrl("/api/anpr/stop"), { method: "POST" });
         setIsRunning(false);
       } catch (err) {
         console.error("Failed to stop stream:", err);
@@ -383,7 +384,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     } else {
       const curSource = sources.find((s) => s.id === selectedSourceId) || sources[0];
       try {
-        const res = await fetch("/api/anpr/start", {
+        const res = await fetch(apiUrl("/api/anpr/start"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -395,7 +396,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
         });
         if (res.ok) {
           setIsRunning(true);
-          setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
+          setStreamUrl(apiUrl(`/api/anpr/stream?t=${Date.now()}`));
           loadEvents(curSource?.id);
         }
       } catch (err) {
@@ -414,7 +415,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     if (!targetSource) return;
 
     try {
-      const res = await fetch("/api/anpr/start", {
+      const res = await fetch(apiUrl("/api/anpr/start"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -426,7 +427,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
       });
       if (res.ok) {
         setIsRunning(true);
-        setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
+        setStreamUrl(apiUrl(`/api/anpr/stream?t=${Date.now()}`));
       }
       loadEvents(sourceId);
     } catch (err) {
@@ -459,7 +460,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     setSearchNotice(null);
 
     try {
-      const res = await fetch("/api/anpr/search", {
+      const res = await fetch(apiUrl("/api/anpr/search"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ plate_number: clean })
@@ -512,7 +513,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/anpr/search-image", {
+      const res = await fetch(apiUrl("/api/anpr/search-image"), {
         method: "POST",
         body: formData
       });
@@ -556,7 +557,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   // 8. Clear Active Target Search
   const handleClearTarget = async () => {
     try {
-      await fetch("/api/anpr/clear-target", { method: "POST" });
+      await fetch(apiUrl("/api/anpr/clear-target"), { method: "POST" });
     } catch (err) {
       console.warn("Clear target error:", err);
     }
@@ -570,7 +571,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
   const handleClearLogs = async () => {
     if (!window.confirm(`Clear detections for ${activeSource?.name || "this camera"}?`)) return;
     try {
-      await fetch(`/api/anpr/events?camera_id=${encodeURIComponent(selectedSourceId)}`, { method: "DELETE" });
+      await fetch(apiUrl(`/api/anpr/events?camera_id=${encodeURIComponent(selectedSourceId)}`), { method: "DELETE" });
       setEvents([]);
     } catch (err) {
       console.error("Failed to clear logs:", err);
@@ -717,7 +718,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
                   onClick={() => setPreviewCrop(activeAlert.crop_url)}
                   title="Click to enlarge detected suspect crop"
                 >
-                  <img src={activeAlert.crop_url} alt="Suspect Plate Crop" />
+                  <img src={apiUrl(activeAlert.crop_url)} alt="Suspect Plate Crop" />
                   <span className="crop-tag-alert">LIVE CROP</span>
                 </div>
               )}
@@ -1064,7 +1065,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     📷 Plate Snapshot:
                     <img
-                      src={activeTarget.event.crop_url}
+                      src={apiUrl(activeTarget.event.crop_url)}
                       alt="Crop"
                       style={{ height: "24px", borderRadius: "3px", border: "1px solid #10b981", verticalAlign: "middle", cursor: "pointer" }}
                       onClick={() => setPreviewCrop(activeTarget.event.crop_url)}
@@ -1299,7 +1300,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
                               title="Physical plate crop from camera - Click to enlarge"
                             >
                               <img
-                                src={log.crop_url}
+                                src={apiUrl(log.crop_url)}
                                 alt={log.plate?.number}
                                 className="plate-crop-img"
                               />
@@ -1441,7 +1442,7 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initia
               </button>
             </div>
             <img
-              src={previewCrop}
+              src={apiUrl(previewCrop)}
               alt="Plate Crop"
               style={{ width: "100%", maxHeight: "300px", objectFit: "contain", borderRadius: "8px", border: "2px solid #0284c7" }}
             />

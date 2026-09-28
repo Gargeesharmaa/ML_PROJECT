@@ -20,6 +20,7 @@ import {
   FileSpreadsheet
 } from "lucide-react";
 import "./DetectionInvestigation.css";
+import { apiUrl } from "../utils/apiConfig";
 
 function AutoRickshawIcon({ size = 15 }) {
   return (
@@ -133,7 +134,7 @@ export default function DetectionInvestigation({ onTrackOnMap, onOpenAnpr }) {
       params.append("page", targetPage);
       params.append("page_size", pageSize);
 
-      const res = await fetch(`/api/anpr/investigation/search?${params.toString()}`);
+      const res = await fetch(apiUrl(`/api/anpr/investigation/search?${params.toString()}`));
       if (res.ok) {
         const data = await res.json();
         setItems(data.items || []);
@@ -188,7 +189,7 @@ export default function DetectionInvestigation({ onTrackOnMap, onOpenAnpr }) {
       if (watchlistStatus && watchlistStatus !== "all") params.append("watchlist_status", watchlistStatus);
       if (location.trim()) params.append("location", location.trim());
 
-      const downloadUrl = `/api/anpr/investigation/export-csv?${params.toString()}`;
+      const downloadUrl = apiUrl(`/api/anpr/investigation/export-csv?${params.toString()}`);
       // Trigger browser download via hidden link
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -422,7 +423,7 @@ export default function DetectionInvestigation({ onTrackOnMap, onOpenAnpr }) {
                         <div className="crop-thumb-box">
                           {item.crop_url ? (
                             <img
-                              src={item.crop_url}
+                              src={apiUrl(item.crop_url)}
                               alt={item.plate_number}
                               className="crop-thumb-img"
                               onError={(e) => {
@@ -598,7 +599,7 @@ export default function DetectionInvestigation({ onTrackOnMap, onOpenAnpr }) {
               <div className="detail-crop-preview">
                 {selectedEvent.crop_url ? (
                   <img
-                    src={selectedEvent.crop_url}
+                    src={apiUrl(selectedEvent.crop_url)}
                     alt={selectedEvent.plate_number}
                   />
                 ) : (

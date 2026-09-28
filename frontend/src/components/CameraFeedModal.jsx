@@ -24,6 +24,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import MediaMTXWebRTCReader from "../utils/mediamtxReader";
+import { apiUrl } from "../utils/apiConfig";
 
 function parseRtspUrl(rtspUrl) {
   if (!rtspUrl || !rtspUrl.startsWith("rtsp://")) return null;
@@ -245,7 +246,7 @@ export default function CameraFeedModal({ camera, onClose }) {
         link.click();
       } else if (!isLocalWebcam && camera) {
         const a = document.createElement("a");
-        a.href = `/api/cameras/${camera.camera_code || camera.id}/snapshot?t=${Date.now()}`;
+        a.href = apiUrl(`/api/cameras/${camera.camera_code || camera.id}/snapshot?t=${Date.now()}`);
         a.download = `snapshot_${camera.camera_code || "CAM"}_${Date.now()}.jpg`;
         a.target = "_blank";
         document.body.appendChild(a);
@@ -506,7 +507,7 @@ export default function CameraFeedModal({ camera, onClose }) {
               ) : (
                 <img
                   key={streamKey}
-                  src={`/api/cameras/${camera.camera_code || camera.id}/stream`}
+                  src={apiUrl(`/api/cameras/${camera.camera_code || camera.id}/stream`)}
                   className="live-video-element"
                   alt={`Live Feed - ${camera.camera_code}`}
                   onError={() => {

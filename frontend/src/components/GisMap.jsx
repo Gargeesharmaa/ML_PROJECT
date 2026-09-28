@@ -22,6 +22,7 @@ import {
   Car
 } from "lucide-react";
 import CameraFeedModal from "./CameraFeedModal";
+import { apiUrl } from "../utils/apiConfig";
 
 // Fix default Leaflet icon paths in Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -263,7 +264,7 @@ export default function GisMap({
     setDeleteLoading(true);
     try {
       const targetId = cameraToDelete.id || cameraToDelete.code;
-      const res = await fetch(`/api/cameras/${encodeURIComponent(targetId)}`, {
+      const res = await fetch(apiUrl(`/api/cameras/${encodeURIComponent(targetId)}`), {
         method: "DELETE",
       });
 
@@ -301,7 +302,7 @@ export default function GisMap({
   const handleQuickSyncSentinel = async () => {
     setSyncingSentinel(true);
     try {
-      const res = await fetch("/api/cameras/sync-sentinel", {
+      const res = await fetch(apiUrl("/api/cameras/sync-sentinel"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gateway_url: "http://103.250.160.189" })
@@ -339,8 +340,8 @@ export default function GisMap({
       setError("");
       try {
         const [camsRes, deptsRes] = await Promise.all([
-          fetch("/api/cameras"),
-          fetch("/api/departments"),
+          fetch(apiUrl("/api/cameras")),
+          fetch(apiUrl("/api/departments")),
         ]);
 
         if (!isCancelled) {
@@ -380,8 +381,8 @@ export default function GisMap({
     setError("");
     try {
       const [camsRes, deptsRes] = await Promise.all([
-        fetch("/api/cameras"),
-        fetch("/api/departments"),
+        fetch(apiUrl("/api/cameras")),
+        fetch(apiUrl("/api/departments")),
       ]);
 
       if (camsRes.ok) {
@@ -407,7 +408,7 @@ export default function GisMap({
   const loadRoutes = async (plateToSelect = null) => {
     setRoutesLoading(true);
     try {
-      const res = await fetch("/api/anpr/routes");
+      const res = await fetch(apiUrl("/api/anpr/routes"));
       if (res.ok) {
         const routesData = await res.json();
         setTrackedRoutes(routesData);

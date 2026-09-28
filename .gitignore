@@ -20,7 +20,10 @@ Thumbs.db
 
 # Logs & Temporary
 *.log
-*.mp4
 *.avi
 *.mkv
 backend/data/anpr_crops/*.jpg
+
+# Video files (whitelist ANPR demo video)
+*.mp4
+!backend/ANPR/test_video.mp4

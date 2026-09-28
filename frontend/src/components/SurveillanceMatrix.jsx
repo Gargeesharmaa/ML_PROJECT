@@ -20,6 +20,7 @@ import {
   WifiOff
 } from "lucide-react";
 import "./SurveillanceMatrix.css";
+import { apiUrl } from "../utils/apiConfig";
 
 export default function SurveillanceMatrix({ onOpenDetailedView, onNavigateToOnboarding }) {
   const [cameras, setCameras] = useState([]);
@@ -39,8 +40,8 @@ export default function SurveillanceMatrix({ onOpenDetailedView, onNavigateToOnb
       try {
         // Fetch both registered cameras and anpr sources for complete fleet
         const [camsRes, sourcesRes] = await Promise.all([
-          fetch("/api/cameras").catch(() => null),
-          fetch("/api/anpr/sources").catch(() => null),
+          fetch(apiUrl("/api/cameras")).catch(() => null),
+          fetch(apiUrl("/api/anpr/sources")).catch(() => null),
         ]);
 
         let combined = [];
@@ -249,7 +250,7 @@ export default function SurveillanceMatrix({ onOpenDetailedView, onNavigateToOnb
     const cam = selectedSlots[slotIdx];
     if (img && cam) {
       const srcId = encodeURIComponent(cam.id || cam.camera_code);
-      img.src = `/api/cameras/${srcId}/stream?t=${Date.now()}`;
+      img.src = apiUrl(`/api/cameras/${srcId}/stream?t=${Date.now()}`);
     }
   };
 
@@ -482,7 +483,7 @@ export default function SurveillanceMatrix({ onOpenDetailedView, onNavigateToOnb
                       ) : (
                         <img
                           ref={(el) => (streamImgRefs.current[slotIdx] = el)}
-                          src={`/api/cameras/${encodeURIComponent(cam.id || cam.camera_code)}/stream`}
+                          src={apiUrl(`/api/cameras/${encodeURIComponent(cam.id || cam.camera_code)}/stream`)}
                           alt={cam.camera_code}
                           className="tile-stream-img"
                           onError={() => {

@@ -1,6 +1,9 @@
+import os
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from app.config import settings
 from app.db import init_db, close_db
 from app.routers import departments, onboarding, map, health, reports, metadata, validation, stream, anpr
 
@@ -19,10 +22,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Enable CORS for React GIS Map Frontend
+# Enable CORS for React GIS Map Frontend & Cloud Deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.allowed_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,3 +49,16 @@ async def root():
         "status": "online",
         "docs": "/docs"
     }
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "service": "sentinel-api",
+        "version": "1.0.0"
+    }
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", settings.port))
+    host = os.environ.get("HOST", settings.host)
+    uvicorn.run("app.main:app", host=host, port=port, reload=False)

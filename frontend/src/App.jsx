@@ -27,6 +27,7 @@ import CameraFeedModal from "./components/CameraFeedModal";
 import AnprRadar from "./components/AnprRadar";
 import SurveillanceMatrix from "./components/SurveillanceMatrix";
 import DetectionInvestigation from "./components/DetectionInvestigation";
+import { apiUrl } from "./utils/apiConfig";
 import "./App.css";
 
 const fallbackDepartments = [
@@ -100,7 +101,7 @@ function App() {
 
     async function loadInitialData() {
       try {
-        const response = await fetch("/api/departments");
+        const response = await fetch(apiUrl("/api/departments"));
         if (!isCancelled && response.ok) {
           const data = await response.json();
           setBackendOnline(true);
@@ -151,7 +152,7 @@ function App() {
     setIpCheckResult(null);
 
     try {
-      const response = await fetch("/api/cameras/validate-ip", {
+      const response = await fetch(apiUrl("/api/cameras/validate-ip"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -301,7 +302,7 @@ function App() {
     }
 
     try {
-      const response = await fetch("/api/departments", {
+      const response = await fetch(apiUrl("/api/departments"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dept_name: name, zone_code: code }),
@@ -399,7 +400,7 @@ function App() {
     };
 
     try {
-      const response = await fetch("/api/cameras/manual", {
+      const response = await fetch(apiUrl("/api/cameras/manual"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
