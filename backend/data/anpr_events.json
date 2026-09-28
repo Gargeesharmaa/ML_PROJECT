@@ -1,5 +1,2687 @@
 [
   {
+    "event_id": "EVT_1790631432764",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:37:12.767013+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38,
+      "bounding_box": [
+        288,
+        422,
+        410,
+        512
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631432764.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631375576",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:36:15.580705+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.31
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Bus)",
+      "raw_number": "Bus",
+      "confidence": 0.31,
+      "bounding_box": [
+        1023,
+        387,
+        1338,
+        612
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631375576.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631366103",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:36:06.105707+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38,
+      "bounding_box": [
+        447,
+        575,
+        552,
+        669
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631366103.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631363084",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:36:03.087666+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41,
+      "bounding_box": [
+        663,
+        691,
+        787,
+        823
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631363084.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631362356",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:36:02.358322+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.4
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.4,
+      "bounding_box": [
+        631,
+        712,
+        765,
+        852
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631362356.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631361715",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:36:01.716891+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.54
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.54,
+      "bounding_box": [
+        315,
+        703,
+        426,
+        811
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631361715.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631360416",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:36:00.417607+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32,
+      "bounding_box": [
+        285,
+        717,
+        404,
+        826
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631360416.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631351922",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:51.923156+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41,
+      "bounding_box": [
+        1540,
+        144,
+        1586,
+        211
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631351922.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631333885",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:33.887957+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31,
+      "bounding_box": [
+        802,
+        742,
+        875,
+        833
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631333885.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631332870",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:32.871171+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39,
+      "bounding_box": [
+        804,
+        759,
+        889,
+        860
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631332870.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631332203",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:32.204146+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31,
+      "bounding_box": [
+        667,
+        545,
+        744,
+        650
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631332203.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631314146",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:14.146739+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41,
+      "bounding_box": [
+        538,
+        313,
+        610,
+        387
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631314146.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631312734",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:12.738040+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38,
+      "bounding_box": [
+        1159,
+        813,
+        1425,
+        1075
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631312734.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631312698",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:12.700479+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.67
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.67,
+      "bounding_box": [
+        358,
+        286,
+        441,
+        363
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631312698.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631312405",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:12.407582+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3,
+      "bounding_box": [
+        1244,
+        730,
+        1407,
+        1048
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631312405.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631312121",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:12.122890+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.33,
+      "bounding_box": [
+        1534,
+        148,
+        1587,
+        214
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631312121.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631311785",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:11.786854+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.39
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.39,
+      "bounding_box": [
+        1531,
+        145,
+        1587,
+        214
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631311785.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631311723",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:35:11.724704+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.57
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.57,
+      "bounding_box": [
+        649,
+        520,
+        753,
+        663
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631311723.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631284154",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:34:44.156883+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35,
+      "bounding_box": [
+        1598,
+        332,
+        1702,
+        428
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631284154.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631278563",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:34:38.565355+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49,
+      "bounding_box": [
+        1265,
+        705,
+        1394,
+        962
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631278563.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631260767",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:34:20.770234+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.5
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.5,
+      "bounding_box": [
+        1566,
+        817,
+        1863,
+        967
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631260767.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631241772",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:34:01.773431+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32,
+      "bounding_box": [
+        768,
+        328,
+        977,
+        479
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631241772.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631221999",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:42.002310+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49,
+      "bounding_box": [
+        213,
+        726,
+        622,
+        1061
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631221999.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631215183",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:35.186031+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.46
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.46,
+      "bounding_box": [
+        1330,
+        227,
+        1451,
+        337
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631215183.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631211580",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:31.582653+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.46
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.46,
+      "bounding_box": [
+        586,
+        420,
+        863,
+        701
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631211580.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631206038",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:26.039624+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.58
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.58,
+      "bounding_box": [
+        184,
+        829,
+        373,
+        1030
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631206038.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631204529",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:24.530894+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.51
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.51,
+      "bounding_box": [
+        556,
+        749,
+        665,
+        947
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631204529.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631201554",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:21.557270+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        440,
+        768,
+        591,
+        1067
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631201554.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631200389",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:33:20.390955+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        1328,
+        679,
+        1444,
+        888
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631200389.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631153540",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:32:33.541645+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39,
+      "bounding_box": [
+        1548,
+        193,
+        1693,
+        307
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631153540.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631145826",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:32:25.828354+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        601,
+        641,
+        700,
+        773
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631145826.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631131345",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:32:11.346492+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.67
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.67,
+      "bounding_box": [
+        1542,
+        186,
+        1693,
+        325
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631131345.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631123880",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:32:03.884500+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.55
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.55,
+      "bounding_box": [
+        289,
+        619,
+        711,
+        982
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631123880.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631123299",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:32:03.300734+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38,
+      "bounding_box": [
+        1533,
+        191,
+        1698,
+        313
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631123299.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631115236",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:55.237988+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38,
+      "bounding_box": [
+        1537,
+        187,
+        1698,
+        311
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631115236.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631109243",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:49.245022+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49,
+      "bounding_box": [
+        279,
+        840,
+        409,
+        1057
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631109243.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631106913",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:46.915769+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31,
+      "bounding_box": [
+        1535,
+        190,
+        1695,
+        311
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631106913.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631106026",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:46.027738+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35,
+      "bounding_box": [
+        440,
+        722,
+        533,
+        857
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631106026.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631105380",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:45.381325+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        395,
+        725,
+        517,
+        878
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631105380.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631101141",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:41.142973+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41,
+      "bounding_box": [
+        1371,
+        212,
+        1483,
+        349
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631101141.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631087299",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:27.300726+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41,
+      "bounding_box": [
+        1046,
+        157,
+        1140,
+        272
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631087299.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631087233",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:27.237389+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.67
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.67,
+      "bounding_box": [
+        717,
+        376,
+        984,
+        614
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631087233.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631080511",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:20.514609+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        745,
+        377,
+        906,
+        548
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631080511.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631076824",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:16.826750+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.37
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.37,
+      "bounding_box": [
+        192,
+        820,
+        620,
+        1072
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631076824.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631064986",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:31:04.989500+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.33,
+      "bounding_box": [
+        651,
+        536,
+        747,
+        669
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631064986.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631008110",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:30:08.112380+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.56
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.56,
+      "bounding_box": [
+        499,
+        365,
+        734,
+        534
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631008110.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631005496",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:30:05.498179+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.41,
+      "bounding_box": [
+        571,
+        453,
+        1079,
+        695
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631005496.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790631004789",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:30:04.793519+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.51
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.51,
+      "bounding_box": [
+        1506,
+        136,
+        1645,
+        263
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790631004789.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630982003",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:29:42.006940+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        465,
+        451,
+        706,
+        753
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630982003.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630974603",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:29:34.604511+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32,
+      "bounding_box": [
+        301,
+        829,
+        429,
+        1018
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630974603.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630973484",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:29:33.486360+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44,
+      "bounding_box": [
+        1082,
+        412,
+        1132,
+        474
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630973484.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630956362",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:29:16.364516+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.33,
+      "bounding_box": [
+        378,
+        864,
+        492,
+        1019
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630956362.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630933530",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:53.532572+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.48
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.48,
+      "bounding_box": [
+        439,
+        553,
+        761,
+        788
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630933530.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630933503",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:53.504893+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.48
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.48,
+      "bounding_box": [
+        751,
+        366,
+        933,
+        585
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630933503.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630933011",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:53.012927+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44,
+      "bounding_box": [
+        421,
+        571,
+        669,
+        894
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630933011.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630924193",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:44.194696+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.31,
+      "bounding_box": [
+        1075,
+        229,
+        1315,
+        349
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630924193.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630921606",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:41.608120+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.3,
+      "bounding_box": [
+        769,
+        170,
+        848,
+        253
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630921606.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630921563",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:41.564668+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.55
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.55,
+      "bounding_box": [
+        1189,
+        534,
+        1313,
+        669
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630921563.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630921536",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:41.539107+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.55
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.55,
+      "bounding_box": [
+        1332,
+        534,
+        1533,
+        717
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630921536.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630913264",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:33.267657+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.46
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.46,
+      "bounding_box": [
+        1044,
+        248,
+        1099,
+        307
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630913264.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630882949",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:02.951508+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32,
+      "bounding_box": [
+        1421,
+        162,
+        1516,
+        249
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630882949.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630880517",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:28:00.520617+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3,
+      "bounding_box": [
+        228,
+        753,
+        385,
+        1023
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630880517.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630870676",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:27:50.678166+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.33,
+      "bounding_box": [
+        824,
+        347,
+        999,
+        509
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630870676.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630862210",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:27:42.211199+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.43
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.43,
+      "bounding_box": [
+        405,
+        316,
+        522,
+        456
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630862210.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630861933",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:27:41.934687+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35,
+      "bounding_box": [
+        866,
+        555,
+        974,
+        805
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630861933.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630861920",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:27:41.921554+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.42
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.42,
+      "bounding_box": [
+        487,
+        603,
+        602,
+        756
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630861920.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630859331",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:27:39.332404+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.31
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Bus)",
+      "raw_number": "Bus",
+      "confidence": 0.31,
+      "bounding_box": [
+        1267,
+        127,
+        1481,
+        243
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630859331.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630820774",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:27:00.774647+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3,
+      "bounding_box": [
+        622,
+        650,
+        737,
+        768
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630820774.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630802299",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:42.300961+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.34
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.34,
+      "bounding_box": [
+        733,
+        264,
+        840,
+        391
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630802299.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630802256",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:42.257725+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39,
+      "bounding_box": [
+        1653,
+        404,
+        1732,
+        517
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630802256.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630802230",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:42.231612+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.45
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.45,
+      "bounding_box": [
+        948,
+        236,
+        1082,
+        390
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630802230.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630794804",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:34.812179+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.43
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.43,
+      "bounding_box": [
+        568,
+        386,
+        829,
+        589
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630794804.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630791329",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:31.331503+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44,
+      "bounding_box": [
+        1027,
+        588,
+        1231,
+        725
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630791329.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630788438",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:28.440436+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.49,
+      "bounding_box": [
+        295,
+        748,
+        649,
+        1070
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630788438.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630772270",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:12.271539+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.52
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.52,
+      "bounding_box": [
+        1462,
+        325,
+        1624,
+        436
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630772270.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630767399",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:07.402517+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.39,
+      "bounding_box": [
+        1465,
+        286,
+        1649,
+        434
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630767399.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630766144",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:06.146756+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35,
+      "bounding_box": [
+        1166,
+        487,
+        1271,
+        716
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630766144.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630763100",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:03.102412+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.32,
+      "bounding_box": [
+        1500,
+        288,
+        1640,
+        422
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630763100.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630761426",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:01.427412+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.58
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.58,
+      "bounding_box": [
+        1074,
+        438,
+        1180,
+        618
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630761426.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630760619",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:26:00.620008+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3,
+      "bounding_box": [
+        1515,
+        287,
+        1661,
+        427
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630760619.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630752756",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:52.758451+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.36,
+      "bounding_box": [
+        1044,
+        118,
+        1088,
+        214
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630752756.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630751993",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:51.996321+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.44,
+      "bounding_box": [
+        671,
+        386,
+        805,
+        524
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630751993.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630748932",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:48.934427+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.3,
+      "bounding_box": [
+        536,
+        331,
+        672,
+        458
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630748932.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630748891",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:48.892868+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.38,
+      "bounding_box": [
+        1239,
+        157,
+        1332,
+        259
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630748891.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630748212",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:48.217918+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.85
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.85,
+      "bounding_box": [
+        1179,
+        476,
+        1464,
+        761
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630748212.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630747291",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:47.295228+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.4
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.4,
+      "bounding_box": [
+        469,
+        327,
+        603,
+        449
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630747291.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630746393",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:46.396213+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.3
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.3,
+      "bounding_box": [
+        1542,
+        328,
+        1629,
+        402
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630746393.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630746355",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "latitude": 23.033,
+    "longitude": 72.585,
+    "location": {
+      "latitude": 23.033,
+      "longitude": 72.585,
+      "name": "Gujarat Police - Ahmedabad Municipal"
+    },
+    "timestamp": "2026-09-28T21:25:46.357511+00:00",
+    "vehicle": {
+      "type": "SUV / Van",
+      "confidence": 0.9
+    },
+    "plate": {
+      "number": "WEM7",
+      "raw_number": "WEM7",
+      "confidence": 0.28,
+      "bounding_box": [
+        1277,
+        643,
+        87,
+        34
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630746355.jpg",
+    "is_target_catched": false,
+    "is_watchlist_alert": false,
+    "watchlist_match": null,
+    "status": "NORMAL",
+    "speed": 48
+  },
+  {
+    "event_id": "EVT_1790630735468",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:35.469457+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.32,
+      "bounding_box": [
+        341,
+        303,
+        464,
+        417
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630735468.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630735436",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:35.437328+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.34
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.34,
+      "bounding_box": [
+        1544,
+        333,
+        1640,
+        403
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630735436.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630730726",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:30.728891+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.87
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.87,
+      "bounding_box": [
+        1238,
+        334,
+        1466,
+        536
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630730726.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630727149",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:27.151341+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.33,
+      "bounding_box": [
+        1548,
+        315,
+        1649,
+        404
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630727149.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630723691",
+    "camera_id": "6d7a53be-6b88-4fd9-9356-0351d6c3994c",
+    "camera_code": "CAM10",
+    "camera_name": "\ud83d\udcf7 CAM10 - Gujarat Police - Ahmedabad Municipal",
+    "dept_name": "Gujarat Police - Ahmedabad Municipal",
+    "timestamp": "2026-09-28T21:25:23.692736+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.52
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.52,
+      "bounding_box": [
+        1549,
+        309,
+        1649,
+        403
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630723691.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630712340",
+    "camera_id": "demo_video",
+    "camera_code": "DEMO-01",
+    "camera_name": "Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "NH-48 Ahmedabad Expressway",
+    "timestamp": "2026-09-28T21:25:12.341058+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.32
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.32,
+      "bounding_box": [
+        730,
+        154,
+        782,
+        268
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630712340.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630711340",
+    "camera_id": "demo_video",
+    "camera_code": "DEMO-01",
+    "camera_name": "Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "NH-48 Ahmedabad Expressway",
+    "timestamp": "2026-09-28T21:25:11.342720+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.61
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.61,
+      "bounding_box": [
+        360,
+        226,
+        592,
+        571
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630711340.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630710772",
+    "camera_id": "demo_video",
+    "camera_code": "DEMO-01",
+    "camera_name": "Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "NH-48 Ahmedabad Expressway",
+    "timestamp": "2026-09-28T21:25:10.774433+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.33
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.33,
+      "bounding_box": [
+        181,
+        408,
+        281,
+        584
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630710772.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630710281",
+    "camera_id": "demo_video",
+    "camera_code": "DEMO-01",
+    "camera_name": "Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "NH-48 Ahmedabad Expressway",
+    "timestamp": "2026-09-28T21:25:10.282643+00:00",
+    "vehicle": {
+      "type": "Motorcycle / Scooter",
+      "confidence": 0.4
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Motorcycle / Scooter)",
+      "raw_number": "Motorcycle / Scooter",
+      "confidence": 0.4,
+      "bounding_box": [
+        225,
+        334,
+        302,
+        496
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630710281.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630710016",
+    "camera_id": "demo_video",
+    "camera_code": "DEMO-01",
+    "camera_name": "Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "NH-48 Ahmedabad Expressway",
+    "timestamp": "2026-09-28T21:25:10.019035+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.35,
+      "bounding_box": [
+        697,
+        53,
+        752,
+        142
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630710016.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
+    "event_id": "EVT_1790630709524",
+    "camera_id": "demo_video",
+    "camera_code": "DEMO-01",
+    "camera_name": "Demo Highway Traffic (test_video.mp4)",
+    "dept_name": "NH-48 Ahmedabad Expressway",
+    "timestamp": "2026-09-28T21:25:09.526272+00:00",
+    "vehicle": {
+      "type": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.66
+    },
+    "plate": {
+      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
+      "raw_number": "Auto-rickshaw / 3-wheeler",
+      "confidence": 0.66,
+      "bounding_box": [
+        431,
+        103,
+        615,
+        383
+      ]
+    },
+    "crop_url": "/api/anpr/crops/EVT_1790630709524.jpg",
+    "is_target_catched": false,
+    "status": "NORMAL",
+    "speed": 42
+  },
+  {
     "event_id": "EVT_1790629575850",
     "camera_id": "96a8c143-c1c5-42ba-80de-521fcd7d7c2b",
     "camera_code": "CAM07",
@@ -10885,2679 +13567,6 @@
       ]
     },
     "crop_url": "/api/anpr/crops/EVT_1790628935226.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628934815",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:34.816766+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.38
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.38,
-      "bounding_box": [
-        896,
-        812,
-        1013,
-        943
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628934815.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628932975",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:32.975564+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.42
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.42,
-      "bounding_box": [
-        1250,
-        851,
-        1390,
-        983
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628932975.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628932939",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:32.941276+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.57
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.57,
-      "bounding_box": [
-        686,
-        617,
-        942,
-        798
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628932939.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628932500",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:32.502473+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.33
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.33,
-      "bounding_box": [
-        933,
-        830,
-        992,
-        910
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628932500.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628929844",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:29.846093+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.66
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.66,
-      "bounding_box": [
-        1023,
-        831,
-        1186,
-        975
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628929844.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628927855",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:27.856580+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.31
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.31,
-      "bounding_box": [
-        1030,
-        543,
-        1086,
-        607
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628927855.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628927822",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:27.824048+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.36
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.36,
-      "bounding_box": [
-        357,
-        795,
-        422,
-        884
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628927822.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628927620",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:27.621978+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41,
-      "bounding_box": [
-        577,
-        768,
-        645,
-        854
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628927620.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628927025",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:27.026286+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.3
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.3,
-      "bounding_box": [
-        1243,
-        615,
-        1300,
-        672
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628927025.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628926065",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:26.066390+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32,
-      "bounding_box": [
-        493,
-        795,
-        559,
-        873
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628926065.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628925469",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:25.471241+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.57
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.57,
-      "bounding_box": [
-        871,
-        566,
-        952,
-        657
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628925469.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628924890",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:24.891779+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.35,
-      "bounding_box": [
-        811,
-        556,
-        867,
-        621
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628924890.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628924175",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:24.176523+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.64
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.64,
-      "bounding_box": [
-        811,
-        568,
-        954,
-        734
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628924175.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628924138",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:24.140865+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.88
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.88,
-      "bounding_box": [
-        392,
-        647,
-        852,
-        973
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628924138.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628923563",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:23.565072+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41,
-      "bounding_box": [
-        949,
-        640,
-        997,
-        699
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628923563.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628922785",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:22.789145+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.52
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.52,
-      "bounding_box": [
-        2,
-        702,
-        739,
-        1033
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628922785.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628921487",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:21.490107+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.32,
-      "bounding_box": [
-        1,
-        777,
-        490,
-        1072
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628921487.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628921252",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:21.255117+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.4,
-      "bounding_box": [
-        1,
-        792,
-        440,
-        1074
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628921252.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628920865",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:20.866997+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.45
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.45,
-      "bounding_box": [
-        1047,
-        654,
-        1203,
-        808
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628920865.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628920305",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:20.305468+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.56
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.56,
-      "bounding_box": [
-        999,
-        605,
-        1240,
-        860
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628920305.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628919008",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:19.010126+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.79
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.79,
-      "bounding_box": [
-        748,
-        671,
-        1202,
-        1068
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628919008.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628917350",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:17.352274+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.3
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.3,
-      "bounding_box": [
-        812,
-        575,
-        946,
-        710
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628917350.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628917315",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:17.317507+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.57
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.57,
-      "bounding_box": [
-        26,
-        808,
-        990,
-        1071
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628917315.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628915428",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:15.429867+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41,
-      "bounding_box": [
-        945,
-        742,
-        1054,
-        869
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628915428.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628914485",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:14.485729+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.44
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.44,
-      "bounding_box": [
-        690,
-        841,
-        858,
-        999
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628914485.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628914098",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:14.099472+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.39
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.39,
-      "bounding_box": [
-        841,
-        580,
-        952,
-        691
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628914098.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628913006",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:13.008367+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.34
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.34,
-      "bounding_box": [
-        542,
-        838,
-        884,
-        1054
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628913006.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628912249",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:12.250159+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.51
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.51,
-      "bounding_box": [
-        1043,
-        719,
-        1125,
-        817
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628912249.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628907341",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:07.342581+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.45
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.45,
-      "bounding_box": [
-        983,
-        811,
-        1047,
-        901
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628907341.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628905931",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:05.932506+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        787,
-        707,
-        894,
-        812
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628905931.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628904387",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:04.388947+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.55
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.55,
-      "bounding_box": [
-        673,
-        771,
-        791,
-        893
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628904387.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628903632",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:03.633089+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.54
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.54,
-      "bounding_box": [
-        521,
-        821,
-        684,
-        984
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628903632.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628903427",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:03.428834+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.49
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.49,
-      "bounding_box": [
-        464,
-        844,
-        643,
-        1022
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628903427.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628901959",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:55:01.960321+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.48
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.48,
-      "bounding_box": [
-        1088,
-        624,
-        1149,
-        683
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628901959.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628899332",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:59.334057+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.39
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.39,
-      "bounding_box": [
-        995,
-        613,
-        1050,
-        672
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628899332.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628899056",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:59.058241+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.56
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.56,
-      "bounding_box": [
-        849,
-        571,
-        948,
-        676
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628899056.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628897682",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:57.683585+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.36
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.36,
-      "bounding_box": [
-        744,
-        816,
-        970,
-        971
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628897682.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628896343",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:56.346347+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        751,
-        648,
-        800,
-        706
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628896343.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628892870",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:52.871579+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.55
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.55,
-      "bounding_box": [
-        576,
-        838,
-        738,
-        989
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628892870.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628890956",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:50.958971+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.54
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.54,
-      "bounding_box": [
-        848,
-        571,
-        949,
-        674
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628890956.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628889923",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:49.924517+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.3
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.3,
-      "bounding_box": [
-        1041,
-        693,
-        1122,
-        788
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628889923.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628889321",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:49.323343+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.36
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.36,
-      "bounding_box": [
-        812,
-        729,
-        908,
-        847
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628889321.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628889281",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:49.284208+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.44
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.44,
-      "bounding_box": [
-        1132,
-        835,
-        1303,
-        976
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628889281.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628888802",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:48.803546+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41,
-      "bounding_box": [
-        925,
-        768,
-        1034,
-        900
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628888802.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628888322",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:48.324428+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.38
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.38,
-      "bounding_box": [
-        668,
-        782,
-        803,
-        926
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628888322.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628887350",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:47.352248+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34,
-      "bounding_box": [
-        385,
-        876,
-        585,
-        1014
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628887350.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628884067",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:44.069573+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32,
-      "bounding_box": [
-        605,
-        678,
-        708,
-        778
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628884067.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628882928",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:42.931335+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.5
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.5,
-      "bounding_box": [
-        839,
-        587,
-        938,
-        684
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628882928.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628881209",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:41.211463+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.33
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.33,
-      "bounding_box": [
-        1167,
-        677,
-        1251,
-        778
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628881209.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628880445",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:40.446678+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.46
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.46,
-      "bounding_box": [
-        1033,
-        743,
-        1133,
-        871
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628880445.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628880413",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:40.413209+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.79
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.79,
-      "bounding_box": [
-        988,
-        600,
-        1129,
-        762
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628880413.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628880385",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:40.389105+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.81
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.81,
-      "bounding_box": [
-        810,
-        824,
-        1013,
-        1014
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628880385.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628869262",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:29.262051+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        999,
-        811,
-        1062,
-        903
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628869262.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628868685",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:28.696200+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.51
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.51,
-      "bounding_box": [
-        857,
-        537,
-        957,
-        658
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628868685.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628867554",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:27.561371+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32,
-      "bounding_box": [
-        1154,
-        829,
-        1312,
-        987
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628867554.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628867261",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:27.263171+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41,
-      "bounding_box": [
-        626,
-        741,
-        770,
-        842
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628867261.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628866968",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:26.970477+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.62
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.62,
-      "bounding_box": [
-        1038,
-        726,
-        1142,
-        825
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628866968.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628866046",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:26.047041+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4,
-      "bounding_box": [
-        736,
-        789,
-        879,
-        954
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628866046.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628864933",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:24.934274+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37,
-      "bounding_box": [
-        401,
-        799,
-        637,
-        938
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628864933.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628861085",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:21.086326+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        941,
-        630,
-        1019,
-        736
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628861085.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628860498",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:20.500543+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        861,
-        538,
-        951,
-        659
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628860498.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628857705",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:17.719565+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.34
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.34,
-      "bounding_box": [
-        1577,
-        606,
-        1847,
-        819
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628857705.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628857361",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:17.363392+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.46
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.46,
-      "bounding_box": [
-        1039,
-        724,
-        1212,
-        929
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628857361.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628852826",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:12.827130+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.53
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.53,
-      "bounding_box": [
-        1171,
-        855,
-        1347,
-        1036
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628852826.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628849720",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:09.721560+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        678,
-        776,
-        819,
-        907
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628849720.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628849165",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:09.167097+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.47
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.47,
-      "bounding_box": [
-        1092,
-        620,
-        1142,
-        668
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628849165.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628848621",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:08.623215+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.6
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.6,
-      "bounding_box": [
-        469,
-        840,
-        652,
-        1009
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628848621.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628848254",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:08.256254+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.33
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.33,
-      "bounding_box": [
-        877,
-        554,
-        971,
-        668
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628848254.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628848218",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:08.220596+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37,
-      "bounding_box": [
-        557,
-        737,
-        665,
-        854
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628848218.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628844085",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:04.086084+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.52
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.52,
-      "bounding_box": [
-        959,
-        687,
-        1009,
-        762
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628844085.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628841207",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:01.208262+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32,
-      "bounding_box": [
-        699,
-        830,
-        772,
-        911
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628841207.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628840929",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:00.930783+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37,
-      "bounding_box": [
-        1057,
-        652,
-        1107,
-        714
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628840929.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628840402",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:54:00.403874+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34,
-      "bounding_box": [
-        544,
-        866,
-        641,
-        981
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628840402.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628838772",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:58.773231+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.58
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.58,
-      "bounding_box": [
-        862,
-        544,
-        964,
-        678
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628838772.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628836285",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:56.286687+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37,
-      "bounding_box": [
-        598,
-        747,
-        716,
-        866
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628836285.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628831649",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:51.650036+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4,
-      "bounding_box": [
-        1052,
-        589,
-        1104,
-        642
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628831649.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628830877",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:50.878990+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34,
-      "bounding_box": [
-        1062,
-        603,
-        1120,
-        660
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628830877.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628830605",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:50.606148+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.45
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.45,
-      "bounding_box": [
-        862,
-        743,
-        909,
-        813
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628830605.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628829743",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:49.743468+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.48
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.48,
-      "bounding_box": [
-        755,
-        784,
-        817,
-        861
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628829743.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628828035",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:48.037548+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4,
-      "bounding_box": [
-        645,
-        844,
-        730,
-        930
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628828035.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628827761",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:47.762500+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.45
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.45,
-      "bounding_box": [
-        550,
-        882,
-        645,
-        981
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628827761.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628822373",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:42.375225+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.35,
-      "bounding_box": [
-        962,
-        770,
-        1012,
-        844
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628822373.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628822102",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:42.104490+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.47
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.47,
-      "bounding_box": [
-        714,
-        552,
-        968,
-        754
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628822102.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628822070",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:42.071211+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.49
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.49,
-      "bounding_box": [
-        923,
-        786,
-        986,
-        872
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628822070.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628822036",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:42.037529+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.66
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.66,
-      "bounding_box": [
-        1125,
-        806,
-        1259,
-        942
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628822036.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628818666",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:38.668645+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.32,
-      "bounding_box": [
-        620,
-        578,
-        926,
-        784
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628818666.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628815927",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:35.928564+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.42
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.42,
-      "bounding_box": [
-        628,
-        822,
-        783,
-        992
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628815927.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628814646",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:34.648847+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.31
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.31,
-      "bounding_box": [
-        567,
-        593,
-        890,
-        805
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628814646.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628813891",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:33.891053+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.34,
-      "bounding_box": [
-        1060,
-        654,
-        1134,
-        727
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628813891.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628813855",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:33.857363+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.41,
-      "bounding_box": [
-        872,
-        648,
-        971,
-        751
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628813855.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628813567",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:33.568668+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.43
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.43,
-      "bounding_box": [
-        978,
-        747,
-        1023,
-        805
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628813567.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628810538",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:30.540218+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.78
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.78,
-      "bounding_box": [
-        571,
-        573,
-        891,
-        819
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628810538.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628809007",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:29.009742+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.37,
-      "bounding_box": [
-        1472,
-        634,
-        1597,
-        706
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628809007.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628806423",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:26.426082+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.32,
-      "bounding_box": [
-        569,
-        580,
-        894,
-        814
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628806423.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628803871",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:23.873293+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.61
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.61,
-      "bounding_box": [
-        1195,
-        867,
-        1366,
-        1034
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628803871.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628803084",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:23.086256+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.4,
-      "bounding_box": [
-        999,
-        820,
-        1188,
-        1007
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628803084.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628802535",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:22.537058+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.45
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.45,
-      "bounding_box": [
-        564,
-        582,
-        886,
-        815
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628802535.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628801149",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:21.151179+00:00",
-    "vehicle": {
-      "type": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.43
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-rickshaw / 3-wheeler)",
-      "raw_number": "Auto-rickshaw / 3-wheeler",
-      "confidence": 0.43,
-      "bounding_box": [
-        949,
-        774,
-        1068,
-        908
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628801149.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790628800359",
-    "camera_id": "a665bff1-1016-4cea-8d00-62357304cf0c",
-    "camera_code": "CAM01",
-    "camera_name": "\ud83d\udcf7 CAM01 - Gujarat Police - Ahmedabad",
-    "dept_name": "Gujarat Police - Ahmedabad",
-    "timestamp": "2026-09-28T20:53:20.361453+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.3
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.3,
-      "bounding_box": [
-        1013,
-        541,
-        1093,
-        643
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790628800359.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 42

@@ -19,6 +19,9 @@ import {
   Milestone,
   X,
   ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  ChevronUp,
   Car
 } from "lucide-react";
 import CameraFeedModal from "./CameraFeedModal";
@@ -249,6 +252,18 @@ export default function GisMap({
   const [trackedRoutes, setTrackedRoutes] = useState([]);
   const [selectedRoutePlate, setSelectedRoutePlate] = useState(initialTrackPlate || "");
   const [routesLoading, setRoutesLoading] = useState(false);
+
+  // Left-Side Panels Collapse State
+  const [liveFeedsCollapsed, setLiveFeedsCollapsed] = useState(false);
+  const [routeHudCollapsed, setRouteHudCollapsed] = useState(false);
+
+  // Auto-collapse live feeds when entering route tracking to avoid overlapping
+  useEffect(() => {
+    if (routeTrackingActive) {
+      setLiveFeedsCollapsed(true);
+      setRouteHudCollapsed(false);
+    }
+  }, [routeTrackingActive]);
 
   // Live Camera Feed Modal state
   const [activeFeedCamera, setActiveFeedCamera] = useState(null);
@@ -1132,16 +1147,23 @@ export default function GisMap({
 
         {/* FLOATING ROUTE JOURNEY HUD CARD */}
         {routeTrackingActive && activeRoute && (
-          <div className="map-route-hud-card">
-            <div className="route-hud-header">
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Navigation size={15} style={{ color: "#38bdf8" }} />
-                <span className="route-hud-title">VEHICLE ROUTE TRAIL</span>
-              </div>
+          routeHudCollapsed ? (
+            <div
+              className="map-route-collapsed-pill"
+              onClick={() => setRouteHudCollapsed(false)}
+              title="Click to expand vehicle route trail timeline"
+            >
+              <Navigation size={14} style={{ color: "#38bdf8" }} />
+              <span style={{ color: "#38bdf8", fontWeight: 700 }}>{activeRoute.plate_number}</span>
+              <span style={{ color: "#cbd5e1", fontSize: "11px" }}>
+                {activeRoute.vehicle_type || "Vehicle"} &bull; {activeRoute.total_checkpoints} {activeRoute.total_checkpoints === 1 ? "Stop" : "Stops"}
+              </span>
+              <ChevronDown size={14} style={{ color: "#94a3b8" }} />
               <button
                 type="button"
-                className="route-hud-close"
-                onClick={() => {
+                className="route-collapsed-close"
+                onClick={(e) => {
+                  e.stopPropagation();
                   setRouteTrackingActive(false);
                   onClearTrackPlate?.();
                 }}
@@ -1150,6 +1172,35 @@ export default function GisMap({
                 ✕
               </button>
             </div>
+          ) : (
+            <div className="map-route-hud-card">
+              <div className="route-hud-header">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Navigation size={15} style={{ color: "#38bdf8" }} />
+                  <span className="route-hud-title">VEHICLE ROUTE TRAIL</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <button
+                    type="button"
+                    className="route-hud-close"
+                    onClick={() => setRouteHudCollapsed(true)}
+                    title="Collapse route HUD"
+                  >
+                    <ChevronLeft size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    className="route-hud-close"
+                    onClick={() => {
+                      setRouteTrackingActive(false);
+                      onClearTrackPlate?.();
+                    }}
+                    title="Exit route tracking"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
 
             <div className="route-hud-body">
               {/* PLATE + VEHICLE CLASS */}
@@ -1220,7 +1271,8 @@ export default function GisMap({
               </div>
             </div>
           </div>
-        )}
+        )
+      )}
 
         {/* FLOATING MAP CONTROLS OVERLAY */}
         <div className="map-floating-overlay">
@@ -1293,34 +1345,77 @@ export default function GisMap({
 
         {/* QUICK LIVE FEED LIST SIDEBAR (When cameras exist) */}
         {cameras.length > 0 && (
-          <div className="map-feed-quick-sidebar">
-            <div className="sidebar-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Video size={16} />
-                <span>Live Feeds ({cameras.length})</span>
+          liveFeedsCollapsed ? (
+            <button
+              type="button"
+              className="map-collapsed-pill"
+              style={{
+                left: routeTrackingActive && activeRoute
+                  ? (routeHudCollapsed ? "308px" : "348px")
+                  : "16px"
+              }}
+              onClick={() => setLiveFeedsCollapsed(false)}
+              title="Expand Live Feeds list"
+            >
+              <Video size={14} style={{ color: "#38bdf8" }} />
+              <span>Live Feeds ({cameras.length})</span>
+              <ChevronRight size={14} />
+            </button>
+          ) : (
+            <div
+              className="map-feed-quick-sidebar"
+              style={{
+                left: routeTrackingActive && activeRoute
+                  ? (routeHudCollapsed ? "308px" : "348px")
+                  : "16px"
+              }}
+            >
+              <div className="sidebar-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Video size={16} />
+                  <span>Live Feeds ({cameras.length})</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  {onSwitchToBulkCsv && (
+                    <button
+                      type="button"
+                      onClick={onSwitchToBulkCsv}
+                      title="Import more cameras via CSV"
+                      style={{
+                        background: "rgba(255,255,255,0.15)",
+                        border: "none",
+                        color: "#fff",
+                        borderRadius: "4px",
+                        padding: "2px 6px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px"
+                      }}
+                    >
+                      <UploadCloud size={12} /> +CSV
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setLiveFeedsCollapsed(true)}
+                    title="Collapse Live Feeds list"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#94a3b8",
+                      cursor: "pointer",
+                      padding: "2px 4px",
+                      borderRadius: "4px",
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                </div>
               </div>
-              {onSwitchToBulkCsv && (
-                <button
-                  type="button"
-                  onClick={onSwitchToBulkCsv}
-                  title="Import more cameras via CSV"
-                  style={{
-                    background: "rgba(255,255,255,0.15)",
-                    border: "none",
-                    color: "#fff",
-                    borderRadius: "4px",
-                    padding: "2px 6px",
-                    fontSize: "11px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px"
-                  }}
-                >
-                  <UploadCloud size={12} /> +CSV
-                </button>
-              )}
-            </div>
             <div className="sidebar-feed-list">
               {cameras.map((f) => {
                 const p = f.properties || {};
@@ -1395,7 +1490,8 @@ export default function GisMap({
               })}
             </div>
           </div>
-        )}
+        )
+      )}
 
         {/* ERROR NOTIFICATION OVERLAY */}
         {error && (
