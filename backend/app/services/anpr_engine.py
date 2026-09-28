@@ -46,6 +46,7 @@ STATE_CONFUSIONS = {
     "6J": "GJ", "0J": "GJ", "CJ": "GJ", "16": "GJ", "0U": "GJ", "62": "GJ", "02": "GJ",
     "G1": "GJ", "GI": "GJ", "GL": "GJ", "BG": "GJ", "8G": "GJ", "6G": "GJ", "BC": "GJ",
     "8C": "GJ", "8J": "GJ", "BJ": "GJ", "QJ": "GJ", "C1": "GJ", "GT": "GJ",
+    "Y5": "GJ", "Y3": "GJ", "V5": "GJ", "U5": "GJ",
     "D1": "DL", "0L": "DL", "DI": "DL", "OL": "DL", "QL": "DL",
     "M1": "MH", "MI": "MH", "M4": "MH", "NH": "MH",
     "R1": "RJ", "RI": "RJ", "RL": "RJ",
@@ -59,7 +60,7 @@ STATE_CONFUSIONS = {
 def clean_indian_plate(text: str) -> str:
     """
     Normalizes Indian license plate numbers with domain-specific OCR correction.
-    Corrects common OCR character confusions (e.g. 6J -> GJ, BG -> GJ, O/0, I/1).
+    Corrects common OCR character confusions (e.g. 6J/BG/Y5 -> GJ, O/0, I/1).
     """
     raw = re.sub(r"[^A-Z0-9]", "", str(text).upper())
     if len(raw) < 4:
@@ -72,14 +73,14 @@ def clean_indian_plate(text: str) -> str:
     if prefix in STATE_CONFUSIONS:
         chars[0] = STATE_CONFUSIONS[prefix][0]
         chars[1] = STATE_CONFUSIONS[prefix][1]
-    elif chars[0] in ["B", "8", "6", "0", "C", "Q"] and chars[1] in ["J", "1", "I", "L"]:
+    elif chars[0] in ["B", "8", "6", "0", "C", "Q", "Y", "V", "U"] and chars[1] in ["J", "1", "I", "L", "5", "3"]:
         chars[0] = "G"
         chars[1] = "J"
-    elif chars[0] == "G" and chars[1] in ["1", "I", "L", "T", "U"]:
+    elif chars[0] == "G" and chars[1] in ["1", "I", "L", "T", "U", "5"]:
         chars[1] = "J"
 
     # 2. Number plate digit normalization for District Code (chars 2 and 3)
-    num_map = {"O": "0", "I": "1", "Z": "2", "S": "5", "B": "8", "A": "4", "U": "0", "J": "1", "Q": "0", "G": "6", "D": "0"}
+    num_map = {"O": "0", "I": "1", "Z": "2", "S": "5", "B": "8", "A": "4", "U": "0", "J": "1", "Q": "0", "G": "6", "D": "0", "T": "7"}
     if len(chars) > 2 and chars[2] in num_map:
         chars[2] = num_map[chars[2]]
     if len(chars) > 3 and chars[3] in num_map:
@@ -113,7 +114,7 @@ def is_valid_indian_plate_format(plate: str) -> bool:
 def _deskew_plate(img: np.ndarray) -> np.ndarray:
     """
     Detects and corrects small skew / rotation angle in number plate crops (-35 to +35 deg).
-    Uses Otsu thresholding and minimum bounding box to align plate horizontally.
+    Uses Otsu thresholding and minimum bounding box, with Hough lines fallback.
     """
     if img is None or img.size == 0:
         return img
@@ -123,18 +124,19 @@ def _deskew_plate(img: np.ndarray) -> np.ndarray:
         return img
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img.copy()
+    best_angle = 0.0
 
     try:
+        # Contour-based minAreaRect angle detection
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-        best_angle = 0.0
         max_area = 0.0
         img_area = float(h * w)
 
         for c in contours:
             area = cv2.contourArea(c)
-            if 0.12 * img_area <= area <= 0.95 * img_area and area > max_area:
+            if 0.10 * img_area <= area <= 0.96 * img_area and area > max_area:
                 rect = cv2.minAreaRect(c)
                 angle = rect[-1]
                 if angle < -45:
@@ -145,6 +147,23 @@ def _deskew_plate(img: np.ndarray) -> np.ndarray:
                 if 1.5 <= abs(angle) <= 35:
                     best_angle = angle
                     max_area = area
+
+        # Fallback to Hough lines if contour didn't detect orientation
+        if abs(best_angle) < 1.5:
+            edges = cv2.Canny(gray, 50, 150)
+            lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=25, minLineLength=int(w * 0.32), maxLineGap=8)
+            if lines is not None and len(lines) > 0:
+                angles = []
+                for l in lines:
+                    x1, y1, x2, y2 = l[0]
+                    dx = x2 - x1
+                    dy = y2 - y1
+                    if abs(dx) > 8:
+                        deg = np.degrees(np.arctan2(dy, dx))
+                        if 1.5 <= abs(deg) <= 35:
+                            angles.append(deg)
+                if angles:
+                    best_angle = float(np.median(angles))
 
         if abs(best_angle) >= 1.5:
             center = (w // 2, h // 2)
@@ -193,6 +212,8 @@ def format_plate_text(raw_text: str) -> str:
             return f"{prefix} {dist} {series} {digits}"
         else:
             return f"{prefix} {dist} {digits}"
+    elif len(clean) == 8 and clean[:2].isalpha():
+        return f"{clean[:2]} {clean[2:4]} {clean[4:]}"
     elif len(clean) >= 6 and clean[:2].isalpha():
         return f"{clean[:2]} {clean[2:]}"
     return clean
@@ -510,16 +531,18 @@ class ANPREngine:
                     bx2, by2 = min(w, bx2), min(h, by2)
                     bw, bh = bx2 - bx1, by2 - by1
                     if bw >= 16 and bh >= 10:
-                        # Clean margin padding so characters near edge are preserved
-                        pad_x = max(3, int(bw * 0.08))
-                        pad_y = max(3, int(bh * 0.12))
+                        # Clean adaptive margin padding so characters near edge are preserved
+                        pad_ratio_x = 0.12 if bw < 70 else 0.08
+                        pad_ratio_y = 0.16 if bh < 24 else 0.12
+                        pad_x = max(3, int(bw * pad_ratio_x))
+                        pad_y = max(3, int(bh * pad_ratio_y))
                         px1 = max(0, bx1 - pad_x)
                         py1 = max(0, by1 - pad_y)
                         px2 = min(w, bx2 + pad_x)
                         py2 = min(h, by2 + pad_y)
                         crop = img[py1:py2, px1:px2]
                         plate_text, conf = self._run_crop_ocr(crop)
-                        if conf > best_conf and len(plate_text) >= 3:
+                        if conf > best_conf and len(plate_text) >= 4:
                             best_conf = conf
                             extracted_plate = plate_text
 
@@ -556,10 +579,11 @@ class ANPREngine:
     def _run_crop_ocr(self, crop: np.ndarray) -> (str, float):
         """
         Preprocesses cropped plate through a multi-stage pipeline:
-        1. Clean margin padding & upscale to clear readable scale (height >= 85px, width >= 180px)
-        2. Deskewing to correct small angular rotation (-35 to +35 deg)
-        3. Preprocessing variants (CLAHE + Sharpening, Adaptive Thresholding, Bilateral + Otsu, Color fallback)
+        1. Clean margin padding & upscale to clear readable scale (height >= 96px, width >= 220px) using Lanczos-4
+        2. Deskewing to correct small angular rotation (-35 to +35 deg) via contour + Hough lines
+        3. Preprocessing variants (CLAHE + Sharpening, Adaptive Gaussian, Bilateral + Otsu, Morphological Gradient, Color fallback)
         4. Multi-variant OCR tournament with Indian plate format scoring and allowlist filtering.
+        5. Strict confidence and structural validation filtering.
         """
         if crop is None or crop.size == 0 or self.ocr_reader is None:
             return "", 0.0
@@ -568,13 +592,13 @@ class ANPREngine:
         if ch < 8 or cw < 15:
             return "", 0.0
 
-        # 1. Upscale small crops so character strokes are clear and well-defined
-        scale_h = 85.0 / ch
-        scale_w = 180.0 / cw
-        scale = max(2.0, max(scale_h, scale_w))
+        # 1. High-fidelity super-resolution upscaling using Lanczos-4 interpolation
+        scale_h = 96.0 / ch
+        scale_w = 220.0 / cw
+        scale = max(2.2, max(scale_h, scale_w))
         target_w = int(cw * scale)
         target_h = int(ch * scale)
-        crop_upscaled = cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
+        crop_upscaled = cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
 
         # 2. Deskew rotation
         crop_deskewed = _deskew_plate(crop_upscaled)
@@ -585,7 +609,7 @@ class ANPREngine:
         # Variant 1: CLAHE contrast enhancement + Unsharp mask sharpening
         clahe_engine = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
         clahe = clahe_engine.apply(gray)
-        sharp = cv2.addWeighted(clahe, 1.35, cv2.GaussianBlur(clahe, (0, 0), 3), -0.35, 0)
+        sharp = cv2.addWeighted(clahe, 1.40, cv2.GaussianBlur(clahe, (0, 0), 3), -0.40, 0)
 
         # Variant 2: Adaptive Gaussian thresholding (preserves character edges against glare/shadows)
         adapt = cv2.adaptiveThreshold(clahe, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 19, 9)
@@ -594,10 +618,17 @@ class ANPREngine:
         bilateral = cv2.bilateralFilter(gray, 7, 50, 50)
         _, otsu = cv2.threshold(bilateral, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
+        # Variant 4: Morphological gradient enhancement (rescues blurry, degraded, or faint characters)
+        morph_k = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+        morph_grad = cv2.morphologyEx(gray, cv2.MORPH_GRADIENT, morph_k)
+        enhanced_grad = cv2.add(gray, morph_grad)
+        clahe_morph = clahe_engine.apply(enhanced_grad)
+
         variants = [
             ("sharp_clahe", sharp),
             ("adapt_thresh", adapt),
             ("bilateral_otsu", otsu),
+            ("morph_grad", clahe_morph),
             ("color_deskewed", crop_deskewed)
         ]
 
@@ -619,15 +650,17 @@ class ANPREngine:
                 token_confs = []
                 for item in sorted_boxes:
                     cleaned_token = clean_indian_plate(item[1])
-                    if cleaned_token:
+                    token_conf = float(item[2])
+                    # Filter out low-confidence stray symbol tokens (< 0.15)
+                    if cleaned_token and (token_conf >= 0.15 or len(cleaned_token) >= 3):
                         token_texts.append(cleaned_token)
-                        token_confs.append(float(item[2]))
+                        token_confs.append(token_conf)
 
                 if not token_texts:
                     continue
 
                 full_text = clean_indian_plate("".join(token_texts))
-                if len(full_text) < 3:
+                if len(full_text) < 4:
                     continue
 
                 avg_conf = float(np.mean(token_confs))
@@ -656,6 +689,19 @@ class ANPREngine:
 
             except Exception as e:
                 logger.debug(f"Crop OCR variant {var_name} error: {e}")
+
+        # Strict confidence & format filtering:
+        # 1. Extremely low confidence (< 0.18) is rejected regardless of pattern
+        # 2. Borderline confidence (0.18 - 0.25) must match valid Indian plate format
+        # 3. Valid confidence (>= 0.25) is accepted if length >= 4
+        if best_candidate_conf < 0.18:
+            return "", 0.0
+
+        if best_candidate_conf < 0.25 and not is_valid_indian_plate_format(best_candidate_text):
+            return "", 0.0
+
+        if len(best_candidate_text) < 4:
+            return "", 0.0
 
         return best_candidate_text, best_candidate_conf
 
@@ -817,9 +863,11 @@ class ANPREngine:
                             bw, bh = bx2 - bx1, by2 - by1
 
                             if bw >= 16 and bh >= 10:
-                                # Apply clean margin padding around detected plate box to prevent character clipping
-                                pad_x = max(3, int(bw * 0.08))
-                                pad_y = max(3, int(bh * 0.12))
+                                # Apply clean adaptive margin padding around detected plate box to prevent character clipping
+                                pad_ratio_x = 0.12 if bw < 70 else 0.08
+                                pad_ratio_y = 0.16 if bh < 24 else 0.12
+                                pad_x = max(3, int(bw * pad_ratio_x))
+                                pad_y = max(3, int(bh * pad_ratio_y))
                                 px1 = max(0, bx1 - pad_x)
                                 py1 = max(0, by1 - pad_y)
                                 px2 = min(w, bx2 + pad_x)
@@ -827,7 +875,7 @@ class ANPREngine:
                                 crop = frame[py1:py2, px1:px2]
                                 plate_text, conf = self._run_crop_ocr(crop)
 
-                                if len(plate_text) >= 3:
+                                if len(plate_text) >= 4 and conf >= 0.22:
                                     clean_text = clean_indian_plate(plate_text)
                                     formatted = format_plate_text(clean_text)
 
