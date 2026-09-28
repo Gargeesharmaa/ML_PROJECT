@@ -1587,3 +1587,70 @@
   font-size: 11px;
   padding: 0;
 }
+
+/* GIS Map Route Action Buttons */
+.track-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #172554;
+  color: #38bdf8;
+  border: 1px solid #1e40af;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.track-map-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
+}
+
+.watchlist-track-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.watchlist-track-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+.intercept-route-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+}
+
+.intercept-route-btn:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}

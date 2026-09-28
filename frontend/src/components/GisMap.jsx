@@ -13,7 +13,13 @@ import {
   Plus,
   Play,
   Trash2,
-  UploadCloud
+  UploadCloud,
+  MapPin,
+  Navigation,
+  Milestone,
+  X,
+  ChevronRight,
+  Car
 } from "lucide-react";
 import CameraFeedModal from "./CameraFeedModal";
 
@@ -25,7 +31,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Custom colored SVG pin markers
+// Custom colored SVG pin markers for CCTV cameras
 const createCustomMarkerIcon = (status) => {
   const colorMap = {
     ONLINE: { bg: "#10b981", border: "#065f46", text: "ON" },
@@ -64,6 +70,146 @@ const createCustomMarkerIcon = (status) => {
   });
 };
 
+// Chronological breadcrumb trail marker pins (1, 2, 3... or 📍)
+const createBreadcrumbMarkerIcon = (point, isFirst, isLast, isSingle) => {
+  let bg = "#0284c7"; // Transit checkpoint blue
+  let label = String(point.order || 1);
+  let pulse = "";
+
+  if (isSingle) {
+    bg = "#10b981"; // Emerald green
+    label = "📍";
+  } else if (isFirst) {
+    bg = "#10b981"; // Origin green
+    label = "1";
+  } else if (isLast) {
+    bg = "#ef4444"; // Latest position crimson
+    pulse = `<span style="position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 3px solid #ef4444; opacity: 0.85; animation: radarPing 1.5s infinite ease-out;"></span>`;
+  }
+
+  return L.divIcon({
+    className: "custom-breadcrumb-pin",
+    html: `
+      <div style="
+        position: relative;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: ${bg};
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+        color: white;
+        font-weight: 900;
+        font-size: ${isSingle ? "16px" : "13px"};
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      ">
+        <span>${label}</span>
+        ${pulse}
+      </div>
+    `,
+    iconSize: [38, 38],
+    iconAnchor: [19, 19],
+    popupAnchor: [0, -20],
+  });
+};
+
+// Checkpoint Popup Content
+const createCheckpointPopupHtml = (point, route) => {
+  const isSingle = !route.points || route.points.length <= 1;
+  const isFirst = point.order === 1;
+  const isLast = route.points && point.order === route.points.length;
+  const stage = isSingle
+    ? { text: "SINGLE DETECTION", bg: "#dcfce7", color: "#15803d" }
+    : isFirst
+    ? { text: "ORIGIN (STOP 1)", bg: "#dcfce7", color: "#15803d" }
+    : isLast
+    ? { text: `LATEST (STOP ${point.order})`, bg: "#fee2e2", color: "#b91c1c" }
+    : { text: `TRANSIT (STOP ${point.order})`, bg: "#e0f2fe", color: "#0369a1" };
+
+  const timeFormatted = point.timestamp
+    ? new Date(point.timestamp).toLocaleString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        month: "short",
+        day: "numeric",
+      })
+    : "N/A";
+
+  return `
+    <div style="font-family: inherit; font-size: 13px; line-height: 1.4; min-width: 250px; padding: 4px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 8px;">
+        <span style="
+          padding: 2px 8px;
+          border-radius: 999px;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+          background: ${stage.bg};
+          color: ${stage.color};
+        ">${stage.text}</span>
+        <span style="font-size: 11px; color: #64748b; font-weight: 600;">
+          ${timeFormatted}
+        </span>
+      </div>
+
+      <!-- HSRP PLATE NUMBER -->
+      <div style="margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="
+          display: inline-flex;
+          align-items: center;
+          background: #ffffff;
+          border: 2px solid #0f172a;
+          border-radius: 4px;
+          overflow: hidden;
+          font-family: monospace;
+          font-weight: 900;
+          letter-spacing: 1px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        ">
+          <span style="background: #1e3a8a; color: #fff; font-size: 9px; padding: 2px 4px;">IND</span>
+          <span style="padding: 2px 8px; font-size: 13px; color: #0f172a;">${point.plate_number || route.plate_number}</span>
+        </div>
+        ${point.is_watchlist ? '<span style="background: #fee2e2; color: #dc2626; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; border: 1px solid #f87171;">🚨 SUSPECT</span>' : ''}
+      </div>
+
+      <!-- VEHICLE CLASS -->
+      <div style="margin-bottom: 6px;">
+        <span style="color: #64748b; font-size: 11px;">Vehicle Class:</span><br/>
+        <strong style="color: #0f172a; font-size: 13px;">${point.vehicle_type || route.vehicle_type || "Vehicle"}</strong>
+      </div>
+
+      <!-- CAMERA INFO -->
+      <div style="margin-bottom: 6px;">
+        <span style="color: #64748b; font-size: 11px;">Surveillance Camera:</span><br/>
+        <strong style="color: #0f172a;">${point.camera_code || point.camera_id}</strong> &bull; <span style="font-size: 12px; color: #475569;">${point.camera_name || "CCTV Unit"}</span>
+      </div>
+
+      <!-- LOCATION -->
+      <div style="margin-bottom: 6px;">
+        <span style="color: #64748b; font-size: 11px;">Location:</span><br/>
+        <span style="color: #0f172a; font-weight: 600;">📍 ${point.location_name || `${point.latitude.toFixed(4)}, ${point.longitude.toFixed(4)}`}</span>
+      </div>
+
+      ${point.distance_from_prev_km ? `
+        <div style="margin-top: 6px; padding: 4px 8px; background: #f0fdf4; border-radius: 6px; border: 1px solid #bbf7d0; font-size: 11px; color: #166534; font-weight: 600;">
+          +${point.distance_from_prev_km} km from previous checkpoint
+        </div>
+      ` : ''}
+
+      ${point.crop_url ? `
+        <div style="margin-top: 8px;">
+          <img src="${point.crop_url}" alt="Plate Crop" style="width: 100%; max-height: 48px; object-fit: contain; border-radius: 4px; border: 1px solid #cbd5e1; background: #000;" />
+        </div>
+      ` : ''}
+    </div>
+  `;
+};
+
 // Calculate distance between two coordinates in km (Haversine formula)
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -79,10 +225,16 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
+export default function GisMap({
+  onSwitchToOnboarding,
+  onSwitchToBulkCsv,
+  initialTrackPlate,
+  onClearTrackPlate
+}) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
+  const routesLayerRef = useRef(null);
   const proximityCircleRef = useRef(null);
   const proximityMarkerRef = useRef(null);
 
@@ -90,6 +242,12 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Route Tracking & Breadcrumb Trail State
+  const [routeTrackingActive, setRouteTrackingActive] = useState(Boolean(initialTrackPlate));
+  const [trackedRoutes, setTrackedRoutes] = useState([]);
+  const [selectedRoutePlate, setSelectedRoutePlate] = useState(initialTrackPlate || "");
+  const [routesLoading, setRoutesLoading] = useState(false);
 
   // Live Camera Feed Modal state
   const [activeFeedCamera, setActiveFeedCamera] = useState(null);
@@ -245,6 +403,46 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
     }
   };
 
+  // Fetch Vehicle Routes & Breadcrumb Trails
+  const loadRoutes = async (plateToSelect = null) => {
+    setRoutesLoading(true);
+    try {
+      const res = await fetch("/api/anpr/routes");
+      if (res.ok) {
+        const routesData = await res.json();
+        setTrackedRoutes(routesData);
+        if (plateToSelect) {
+          const cleanTarget = plateToSelect.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+          const match = routesData.find(
+            (r) =>
+              r.raw_plate.toUpperCase() === cleanTarget ||
+              r.plate_number.replace(/\s+/g, "").toUpperCase() === cleanTarget
+          );
+          if (match) {
+            setSelectedRoutePlate(match.raw_plate);
+          } else if (routesData.length > 0) {
+            setSelectedRoutePlate(routesData[0].raw_plate);
+          }
+        } else if (!selectedRoutePlate && routesData.length > 0) {
+          const multi = routesData.find((r) => r.points.length >= 2) || routesData[0];
+          setSelectedRoutePlate(multi.raw_plate);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load vehicle routes:", err);
+    } finally {
+      setRoutesLoading(false);
+    }
+  };
+
+  // React to initialTrackPlate prop changes
+  useEffect(() => {
+    if (initialTrackPlate) {
+      setRouteTrackingActive(true);
+      loadRoutes(initialTrackPlate);
+    }
+  }, [initialTrackPlate]);
+
   // 2. Initialize Leaflet Map (Centered on Gujarat)
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -266,6 +464,10 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
 
     const markersLayer = L.layerGroup().addTo(map);
     markersLayerRef.current = markersLayer;
+
+    const routesLayer = L.layerGroup().addTo(map);
+    routesLayerRef.current = routesLayer;
+
     mapInstanceRef.current = map;
 
     // Handle "Watch Live Feed" and "Remove Camera" clicks inside Leaflet Popups
@@ -546,14 +748,94 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
       markersLayer.addLayer(marker);
     });
 
-    // Auto-fit bounds if cameras exist
-    if (filteredCameras.length > 0) {
+    // Auto-fit bounds if cameras exist and not currently tracking route
+    if (!routeTrackingActive && filteredCameras.length > 0) {
       const bounds = L.latLngBounds(
         filteredCameras.map((f) => [f.geometry.coordinates[1], f.geometry.coordinates[0]])
       );
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     }
-  }, [filteredCameras, proximityActive, proximityCenter, radiusKm]);
+  }, [filteredCameras, proximityActive, proximityCenter, radiusKm, routeTrackingActive]);
+
+  // Active selected route object
+  const activeRoute = useMemo(() => {
+    if (!routeTrackingActive || !selectedRoutePlate) return null;
+    const cleanTarget = selectedRoutePlate.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    return (
+      trackedRoutes.find(
+        (r) =>
+          r.raw_plate.toUpperCase() === cleanTarget ||
+          r.plate_number.replace(/\s+/g, "").toUpperCase() === cleanTarget
+      ) || null
+    );
+  }, [routeTrackingActive, selectedRoutePlate, trackedRoutes]);
+
+  // 5. Render Route Trail (Breadcrumb pins and polyline)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    const routesLayer = routesLayerRef.current;
+    if (!map || !routesLayer) return;
+
+    routesLayer.clearLayers();
+
+    if (!routeTrackingActive || !activeRoute) return;
+
+    const points = activeRoute.points || [];
+    if (points.length === 0) return;
+
+    const isSingle = points.length === 1;
+    const latlngs = [];
+
+    // Map through checkpoints and create numbered markers
+    points.forEach((pt, idx) => {
+      const isFirst = idx === 0;
+      const isLast = idx === points.length - 1;
+      const latlng = [pt.latitude, pt.longitude];
+      latlngs.push(latlng);
+
+      const marker = L.marker(latlng, {
+        icon: createBreadcrumbMarkerIcon(pt, isFirst, isLast, isSingle),
+        zIndexOffset: isLast ? 1200 : isFirst ? 1100 : 1000 + idx,
+      });
+
+      marker.bindPopup(createCheckpointPopupHtml(pt, activeRoute), {
+        maxWidth: 340,
+        className: "custom-route-popup",
+      });
+
+      routesLayer.addLayer(marker);
+    });
+
+    // Connect detections in chronological order ONLY IF >= 2 points
+    if (!isSingle && latlngs.length >= 2) {
+      // Glow polyline underlay
+      const glowLine = L.polyline(latlngs, {
+        color: "#38bdf8",
+        weight: 9,
+        opacity: 0.45,
+        lineCap: "round",
+        lineJoin: "round",
+      });
+      routesLayer.addLayer(glowLine);
+
+      // Main dashed polyline
+      const mainLine = L.polyline(latlngs, {
+        color: "#0284c7",
+        weight: 4.5,
+        opacity: 0.95,
+        dashArray: "10, 8",
+        lineCap: "round",
+        lineJoin: "round",
+      });
+      routesLayer.addLayer(mainLine);
+
+      // Fit map bounds to show the entire breadcrumb trail
+      map.fitBounds(L.latLngBounds(latlngs), { padding: [80, 80], maxZoom: 14 });
+    } else if (isSingle && latlngs.length === 1) {
+      // Single detection: center map on point without drawing polyline
+      map.flyTo(latlngs[0], 13);
+    }
+  }, [routeTrackingActive, activeRoute]);
 
   // Overall Statistics
   const stats = useMemo(() => {
@@ -720,6 +1002,28 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
             <span>Proximity Radius</span>
           </button>
 
+          {/* VEHICLE ROUTE TRAIL TOGGLE */}
+          <button
+            type="button"
+            className={`route-tracking-toggle-btn ${routeTrackingActive ? "active" : ""}`}
+            onClick={() => {
+              if (!routeTrackingActive) {
+                setRouteTrackingActive(true);
+                loadRoutes(selectedRoutePlate);
+              } else {
+                setRouteTrackingActive(false);
+                onClearTrackPlate?.();
+              }
+            }}
+            title="Toggle Vehicle Route Tracking & Breadcrumb Trail"
+          >
+            <Navigation size={16} />
+            <span>Route Trail</span>
+            {trackedRoutes.length > 0 && (
+              <span className="route-count-badge">{trackedRoutes.length}</span>
+            )}
+          </button>
+
           {/* RESET BUTTON */}
           <button
             type="button"
@@ -761,11 +1065,158 @@ export default function GisMap({ onSwitchToOnboarding, onSwitchToBulkCsv }) {
             </div>
           </div>
         )}
+
+        {/* VEHICLE ROUTE TRACKING EXPANDED DRAWER */}
+        {routeTrackingActive && (
+          <div className="route-tracking-drawer">
+            <div className="route-drawer-left">
+              <Navigation size={18} className="text-primary" />
+              <div>
+                <strong>GIS Breadcrumb Route Tracker:</strong>
+                <p>
+                  Tracing vehicle journey checkpoints chronologically across highway surveillance cameras.
+                </p>
+              </div>
+            </div>
+
+            <div className="route-drawer-center">
+              <label>Track Vehicle:</label>
+              <select
+                value={selectedRoutePlate}
+                onChange={(e) => setSelectedRoutePlate(e.target.value)}
+                className="route-select-dropdown"
+              >
+                {trackedRoutes.length === 0 && (
+                  <option value="">No vehicle routes recorded</option>
+                )}
+                {trackedRoutes.map((r) => (
+                  <option key={r.raw_plate} value={r.raw_plate}>
+                    {r.plate_number} &bull; {r.vehicle_type} ({r.total_checkpoints} {r.total_checkpoints === 1 ? "Stop" : "Stops"}{r.total_distance_km > 0 ? `, ${r.total_distance_km} km` : ""})
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                className="route-refresh-btn"
+                onClick={() => loadRoutes(selectedRoutePlate)}
+                title="Refresh routes from detection database"
+              >
+                <RefreshCw size={13} className={routesLoading ? "animate-spin" : ""} />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className="exit-route-btn"
+              onClick={() => {
+                setRouteTrackingActive(false);
+                onClearTrackPlate?.();
+              }}
+              title="Close route tracking"
+            >
+              <X size={14} />
+              <span>Exit Route</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* MAP VIEW CONTAINER */}
       <div className="map-view-wrapper">
         <div ref={mapContainerRef} className="leaflet-gis-map-canvas" />
+
+        {/* FLOATING ROUTE JOURNEY HUD CARD */}
+        {routeTrackingActive && activeRoute && (
+          <div className="map-route-hud-card">
+            <div className="route-hud-header">
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Navigation size={15} style={{ color: "#38bdf8" }} />
+                <span className="route-hud-title">VEHICLE ROUTE TRAIL</span>
+              </div>
+              <button
+                type="button"
+                className="route-hud-close"
+                onClick={() => {
+                  setRouteTrackingActive(false);
+                  onClearTrackPlate?.();
+                }}
+                title="Exit route tracking"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="route-hud-body">
+              {/* PLATE + VEHICLE CLASS */}
+              <div className="route-plate-badge-row">
+                <div className="hsrp-plate-display">
+                  <div className="hsrp-blue-band"><span className="hsrp-ind">IND</span></div>
+                  <span className="hsrp-plate-text">{activeRoute.plate_number}</span>
+                </div>
+                <span className="route-vehicle-tag">{activeRoute.vehicle_type || "Vehicle"}</span>
+              </div>
+
+              {/* STATS STRIP */}
+              <div className="route-metrics-strip">
+                <div className="metric-box">
+                  <span className="metric-lbl">Checkpoints</span>
+                  <strong className="metric-val">{activeRoute.total_checkpoints}</strong>
+                </div>
+                <div className="metric-box">
+                  <span className="metric-lbl">Total Distance</span>
+                  <strong className="metric-val">{activeRoute.total_distance_km} km</strong>
+                </div>
+                <div className="metric-box">
+                  <span className="metric-lbl">Mode</span>
+                  <strong className="metric-val" style={{ color: activeRoute.points.length > 1 ? "#38bdf8" : "#10b981" }}>
+                    {activeRoute.points.length > 1 ? "Multi-Cam" : "Single Spot"}
+                  </strong>
+                </div>
+              </div>
+
+              {/* CHECKPOINTS TIMELINE */}
+              <div className="route-timeline-wrap">
+                <div className="timeline-header">Travel Sequence:</div>
+                <div className="timeline-scroll">
+                  {activeRoute.points.map((pt, idx) => {
+                    const isFirst = idx === 0;
+                    const isLast = idx === activeRoute.points.length - 1;
+                    const isSingle = activeRoute.points.length === 1;
+                    return (
+                      <div
+                        key={pt.event_id || idx}
+                        className="timeline-item"
+                        onClick={() => {
+                          if (mapInstanceRef.current) {
+                            mapInstanceRef.current.flyTo([pt.latitude, pt.longitude], 15);
+                          }
+                        }}
+                        title="Click to fly to checkpoint"
+                      >
+                        <div className={`timeline-pin ${isSingle ? "single" : isFirst ? "first" : isLast ? "last" : "transit"}`}>
+                          {isSingle ? "📍" : pt.order}
+                        </div>
+                        <div className="timeline-content">
+                          <div className="timeline-top">
+                            <strong className="timeline-cam">{pt.camera_code || pt.camera_id}</strong>
+                            <span className="timeline-time">
+                              {pt.timestamp ? new Date(pt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "N/A"}
+                            </span>
+                          </div>
+                          <p className="timeline-loc">{pt.location_name || pt.camera_name}</p>
+                          {pt.distance_from_prev_km ? (
+                            <span className="timeline-dist-tag">+{pt.distance_from_prev_km} km</span>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* FLOATING MAP CONTROLS OVERLAY */}
         <div className="map-floating-overlay">

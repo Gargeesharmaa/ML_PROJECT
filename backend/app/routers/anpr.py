@@ -215,6 +215,16 @@ async def acknowledge_alert():
     return anpr_engine.acknowledge_alert()
 
 
+@router.get("/routes")
+async def get_vehicle_routes(plate: Optional[str] = None):
+    """
+    Returns GIS vehicle route tracking and breadcrumb trail.
+    Groups detections by normalized plate, connects camera locations chronologically,
+    and returns travel checkpoints.
+    """
+    return anpr_engine.get_vehicle_routes(plate)
+
+
 @router.post("/detect-frame")
 async def detect_frame(req: FrameDetectionRequest):
     """Auxiliary frame detector for browser webcam frames."""

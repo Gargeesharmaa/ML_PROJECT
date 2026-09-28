@@ -25,7 +25,9 @@ import {
   Volume2,
   VolumeX,
   Plus,
-  AlertOctagon
+  AlertOctagon,
+  MapPin,
+  Compass
 } from "lucide-react";
 import "./AnprRadar.css";
 
@@ -141,7 +143,7 @@ function renderVehicleBadge(vtype) {
   );
 }
 
-export default function AnprRadar({ onNavigateToOnboarding }) {
+export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap }) {
   // Sources & Stream State
   const [sources, setSources] = useState([]);
   const [selectedSourceId, setSelectedSourceId] = useState("demo_video");
@@ -988,15 +990,26 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                       {item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}
                     </td>
                     <td style={{ textAlign: "right" }}>
-                      <button
-                        type="button"
-                        className="watchlist-del-btn"
-                        onClick={() => handleDeleteWatchlist(item.id, item.formatted_plate || item.plate_number)}
-                        title="Remove from suspect watchlist"
-                      >
-                        <Trash2 size={13} />
-                        <span>Remove</span>
-                      </button>
+                      <div style={{ display: "inline-flex", gap: "6px", alignItems: "center" }}>
+                        <button
+                          type="button"
+                          className="watchlist-track-btn"
+                          onClick={() => onTrackOnMap && onTrackOnMap(item.formatted_plate || item.plate_number)}
+                          title="Track route of this suspect vehicle on GIS Map"
+                        >
+                          <MapPin size={12} />
+                          <span>Track</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="watchlist-del-btn"
+                          onClick={() => handleDeleteWatchlist(item.id, item.formatted_plate || item.plate_number)}
+                          title="Remove from suspect watchlist"
+                        >
+                          <Trash2 size={13} />
+                          <span>Remove</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -1045,13 +1058,24 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                 )}
               </div>
             </div>
-            <button
-              type="button"
-              className="intercept-ack-btn"
-              onClick={handleClearTarget}
-            >
-              Dismiss Alert
-            </button>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <button
+                type="button"
+                className="intercept-route-btn"
+                onClick={() => onTrackOnMap && onTrackOnMap(activeTarget.plate)}
+                title="Plot breadcrumb trail and travel checkpoints on GIS Map"
+              >
+                <Compass size={14} />
+                <span>Track on Map</span>
+              </button>
+              <button
+                type="button"
+                className="intercept-ack-btn"
+                onClick={handleClearTarget}
+              >
+                Dismiss Alert
+              </button>
+            </div>
           </div>
         ) : (
           /* NOT SEEN YET BANNER */
@@ -1227,6 +1251,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                   <th>Vehicle Class</th>
                   <th>Location / Camera</th>
                   <th>Status</th>
+                  <th style={{ textAlign: "center" }}>Route</th>
                 </tr>
               </thead>
               <tbody>
@@ -1326,13 +1351,26 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                             : "PASSED"}
                         </span>
                       </td>
+
+                      {/* ROUTE TRACKING ACTION */}
+                      <td style={{ textAlign: "center" }}>
+                        <button
+                          type="button"
+                          className="track-map-btn"
+                          title="Track vehicle route & checkpoints on GIS Map"
+                          onClick={() => onTrackOnMap && onTrackOnMap(log.plate?.number || log.plate?.raw_number)}
+                        >
+                          <MapPin size={12} />
+                          <span>Route</span>
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
 
                 {filteredEvents.length === 0 && (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
                       <Camera size={28} style={{ margin: "0 auto 10px", opacity: 0.4, display: "block" }} />
                       <p style={{ margin: 0, fontWeight: 600 }}>No vehicle detections yet.</p>
                       <span style={{ fontSize: "11px", color: "#64748b" }}>

@@ -345,6 +345,9 @@ class ANPREngine:
         self._cached_watchlist = None
         self._watchlist_mtime = 0.0
 
+        self.latitude = 22.5645
+        self.longitude = 72.9289
+
         self.latest_frame_bytes = None
         self.fps = 0.0
         self.last_detected_plate = ""
@@ -462,17 +465,23 @@ class ANPREngine:
             self.camera_code = "DEMO-01"
             self.dept_name = "NH-48 Ahmedabad Expressway"
             self.source_name = "Demo Highway Traffic (test_video.mp4)"
+            self.latitude = 22.5645
+            self.longitude = 72.9289
 
         elif self.source_type == "LOCAL_WEBCAM":
             self.camera_code = "WEBCAM-01"
             self.dept_name = "Local Surveillance Station"
             self.source_name = "Laptop Testing Webcam"
             self.rtsp_url = "0"
+            self.latitude = 23.0225
+            self.longitude = 72.5714
 
         elif self.source_type == "CAMERA":
             self.camera_code = "CAM"
             self.dept_name = "Gujarat Surveillance Grid"
             self.source_name = source_name or "Gujarat CCTV Camera"
+            self.latitude = 23.0225
+            self.longitude = 72.5714
 
             # Auto-resolve from cameras.json if registered
             if CAMERAS_FILE.exists():
@@ -486,6 +495,8 @@ class ANPREngine:
                                 self.camera_code = c.get("camera_code", "CAM")
                                 self.dept_name = c.get("dept_name", "Gujarat CCTV")
                                 self.source_name = f"📷 {self.camera_code} - {self.dept_name}"
+                                self.latitude = float(c.get("latitude", 23.0225))
+                                self.longitude = float(c.get("longitude", 72.5714))
                                 break
                 except Exception as e:
                     logger.warning(f"Error looking up camera {self.source_id}: {e}")
@@ -790,6 +801,147 @@ class ANPREngine:
         """Dismiss / acknowledge active suspect vehicle alert."""
         self.active_alert = None
         return {"status": "ACKNOWLEDGED", "message": "Alert acknowledged and dismissed."}
+
+    def get_vehicle_routes(self, target_plate: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Computes chronological breadcrumb trails for vehicles detected across cameras.
+        Groups detections by normalized plate using clean_indian_plate() and are_plates_similar().
+        """
+        events = self.load_events()
+
+        # Camera coordinate lookup map
+        cam_coords = {
+            "demo_video": {"lat": 22.5645, "lng": 72.9289, "name": "NH-48 Ahmedabad-Surat Expressway", "code": "DEMO-01"},
+            "demo_highway": {"lat": 22.5645, "lng": 72.9289, "name": "NH-48 Ahmedabad-Surat Expressway", "code": "DEMO-01"},
+            "local_webcam": {"lat": 23.0225, "lng": 72.5714, "name": "Surveillance Command Station", "code": "WEBCAM-01"}
+        }
+
+        if CAMERAS_FILE.exists():
+            try:
+                with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                    cams = json.load(f)
+                    for c in cams:
+                        c_id = str(c.get("id", ""))
+                        c_code = str(c.get("camera_code", ""))
+                        lat = float(c.get("latitude", 23.0225))
+                        lng = float(c.get("longitude", 72.5714))
+                        name = c.get("dept_name") or f"Camera {c_code}"
+                        info = {"lat": lat, "lng": lng, "name": name, "code": c_code}
+                        if c_id:
+                            cam_coords[c_id] = info
+                        if c_code:
+                            cam_coords[c_code.lower()] = info
+            except Exception as e:
+                logger.warning(f"Error loading cameras in get_vehicle_routes: {e}")
+
+        # Filter out empty and non-plate transit placeholders
+        valid_events = []
+        for evt in events:
+            raw_p = evt.get("plate", {}).get("raw_number") or evt.get("plate", {}).get("number", "")
+            if not raw_p:
+                continue
+            str_p = str(raw_p).upper()
+            if any(k in str_p for k in ["IN-TRANSIT", "MOTORCYCLE", "RICKSHAW", "SCOOTER", "TRUCK", "BUS"]):
+                continue
+            clean_p = clean_indian_plate(raw_p)
+            # Legitimate license plate must have at least 4 characters and contain both letters and digits
+            if len(clean_p) < 4 or not (any(c.isdigit() for c in clean_p) and any(c.isalpha() for c in clean_p)):
+                continue
+            valid_events.append((clean_p, evt))
+
+        # Group events by vehicle using normalized & fuzzy plate matching
+        groups = []  # [[rep_plate, [events]]]
+        for clean_p, evt in valid_events:
+            matched_group = None
+            for g in groups:
+                rep_p = g[0]
+                if clean_p == rep_p or are_plates_similar(clean_p, rep_p):
+                    matched_group = g
+                    break
+            if matched_group:
+                matched_group[1].append(evt)
+            else:
+                groups.append([clean_p, [evt]])
+
+        # If a specific target plate is requested, filter
+        if target_plate:
+            clean_target = clean_indian_plate(target_plate)
+            groups = [
+                g for g in groups
+                if g[0] == clean_target or are_plates_similar(g[0], clean_target)
+            ]
+
+        routes = []
+        for rep_p, evts in groups:
+            # Sort detections in ascending chronological order
+            evts.sort(key=lambda x: str(x.get("timestamp", "")))
+
+            points = []
+            for idx, e in enumerate(evts):
+                c_id = str(e.get("camera_id", ""))
+                c_code = str(e.get("camera_code", "CAM"))
+
+                # Resolve coordinates
+                lat = e.get("latitude") or (e.get("location") or {}).get("latitude")
+                lng = e.get("longitude") or (e.get("location") or {}).get("longitude")
+
+                if lat is None or lng is None:
+                    coord = cam_coords.get(c_id) or cam_coords.get(c_code.lower()) or cam_coords.get("demo_video")
+                    lat = coord["lat"]
+                    lng = coord["lng"]
+
+                loc_name = e.get("dept_name") or e.get("camera_name") or cam_coords.get(c_id, {}).get("name") or "Surveillance Grid"
+
+                points.append({
+                    "order": idx + 1,
+                    "event_id": e.get("event_id", f"PT_{idx+1}"),
+                    "camera_id": c_id,
+                    "camera_code": c_code,
+                    "camera_name": e.get("camera_name") or loc_name,
+                    "location_name": loc_name,
+                    "latitude": round(float(lat), 5),
+                    "longitude": round(float(lng), 5),
+                    "timestamp": e.get("timestamp"),
+                    "vehicle_type": (e.get("vehicle") or {}).get("type", "Car"),
+                    "plate_number": (e.get("plate") or {}).get("number", format_plate_text(rep_p)),
+                    "raw_plate": rep_p,
+                    "crop_url": e.get("crop_url", ""),
+                    "is_watchlist": bool(e.get("is_watchlist_alert") or e.get("status") == "WATCHLIST_ALERT"),
+                    "speed": e.get("speed", 48)
+                })
+
+            # Calculate inter-checkpoint travel distances
+            total_dist_km = 0.0
+            for i in range(1, len(points)):
+                lat1, lon1 = points[i - 1]["latitude"], points[i - 1]["longitude"]
+                lat2, lon2 = points[i]["latitude"], points[i]["longitude"]
+
+                # Haversine distance
+                r_earth = 6371.0
+                dlat = np.radians(lat2 - lat1)
+                dlon = np.radians(lon2 - lon1)
+                a = np.sin(dlat / 2.0)**2 + np.cos(np.radians(lat1)) * np.cos(np.radians(lat2)) * np.sin(dlon / 2.0)**2
+                c = 2.0 * np.arctan2(np.sqrt(a), np.sqrt(1.0 - a))
+                dist = round(float(r_earth * c), 1)
+
+                points[i]["distance_from_prev_km"] = dist
+                total_dist_km += dist
+
+            routes.append({
+                "plate_number": format_plate_text(rep_p),
+                "raw_plate": rep_p,
+                "vehicle_type": points[-1]["vehicle_type"] if points else "Car",
+                "first_seen": points[0]["timestamp"] if points else None,
+                "last_seen": points[-1]["timestamp"] if points else None,
+                "total_checkpoints": len(points),
+                "total_distance_km": round(total_dist_km, 1),
+                "is_multi_camera": len(set(p["camera_id"] for p in points)) > 1 or len(points) >= 2,
+                "points": points
+            })
+
+        # Sort: multi-checkpoint journeys first, then by recency
+        routes.sort(key=lambda r: (r["total_checkpoints"] > 1, r["last_seen"] or ""), reverse=True)
+        return routes
 
     def _run_crop_ocr(self, crop: np.ndarray) -> (str, float):
         """
@@ -1166,6 +1318,13 @@ class ANPREngine:
                                             "camera_code": self.camera_code,
                                             "camera_name": self.source_name,
                                             "dept_name": self.dept_name,
+                                            "latitude": self.latitude,
+                                            "longitude": self.longitude,
+                                            "location": {
+                                                "latitude": self.latitude,
+                                                "longitude": self.longitude,
+                                                "name": self.dept_name or self.source_name
+                                            },
                                             "timestamp": datetime.now(timezone.utc).isoformat(),
                                             "vehicle": {
                                                 "type": matched_vtype,

@@ -54,6 +54,7 @@ const emptyCamera = {
 function App() {
   const [activeTab, setActiveTab] = useState("onboarding"); // "onboarding" | "map"
   const [step, setStep] = useState(1);
+  const [gisTrackPlate, setGisTrackPlate] = useState(null);
 
   // Departments state
   const [departments, setDepartments] = useState(fallbackDepartments);
@@ -516,6 +517,8 @@ function App() {
         <GisMap
           onSwitchToOnboarding={() => setActiveTab("onboarding")}
           onSwitchToBulkCsv={() => setActiveTab("bulk_csv")}
+          initialTrackPlate={gisTrackPlate}
+          onClearTrackPlate={() => setGisTrackPlate(null)}
         />
       ) : activeTab === "bulk_csv" ? (
         <main className="onboarding-main" style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 20px" }}>
@@ -523,7 +526,13 @@ function App() {
         </main>
       ) : activeTab === "anpr" ? (
         <main className="anpr-page-main">
-          <AnprRadar onNavigateToOnboarding={() => setActiveTab("onboarding")} />
+          <AnprRadar
+            onNavigateToOnboarding={() => setActiveTab("onboarding")}
+            onTrackOnMap={(plate) => {
+              setGisTrackPlate(plate);
+              setActiveTab("map");
+            }}
+          />
         </main>
       ) : (
         /* MAIN ONBOARDING VIEW */
