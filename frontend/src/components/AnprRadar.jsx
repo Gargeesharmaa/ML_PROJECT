@@ -106,6 +106,11 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
   const [streamUrl, setStreamUrl] = useState("/api/anpr/stream");
   const [fps, setFps] = useState(0);
 
+  // Connection & Handshake States: "IDLE" | "CONNECTING" | "CONNECTED" | "ERROR"
+  const [connectionState, setConnectionState] = useState("IDLE");
+  const [connectionError, setConnectionError] = useState(null);
+  const requestSeq = useRef(0);
+
   // Search & Target Interception State
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -145,6 +150,21 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
           const data = await res.json();
           setIsRunning(data.is_running);
           setFps(data.fps || 0);
+          if (data.connection_status === "CONNECTED" && data.is_running) {
+            setConnectionState("CONNECTED");
+          } else if (data.connection_status === "CONNECTING") {
+            setConnectionState("CONNECTING");
+          } else if (data.connection_status === "ERROR") {
+            setConnectionState("ERROR");
+            setConnectionError(data.error_message);
+          } else {
+            setConnectionState(data.is_running ? "CONNECTED" : "IDLE");
+          }
+
+          if (data.source_id) {
+            setSelectedSourceId(data.source_id);
+          }
+
           if (data.target_plate) {
             setActiveTarget({
               plate: data.target_plate,
@@ -176,10 +196,10 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 3. Periodic Polling for Telemetry & Events when running
+  // 3. Periodic Polling for Telemetry & Events when running and connected
   useEffect(() => {
     let interval = null;
-    if (isRunning) {
+    if (isRunning && connectionState === "CONNECTED") {
       interval = setInterval(async () => {
         try {
           const res = await fetch("/api/anpr/status");
@@ -187,6 +207,13 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             const data = await res.json();
             setFps(data.fps || 0);
             setIsRunning(data.is_running);
+
+            if (data.connection_status === "ERROR") {
+              setConnectionState("ERROR");
+              setConnectionError(data.error_message || "Camera stream connection was lost.");
+              setIsRunning(false);
+              return;
+            }
 
             if (data.target_plate) {
               if (data.is_target_catched && data.catched_event) {
@@ -208,64 +235,118 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning]);
+  }, [isRunning, connectionState]);
 
-  // 4. Start / Stop Stream
-  const handleToggleStream = async () => {
-    if (isRunning) {
-      try {
-        await fetch("/api/anpr/stop", { method: "POST" });
-        setIsRunning(false);
-      } catch (err) {
-        console.error("Failed to stop stream:", err);
-      }
-    } else {
-      const curSource = sources.find((s) => s.id === selectedSourceId) || sources[0];
-      try {
-        const res = await fetch("/api/anpr/start", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            source_type: curSource?.source_type || "DEMO_VIDEO",
-            source_id: curSource?.id || "demo_video",
-            source_name: curSource?.name || "Demo Highway Video",
-            rtsp_url: curSource?.rtsp_url || ""
-          })
-        });
-        if (res.ok) {
-          setIsRunning(true);
-          setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
-        }
-      } catch (err) {
-        console.error("Failed to start stream:", err);
-      }
-    }
-  };
-
-  // 5. Change Selected Source
-  const handleSelectSource = async (sourceId) => {
+  // 4. Connect to Camera with Loading Handshake & Race Prevention
+  const connectCamera = async (sourceId) => {
+    const seq = ++requestSeq.current;
     setSelectedSourceId(sourceId);
-    const targetSource = sources.find((s) => s.id === sourceId);
-    if (!targetSource) return;
+    setConnectionState("CONNECTING");
+    setConnectionError(null);
+    setIsRunning(true);
+
+    const targetSource = sources.find((s) => s.id === sourceId) || sources[0];
 
     try {
       const res = await fetch("/api/anpr/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          source_type: targetSource.source_type,
-          source_id: targetSource.id,
-          source_name: targetSource.name,
-          rtsp_url: targetSource.rtsp_url || ""
+          source_type: targetSource?.source_type || "CAMERA",
+          source_id: targetSource?.id || sourceId,
+          source_name: targetSource?.name || "Selected Camera",
+          rtsp_url: targetSource?.rtsp_url || ""
         })
       });
-      if (res.ok) {
-        setIsRunning(true);
-        setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
+
+      if (!res.ok) {
+        if (seq === requestSeq.current) {
+          setConnectionState("ERROR");
+          setConnectionError("Failed to initiate camera stream request.");
+          setIsRunning(false);
+        }
+        return;
       }
+
+      // Poll until backend reports CONNECTED or ERROR
+      let pollCount = 0;
+      const pollTimer = setInterval(async () => {
+        // Discard if user already triggered another camera switch
+        if (seq !== requestSeq.current) {
+          clearInterval(pollTimer);
+          return;
+        }
+
+        pollCount++;
+        try {
+          const statusRes = await fetch("/api/anpr/status");
+          if (statusRes.ok) {
+            const data = await statusRes.json();
+            if (seq !== requestSeq.current) {
+              clearInterval(pollTimer);
+              return;
+            }
+
+            if (data.connection_status === "CONNECTED") {
+              clearInterval(pollTimer);
+              setConnectionState("CONNECTED");
+              setConnectionError(null);
+              setIsRunning(true);
+              setStreamUrl(`/api/anpr/stream?t=${Date.now()}&s=${sourceId}`);
+              return;
+            }
+
+            if (data.connection_status === "ERROR") {
+              clearInterval(pollTimer);
+              setConnectionState("ERROR");
+              setConnectionError(data.error_message || "Unable to connect to this camera.");
+              setIsRunning(false);
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn("Status poll error during connecting:", err);
+        }
+
+        // Timeout safety after 14 seconds (28 polls * 500ms)
+        if (pollCount > 28) {
+          clearInterval(pollTimer);
+          if (seq === requestSeq.current) {
+            setConnectionState("ERROR");
+            setConnectionError("Connection timed out. Camera stream may be offline or unreachable.");
+            setIsRunning(false);
+          }
+        }
+      }, 500);
+
     } catch (err) {
-      console.error("Failed to switch source:", err);
+      if (seq === requestSeq.current) {
+        console.error("Camera switch error:", err);
+        setConnectionState("ERROR");
+        setConnectionError("Network error while communicating with ANPR service.");
+        setIsRunning(false);
+      }
     }
+  };
+
+  // 5. Start / Stop / Switch Stream Actions
+  const handleToggleStream = async () => {
+    if (isRunning && connectionState !== "ERROR") {
+      try {
+        await fetch("/api/anpr/stop", { method: "POST" });
+        setIsRunning(false);
+        setConnectionState("IDLE");
+        setConnectionError(null);
+      } catch (err) {
+        console.error("Failed to stop stream:", err);
+      }
+    } else {
+      connectCamera(selectedSourceId);
+    }
+  };
+
+  const handleSelectSource = (sourceId) => {
+    connectCamera(sourceId);
   };
 
   // 6. Search by Number Plate Text
@@ -475,13 +556,24 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
 
           <button
             type="button"
-            className={`anpr-action-btn btn-scan ${isRunning ? "btn-active" : ""}`}
+            className={`anpr-action-btn btn-scan ${isRunning && connectionState !== "ERROR" ? "btn-active" : ""}`}
             onClick={handleToggleStream}
+            disabled={connectionState === "CONNECTING"}
           >
-            {isRunning ? (
+            {connectionState === "CONNECTING" ? (
+              <>
+                <RotateCw size={14} className="animate-spin" />
+                <span>Connecting...</span>
+              </>
+            ) : isRunning && connectionState !== "ERROR" ? (
               <>
                 <Square size={14} fill="currentColor" />
                 <span>Stop Stream</span>
+              </>
+            ) : connectionState === "ERROR" ? (
+              <>
+                <RotateCw size={14} />
+                <span>Retry Stream</span>
               </>
             ) : (
               <>
@@ -696,23 +788,75 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             </div>
 
             <div className="stream-badge-group">
-              <span className={`live-feed-pill ${isRunning ? "status-online" : "status-offline"}`}>
-                <span className="live-dot"></span>
-                {isRunning ? "LIVE AI INFERENCE" : "STREAM PAUSED"}
-              </span>
-              {isRunning && <span className="fps-counter">{fps} FPS</span>}
+              {connectionState === "CONNECTING" ? (
+                <span className="live-feed-pill status-connecting">
+                  <RotateCw size={11} className="animate-spin" />
+                  <span>CONNECTING...</span>
+                </span>
+              ) : connectionState === "ERROR" ? (
+                <span className="live-feed-pill status-error">
+                  <AlertTriangle size={11} />
+                  <span>CONNECTION FAILED</span>
+                </span>
+              ) : isRunning ? (
+                <span className="live-feed-pill status-online">
+                  <span className="live-dot"></span>
+                  <span>LIVE AI INFERENCE</span>
+                </span>
+              ) : (
+                <span className="live-feed-pill status-offline">
+                  <span>STREAM PAUSED</span>
+                </span>
+              )}
+              {connectionState === "CONNECTED" && isRunning && (
+                <span className="fps-counter">{fps} FPS</span>
+              )}
             </div>
           </div>
 
           <div className="video-screen-wrapper">
-            {isRunning ? (
+            {connectionState === "CONNECTING" ? (
+              <div className="stream-connecting-overlay">
+                <div className="connecting-spinner-wrap">
+                  <RotateCw size={34} className="animate-spin text-sky" />
+                </div>
+                <p className="connecting-title">Connecting to camera...</p>
+                <span className="connecting-source-name">{activeSource?.name || "Selected Camera"}</span>
+                <span className="connecting-subtext">Establishing RTSP stream & initializing AI inference</span>
+              </div>
+            ) : connectionState === "ERROR" ? (
+              <div className="stream-error-overlay">
+                <AlertTriangle size={38} className="error-cam-icon" />
+                <p className="error-title">Unable to connect to this camera</p>
+                <span className="error-desc">{connectionError || "Camera stream timed out or is unreachable."}</span>
+                <div className="error-actions">
+                  <button
+                    type="button"
+                    className="btn-retry"
+                    onClick={() => connectCamera(selectedSourceId)}
+                  >
+                    <RotateCw size={14} />
+                    <span>Retry</span>
+                  </button>
+                  {selectedSourceId !== "demo_video" && (
+                    <button
+                      type="button"
+                      className="btn-fallback-demo"
+                      onClick={() => connectCamera("demo_video")}
+                    >
+                      <span>Switch to Demo Highway</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : isRunning && connectionState === "CONNECTED" ? (
               <img
                 src={streamUrl}
                 alt="Live ANPR Stream"
                 className="anpr-video-element"
                 style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
                 onError={() => {
-                  console.warn("MJPEG stream reconnecting...");
+                  console.warn("MJPEG stream dropped or reconnecting...");
                 }}
               />
             ) : (
@@ -733,7 +877,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             )}
 
             {/* RADAR TARGETING RETICLE OVERLAY WHEN SEARCHING */}
-            {activeTarget && activeTarget.status === "NOT_SEEN_YET" && isRunning && (
+            {activeTarget && activeTarget.status === "NOT_SEEN_YET" && isRunning && connectionState === "CONNECTED" && (
               <div className="anpr-target-scanner-crosshair">
                 <div className="reticle-line-scan"></div>
                 <div className="reticle-text">

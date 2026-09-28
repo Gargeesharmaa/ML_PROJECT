@@ -72,8 +72,8 @@ async def get_engine_status():
 @router.get("/stream")
 async def get_stream():
     """Live MJPEG stream of annotated AI video with bounding boxes and HUD overlays."""
-    if not anpr_engine.is_running:
-        # Auto-start on demo video if not currently running so user can view instantly
+    if not anpr_engine.is_running and anpr_engine.connection_status == "IDLE":
+        # Auto-start on demo video only on initial boot when engine is completely idle
         anpr_engine.start("DEMO_VIDEO", "demo_video", "Demo Highway Video (test_video.mp4)")
 
     return StreamingResponse(
