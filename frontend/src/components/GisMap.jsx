@@ -360,7 +360,10 @@ export default function GisMap({
         }
       } catch {
         if (!isCancelled) {
-          setError("Cannot reach backend server to load GIS map data.");
+          setError("Connecting to backend server... Auto-retrying in a few seconds.");
+          setTimeout(() => {
+            if (!isCancelled) loadData();
+          }, 4000);
         }
       } finally {
         if (!isCancelled) {

@@ -27,7 +27,7 @@ import CameraFeedModal from "./components/CameraFeedModal";
 import AnprRadar from "./components/AnprRadar";
 import SurveillanceMatrix from "./components/SurveillanceMatrix";
 import DetectionInvestigation from "./components/DetectionInvestigation";
-import { apiUrl } from "./utils/apiConfig";
+import { apiUrl, API_BASE_URL } from "./utils/apiConfig";
 import "./App.css";
 
 const fallbackDepartments = [
@@ -95,9 +95,11 @@ function App() {
 
   const videoRef = useRef(null);
 
-  // 1. Fetch departments and check backend health on mount
+  // 1. Fetch departments and check backend health on mount with auto-retry and keep-alive heartbeat
   useEffect(() => {
     let isCancelled = false;
+    let retryTimer = null;
+    let heartbeatTimer = null;
 
     async function loadInitialData() {
       try {
@@ -109,20 +111,43 @@ function App() {
             setDepartmentObjects(data);
             setDepartments(data.map((d) => d.dept_name));
           }
-        } else if (!isCancelled) {
-          setBackendOnline(false);
+          return true;
         }
-      } catch {
-        if (!isCancelled) {
-          setBackendOnline(false);
-        }
+      } catch (err) {
+        console.warn("Backend connection attempt failed:", err);
+      }
+      if (!isCancelled) {
+        setBackendOnline(false);
+      }
+      return false;
+    }
+
+    async function pollUntilOnline() {
+      const isOnline = await loadInitialData();
+      if (!isOnline && !isCancelled) {
+        // Render cold start can take 15-30s. Auto-retry every 4 seconds until connected
+        retryTimer = setTimeout(pollUntilOnline, 4000);
       }
     }
 
-    loadInitialData();
+    pollUntilOnline();
+
+    // Heartbeat ping every 30s to keep Render free-tier instance warm while user has tab open
+    heartbeatTimer = setInterval(async () => {
+      try {
+        const res = await fetch(apiUrl("/health"));
+        if (!isCancelled) {
+          setBackendOnline(res.ok);
+        }
+      } catch {
+        if (!isCancelled) setBackendOnline(false);
+      }
+    }, 30000);
 
     return () => {
       isCancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
     };
   }, []);
 
@@ -514,7 +539,7 @@ function App() {
         </nav>
 
         {/* BACKEND SERVER STATUS */}
-        <div className="header-status">
+        <div className="header-status" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <span
             className="online-indicator"
             style={{
@@ -524,15 +549,58 @@ function App() {
                   : backendOnline === false
                   ? "#f87171"
                   : "#fbbf24",
+              boxShadow:
+                backendOnline === true
+                  ? "0 0 8px rgba(54, 211, 153, 0.6)"
+                  : backendOnline === false
+                  ? "0 0 8px rgba(248, 113, 113, 0.6)"
+                  : "0 0 8px rgba(251, 191, 36, 0.6)"
             }}
           ></span>
           <span>
             {backendOnline === true
-              ? "Backend API Connected (Port 8000)"
+              ? (API_BASE_URL ? "Backend Connected (Cloud)" : "Backend Connected (Local)")
               : backendOnline === false
-              ? "Backend Offline (Port 8000)"
-              : "Checking Backend..."}
+              ? (API_BASE_URL ? "Waking Cloud Backend... (Auto-retrying)" : "Backend Offline")
+              : "Connecting Backend..."}
           </span>
+          {backendOnline === false && (
+            <button
+              onClick={async () => {
+                setBackendOnline(null);
+                try {
+                  const r = await fetch(apiUrl("/api/departments"));
+                  if (r.ok) {
+                    const data = await r.json();
+                    setBackendOnline(true);
+                    if (data && data.length > 0) {
+                      setDepartmentObjects(data);
+                      setDepartments(data.map((d) => d.dept_name));
+                    }
+                  } else {
+                    setBackendOnline(false);
+                  }
+                } catch {
+                  setBackendOnline(false);
+                }
+              }}
+              style={{
+                background: "rgba(255, 255, 255, 0.08)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#e2e8f0",
+                borderRadius: "4px",
+                padding: "2px 7px",
+                fontSize: "11px",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px"
+              }}
+              title="Click to manually retry connecting to backend"
+            >
+              <RefreshCw size={11} /> Retry
+            </button>
+          )}
         </div>
       </header>
 
