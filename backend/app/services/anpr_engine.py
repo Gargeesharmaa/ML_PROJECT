@@ -37,10 +37,29 @@ CROPS_DIR.mkdir(parents=True, exist_ok=True)
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
+INDIAN_STATE_PREFIXES = {
+    "GJ", "MH", "DL", "RJ", "MP", "UP", "KA", "TN", "HR", "PB", "WB",
+    "AP", "TS", "KL", "CH", "GA", "UK", "UA", "JH", "BR", "OD", "AS", "HP", "JK"
+}
+
+STATE_CONFUSIONS = {
+    "6J": "GJ", "0J": "GJ", "CJ": "GJ", "16": "GJ", "0U": "GJ", "62": "GJ", "02": "GJ",
+    "G1": "GJ", "GI": "GJ", "GL": "GJ", "BG": "GJ", "8G": "GJ", "6G": "GJ", "BC": "GJ",
+    "8C": "GJ", "8J": "GJ", "BJ": "GJ", "QJ": "GJ", "C1": "GJ", "GT": "GJ",
+    "D1": "DL", "0L": "DL", "DI": "DL", "OL": "DL", "QL": "DL",
+    "M1": "MH", "MI": "MH", "M4": "MH", "NH": "MH",
+    "R1": "RJ", "RI": "RJ", "RL": "RJ",
+    "K1": "KA", "KI": "KA", "K4": "KA",
+    "H1": "HR", "HI": "HR", "H8": "HR",
+    "U9": "UP", "UF": "UP", "0P": "UP",
+    "NP": "MP", "M9": "MP", "N9": "MP"
+}
+
+
 def clean_indian_plate(text: str) -> str:
     """
     Normalizes Indian license plate numbers with domain-specific OCR correction.
-    Corrects common OCR character confusions (e.g. 6J -> GJ, 0U -> GJ, 16 -> GJ).
+    Corrects common OCR character confusions (e.g. 6J -> GJ, BG -> GJ, O/0, I/1).
     """
     raw = re.sub(r"[^A-Z0-9]", "", str(text).upper())
     if len(raw) < 4:
@@ -49,26 +68,25 @@ def clean_indian_plate(text: str) -> str:
     chars = list(raw)
 
     # 1. State code normalization (first 2 chars)
-    # Common OCR confusions for Gujarat (GJ): 6J, 0J, CJ, 16, 0U, 62, 02
-    if len(chars) >= 2:
-        prefix = chars[0] + chars[1]
-        if prefix in ["6J", "0J", "CJ", "16", "0U", "62", "02", "G1", "GI", "GL"]:
-            chars[0] = "G"
-            chars[1] = "J"
-        elif chars[0] in ["6", "0", "C"] and chars[1] == "J":
-            chars[0] = "G"
-        elif chars[0] == "G" and chars[1] in ["1", "I", "L"]:
-            chars[1] = "J"
+    prefix = "".join(chars[:2])
+    if prefix in STATE_CONFUSIONS:
+        chars[0] = STATE_CONFUSIONS[prefix][0]
+        chars[1] = STATE_CONFUSIONS[prefix][1]
+    elif chars[0] in ["B", "8", "6", "0", "C", "Q"] and chars[1] in ["J", "1", "I", "L"]:
+        chars[0] = "G"
+        chars[1] = "J"
+    elif chars[0] == "G" and chars[1] in ["1", "I", "L", "T", "U"]:
+        chars[1] = "J"
 
     # 2. Number plate digit normalization for District Code (chars 2 and 3)
-    num_map = {"O": "0", "I": "1", "Z": "2", "S": "5", "B": "8", "A": "4", "U": "0", "J": "1", "Q": "0"}
+    num_map = {"O": "0", "I": "1", "Z": "2", "S": "5", "B": "8", "A": "4", "U": "0", "J": "1", "Q": "0", "G": "6", "D": "0"}
     if len(chars) > 2 and chars[2] in num_map:
         chars[2] = num_map[chars[2]]
     if len(chars) > 3 and chars[3] in num_map:
         chars[3] = num_map[chars[3]]
 
     # 3. Series letters and 4-digit number at the end
-    letter_map = {"0": "O", "1": "I", "2": "Z", "5": "S", "8": "B", "4": "A", "6": "G"}
+    letter_map = {"0": "O", "1": "I", "2": "Z", "5": "S", "8": "B", "4": "A", "6": "G", "7": "T"}
     if len(chars) >= 8:
         for i in range(len(chars) - 4, len(chars)):
             if chars[i] in num_map:
@@ -78,6 +96,65 @@ def clean_indian_plate(text: str) -> str:
                 chars[i] = letter_map[chars[i]]
 
     return "".join(chars)
+
+
+def is_valid_indian_plate_format(plate: str) -> bool:
+    """Checks whether plate adheres to standard Indian RTO or Bharat Series format."""
+    clean = re.sub(r"[^A-Z0-9]", "", str(plate).upper())
+    # Standard format: e.g. GJ01AB1234, GJ051234, DL3CAA1111
+    if re.match(r"^[A-Z]{2}[0-9]{1,2}[A-Z]{0,3}[0-9]{4}$", clean):
+        return True
+    # Bharat Series format: e.g. 22BH1234AA
+    if re.match(r"^[0-9]{2}BH[0-9]{4}[A-Z]{1,2}$", clean):
+        return True
+    return False
+
+
+def _deskew_plate(img: np.ndarray) -> np.ndarray:
+    """
+    Detects and corrects small skew / rotation angle in number plate crops (-35 to +35 deg).
+    Uses Otsu thresholding and minimum bounding box to align plate horizontally.
+    """
+    if img is None or img.size == 0:
+        return img
+
+    h, w = img.shape[:2]
+    if h < 12 or w < 24:
+        return img
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img.copy()
+
+    try:
+        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+        best_angle = 0.0
+        max_area = 0.0
+        img_area = float(h * w)
+
+        for c in contours:
+            area = cv2.contourArea(c)
+            if 0.12 * img_area <= area <= 0.95 * img_area and area > max_area:
+                rect = cv2.minAreaRect(c)
+                angle = rect[-1]
+                if angle < -45:
+                    angle = 90 + angle
+                elif angle > 45:
+                    angle = angle - 90
+
+                if 1.5 <= abs(angle) <= 35:
+                    best_angle = angle
+                    max_area = area
+
+        if abs(best_angle) >= 1.5:
+            center = (w // 2, h // 2)
+            M = cv2.getRotationMatrix2D(center, best_angle, 1.0)
+            rotated = cv2.warpAffine(img, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+            return rotated
+    except Exception:
+        pass
+
+    return img
 
 
 def are_plates_similar(p1: str, p2: str) -> bool:
@@ -108,8 +185,15 @@ def format_plate_text(raw_text: str) -> str:
     """Format raw plate alphanumeric text nicely for display."""
     clean = clean_indian_plate(raw_text)
     if len(clean) >= 9 and clean[:2].isalpha():
-        return f"{clean[:2]} {clean[2:4]} {clean[4:6]} {clean[6:]}"
-    elif len(clean) >= 6:
+        prefix = clean[:2]
+        dist = clean[2:4]
+        series = clean[4:-4]
+        digits = clean[-4:]
+        if series:
+            return f"{prefix} {dist} {series} {digits}"
+        else:
+            return f"{prefix} {dist} {digits}"
+    elif len(clean) >= 6 and clean[:2].isalpha():
         return f"{clean[:2]} {clean[2:]}"
     return clean
 
@@ -424,8 +508,16 @@ class ANPREngine:
                     bx1, by1, bx2, by2 = map(int, box.xyxy[0].tolist())
                     bx1, by1 = max(0, bx1), max(0, by1)
                     bx2, by2 = min(w, bx2), min(h, by2)
-                    if bx2 > bx1 and by2 > by1:
-                        crop = img[by1:by2, bx1:bx2]
+                    bw, bh = bx2 - bx1, by2 - by1
+                    if bw >= 16 and bh >= 10:
+                        # Clean margin padding so characters near edge are preserved
+                        pad_x = max(3, int(bw * 0.08))
+                        pad_y = max(3, int(bh * 0.12))
+                        px1 = max(0, bx1 - pad_x)
+                        py1 = max(0, by1 - pad_y)
+                        px2 = min(w, bx2 + pad_x)
+                        py2 = min(h, by2 + pad_y)
+                        crop = img[py1:py2, px1:px2]
                         plate_text, conf = self._run_crop_ocr(crop)
                         if conf > best_conf and len(plate_text) >= 3:
                             best_conf = conf
@@ -462,7 +554,13 @@ class ANPREngine:
         return {"status": "CLEARED", "message": "Search target cleared."}
 
     def _run_crop_ocr(self, crop: np.ndarray) -> (str, float):
-        """Preprocesses cropped plate and runs EasyOCR with Indian plate tuning."""
+        """
+        Preprocesses cropped plate through a multi-stage pipeline:
+        1. Clean margin padding & upscale to clear readable scale (height >= 85px, width >= 180px)
+        2. Deskewing to correct small angular rotation (-35 to +35 deg)
+        3. Preprocessing variants (CLAHE + Sharpening, Adaptive Thresholding, Bilateral + Otsu, Color fallback)
+        4. Multi-variant OCR tournament with Indian plate format scoring and allowlist filtering.
+        """
         if crop is None or crop.size == 0 or self.ocr_reader is None:
             return "", 0.0
 
@@ -470,39 +568,96 @@ class ANPREngine:
         if ch < 8 or cw < 15:
             return "", 0.0
 
-        # Upscale small crops to height >= 75 for character clarity
-        scale = max(1.0, 75.0 / ch)
-        crop_prep = cv2.resize(crop, (int(cw * scale), int(ch * scale)), interpolation=cv2.INTER_CUBIC)
+        # 1. Upscale small crops so character strokes are clear and well-defined
+        scale_h = 85.0 / ch
+        scale_w = 180.0 / cw
+        scale = max(2.0, max(scale_h, scale_w))
+        target_w = int(cw * scale)
+        target_h = int(ch * scale)
+        crop_upscaled = cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
 
-        gray = cv2.cvtColor(crop_prep, cv2.COLOR_BGR2GRAY)
-        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-        enhanced = clahe.apply(gray)
+        # 2. Deskew rotation
+        crop_deskewed = _deskew_plate(crop_upscaled)
 
-        best_text = ""
-        best_conf = 0.0
+        # 3. Grayscale conversion
+        gray = cv2.cvtColor(crop_deskewed, cv2.COLOR_BGR2GRAY)
 
-        try:
-            # First attempt on CLAHE enhanced
-            res = self.ocr_reader.readtext(enhanced)
-            if not res:
-                # Fallback to direct resized crop
-                res = self.ocr_reader.readtext(crop_prep)
+        # Variant 1: CLAHE contrast enhancement + Unsharp mask sharpening
+        clahe_engine = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        clahe = clahe_engine.apply(gray)
+        sharp = cv2.addWeighted(clahe, 1.35, cv2.GaussianBlur(clahe, (0, 0), 3), -0.35, 0)
 
-            texts = []
-            confs = []
-            for item in res:
-                t = clean_indian_plate(item[1])
-                if t:
-                    texts.append(t)
-                    confs.append(float(item[2]))
+        # Variant 2: Adaptive Gaussian thresholding (preserves character edges against glare/shadows)
+        adapt = cv2.adaptiveThreshold(clahe, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 19, 9)
 
-            if texts:
-                best_text = "".join(texts)
-                best_conf = float(np.mean(confs))
-        except Exception as e:
-            logger.warning(f"Crop OCR warning: {e}")
+        # Variant 3: Bilateral noise filtering + Otsu binarization
+        bilateral = cv2.bilateralFilter(gray, 7, 50, 50)
+        _, otsu = cv2.threshold(bilateral, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-        return best_text, best_conf
+        variants = [
+            ("sharp_clahe", sharp),
+            ("adapt_thresh", adapt),
+            ("bilateral_otsu", otsu),
+            ("color_deskewed", crop_deskewed)
+        ]
+
+        best_candidate_text = ""
+        best_candidate_conf = 0.0
+        best_score = -1.0
+
+        for var_name, var_img in variants:
+            try:
+                # Restrict OCR alphabet to uppercase letters and digits to prevent stray symbols
+                res = self.ocr_reader.readtext(var_img, allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+                if not res:
+                    continue
+
+                # Sort detected boxes top-to-bottom then left-to-right (for split or 2-line plates)
+                sorted_boxes = sorted(res, key=lambda it: (round(it[0][0][1] / 22.0), it[0][0][0]))
+
+                token_texts = []
+                token_confs = []
+                for item in sorted_boxes:
+                    cleaned_token = clean_indian_plate(item[1])
+                    if cleaned_token:
+                        token_texts.append(cleaned_token)
+                        token_confs.append(float(item[2]))
+
+                if not token_texts:
+                    continue
+
+                full_text = clean_indian_plate("".join(token_texts))
+                if len(full_text) < 3:
+                    continue
+
+                avg_conf = float(np.mean(token_confs))
+
+                # Structural heuristics for Indian number plates
+                is_valid = is_valid_indian_plate_format(full_text)
+                has_state_prefix = full_text[:2] in INDIAN_STATE_PREFIXES
+
+                # Score calculation
+                score = avg_conf
+                if is_valid:
+                    score += 0.35
+                if has_state_prefix:
+                    score += 0.15
+                if 8 <= len(full_text) <= 10:
+                    score += 0.10
+
+                if score > best_score:
+                    best_score = score
+                    best_candidate_text = full_text
+                    best_candidate_conf = avg_conf
+
+                    # Early exit if high confidence and valid format
+                    if avg_conf >= 0.70 and is_valid:
+                        break
+
+            except Exception as e:
+                logger.debug(f"Crop OCR variant {var_name} error: {e}")
+
+        return best_candidate_text, best_candidate_conf
 
     def _make_status_frame(self, title: str, subtitle: str, color=(0, 200, 255)) -> bytes:
         """Generates an informative status screen frame for the MJPEG stream."""
@@ -662,7 +817,14 @@ class ANPREngine:
                             bw, bh = bx2 - bx1, by2 - by1
 
                             if bw >= 16 and bh >= 10:
-                                crop = frame[by1:by2, bx1:bx2]
+                                # Apply clean margin padding around detected plate box to prevent character clipping
+                                pad_x = max(3, int(bw * 0.08))
+                                pad_y = max(3, int(bh * 0.12))
+                                px1 = max(0, bx1 - pad_x)
+                                py1 = max(0, by1 - pad_y)
+                                px2 = min(w, bx2 + pad_x)
+                                py2 = min(h, by2 + pad_y)
+                                crop = frame[py1:py2, px1:px2]
                                 plate_text, conf = self._run_crop_ocr(crop)
 
                                 if len(plate_text) >= 3:
@@ -725,7 +887,7 @@ class ANPREngine:
                                                 "number": formatted,
                                                 "raw_number": clean_text,
                                                 "confidence": round(conf, 2),
-                                                "bounding_box": [bx1, by1, bw, bh]
+                                                "bounding_box": [px1, py1, px2 - px1, py2 - py1]
                                             },
                                             "crop_url": crop_url,
                                             "is_target_catched": is_match,

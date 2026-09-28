@@ -890,6 +890,21 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                               {log.plate?.number || log.plate?.raw_number}
                             </span>
                           </div>
+
+                          {typeof log.plate?.confidence === "number" && log.plate.confidence > 0 && !log.plate?.number?.startsWith("IN-TRANSIT") && (
+                            <span
+                              className={`ocr-conf-badge ${
+                                (log.plate.confidence <= 1 ? log.plate.confidence * 100 : log.plate.confidence) >= 70
+                                  ? "conf-high"
+                                  : (log.plate.confidence <= 1 ? log.plate.confidence * 100 : log.plate.confidence) >= 40
+                                  ? "conf-med"
+                                  : "conf-low"
+                              }`}
+                              title={`Optical Character Recognition Confidence: ${Math.round(log.plate.confidence <= 1 ? log.plate.confidence * 100 : log.plate.confidence)}%`}
+                            >
+                              {Math.round(log.plate.confidence <= 1 ? log.plate.confidence * 100 : log.plate.confidence)}%
+                            </span>
+                          )}
                         </div>
                       </td>
 
