@@ -1,92 +1,92 @@
 [
   {
-    "event_id": "EVT_1790541613854",
+    "event_id": "EVT_1790541865389",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:13.855216+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:25.391411+00:00",
     "vehicle": {
       "type": "Motorcycle",
-      "confidence": 0.46
+      "confidence": 0.4
     },
     "plate": {
       "number": "IN-TRANSIT (Motorcycle)",
       "raw_number": "Motorcycle",
-      "confidence": 0.46,
+      "confidence": 0.4,
       "bounding_box": [
-        712,
-        49,
-        775,
-        146
+        225,
+        334,
+        302,
+        496
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541613854.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541865389.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 42
   },
   {
-    "event_id": "EVT_1790541612672",
+    "event_id": "EVT_1790541865151",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:12.675052+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:25.153326+00:00",
     "vehicle": {
-      "type": "Van / SUV",
-      "confidence": 0.43
+      "type": "Motorcycle",
+      "confidence": 0.35
     },
     "plate": {
-      "number": "J8 24O2087",
-      "raw_number": "J824O2087",
-      "confidence": 0.36,
+      "number": "IN-TRANSIT (Motorcycle)",
+      "raw_number": "Motorcycle",
+      "confidence": 0.35,
       "bounding_box": [
-        235,
-        588,
-        82,
-        22
+        697,
+        53,
+        752,
+        142
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541612672.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541865151.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
-    "speed": 48
+    "speed": 42
   },
   {
-    "event_id": "EVT_1790541612217",
+    "event_id": "EVT_1790541864674",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:12.218508+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:24.677470+00:00",
     "vehicle": {
-      "type": "Van / SUV",
-      "confidence": 0.42
+      "type": "Auto-Rickshaw",
+      "confidence": 0.66
     },
     "plate": {
-      "number": "GJ 92 G2 887",
-      "raw_number": "GJ92G2887",
-      "confidence": 0.05,
+      "number": "IN-TRANSIT (Auto-Rickshaw)",
+      "raw_number": "Auto-Rickshaw",
+      "confidence": 0.66,
       "bounding_box": [
-        244,
-        559,
-        80,
-        22
+        431,
+        103,
+        615,
+        383
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541612217.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541864674.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
-    "speed": 48
+    "speed": 42
   },
   {
-    "event_id": "EVT_1790541611695",
+    "event_id": "EVT_1790541864361",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:11.696630+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:24.364712+00:00",
     "vehicle": {
       "type": "Car",
       "confidence": 0.92
@@ -102,18 +102,18 @@
         20
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541611695.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541864361.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541611096",
+    "event_id": "EVT_1790541863791",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:11.097589+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:23.792970+00:00",
     "vehicle": {
       "type": "Van / SUV",
       "confidence": 0.69
@@ -129,18 +129,18 @@
         20
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541611096.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541863791.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541610639",
+    "event_id": "EVT_1790541863311",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:10.641170+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:23.311328+00:00",
     "vehicle": {
       "type": "Van / SUV",
       "confidence": 0.47
@@ -156,18 +156,18 @@
         21
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541610639.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541863311.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541610048",
+    "event_id": "EVT_1790541862781",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:10.050275+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:22.783360+00:00",
     "vehicle": {
       "type": "Car",
       "confidence": 0.61
@@ -183,18 +183,18 @@
         19
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541610048.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541862781.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541609574",
+    "event_id": "EVT_1790541862205",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:09.575584+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:22.206620+00:00",
     "vehicle": {
       "type": "Car",
       "confidence": 0.46
@@ -210,18 +210,18 @@
         20
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541609574.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541862205.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541609102",
+    "event_id": "EVT_1790541861709",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:09.104506+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:21.711592+00:00",
     "vehicle": {
       "type": "Car",
       "confidence": 0.58
@@ -237,18 +237,18 @@
         18
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541609102.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541861709.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541608504",
+    "event_id": "EVT_1790541861073",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:08.506197+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:21.074608+00:00",
     "vehicle": {
       "type": "Car",
       "confidence": 0.92
@@ -264,18 +264,18 @@
         18
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541608504.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541861073.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
   },
   {
-    "event_id": "EVT_1790541608002",
+    "event_id": "EVT_1790541860555",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:08.003682+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:20.556731+00:00",
     "vehicle": {
       "type": "Motorcycle",
       "confidence": 0.46
@@ -291,18 +291,18 @@
         582
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541608002.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541860555.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 42
   },
   {
-    "event_id": "EVT_1790541607999",
+    "event_id": "EVT_1790541860552",
     "camera_id": "demo_video",
     "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:08.000852+00:00",
+    "camera_name": "Demo Highway Video (test_video.mp4)",
+    "dept_name": "Demo Highway Video (test_video.mp4)",
+    "timestamp": "2026-09-27T20:44:20.554145+00:00",
     "vehicle": {
       "type": "Car",
       "confidence": 0.67
@@ -318,495 +318,9 @@
         17
       ]
     },
-    "crop_url": "/api/anpr/crops/EVT_1790541607999.jpg",
+    "crop_url": "/api/anpr/crops/EVT_1790541860552.jpg",
     "is_target_catched": false,
     "status": "NORMAL",
     "speed": 48
-  },
-  {
-    "event_id": "EVT_1790541607450",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:07.452245+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.65
-    },
-    "plate": {
-      "number": "01 32IG2077",
-      "raw_number": "0132IG2077",
-      "confidence": 0.13,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541607450.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 48
-  },
-  {
-    "event_id": "EVT_1790541603121",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:03.123083+00:00",
-    "vehicle": {
-      "type": "Auto-Rickshaw",
-      "confidence": 0.61
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-Rickshaw)",
-      "raw_number": "Auto-Rickshaw",
-      "confidence": 0.61,
-      "bounding_box": [
-        360,
-        226,
-        592,
-        571
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541603121.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541602652",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:02.655993+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.33
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.33,
-      "bounding_box": [
-        181,
-        408,
-        281,
-        584
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541602652.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541602415",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:02.417535+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.56
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.56,
-      "bounding_box": [
-        388,
-        176,
-        603,
-        492
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541602415.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541602144",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:02.145691+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.4,
-      "bounding_box": [
-        225,
-        334,
-        302,
-        496
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541602144.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541601903",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:01.905093+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.35,
-      "bounding_box": [
-        697,
-        53,
-        752,
-        142
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541601903.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541601462",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "dept_name": "\ud83c\udfa5 Demo Highway Traffic (test_video.mp4)",
-    "timestamp": "2026-09-27T20:40:01.462949+00:00",
-    "vehicle": {
-      "type": "Auto-Rickshaw",
-      "confidence": 0.66
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-Rickshaw)",
-      "raw_number": "Auto-Rickshaw",
-      "confidence": 0.66,
-      "bounding_box": [
-        431,
-        103,
-        615,
-        383
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541601462.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541512564",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:32.565630+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.58
-    },
-    "plate": {
-      "number": "01 32IG2737",
-      "raw_number": "0132IG2737",
-      "confidence": 0.03,
-      "bounding_box": [
-        291,
-        395,
-        70,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541512564.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 48
-  },
-  {
-    "event_id": "EVT_1790541511818",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:31.819749+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.92
-    },
-    "plate": {
-      "number": "42 4628",
-      "raw_number": "424628",
-      "confidence": 0.23,
-      "bounding_box": [
-        298,
-        375,
-        69,
-        18
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541511818.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 48
-  },
-  {
-    "event_id": "EVT_1790541511335",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:31.336225+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.46
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.46,
-      "bounding_box": [
-        792,
-        406,
-        890,
-        582
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541511335.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541511326",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:31.327029+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.67
-    },
-    "plate": {
-      "number": "01 520528",
-      "raw_number": "01520528",
-      "confidence": 0.03,
-      "bounding_box": [
-        305,
-        347,
-        68,
-        17
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541511326.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 48
-  },
-  {
-    "event_id": "EVT_1790541510781",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:30.781597+00:00",
-    "vehicle": {
-      "type": "Car",
-      "confidence": 0.65
-    },
-    "plate": {
-      "number": "01 32IG2077",
-      "raw_number": "0132IG2077",
-      "confidence": 0.13,
-      "bounding_box": [
-        311,
-        328,
-        65,
-        16
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541510781.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 48
-  },
-  {
-    "event_id": "EVT_1790541505986",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:25.987335+00:00",
-    "vehicle": {
-      "type": "Auto-Rickshaw",
-      "confidence": 0.61
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-Rickshaw)",
-      "raw_number": "Auto-Rickshaw",
-      "confidence": 0.61,
-      "bounding_box": [
-        360,
-        226,
-        592,
-        571
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541505986.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541505507",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:25.508332+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.33
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.33,
-      "bounding_box": [
-        181,
-        408,
-        281,
-        584
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541505507.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541505274",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:25.275581+00:00",
-    "vehicle": {
-      "type": "Bus",
-      "confidence": 0.56
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Bus)",
-      "raw_number": "Bus",
-      "confidence": 0.56,
-      "bounding_box": [
-        388,
-        176,
-        603,
-        492
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541505274.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541505038",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:25.039878+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.4
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.4,
-      "bounding_box": [
-        225,
-        334,
-        302,
-        496
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541505038.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541504855",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:24.856793+00:00",
-    "vehicle": {
-      "type": "Motorcycle",
-      "confidence": 0.35
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Motorcycle)",
-      "raw_number": "Motorcycle",
-      "confidence": 0.35,
-      "bounding_box": [
-        697,
-        53,
-        752,
-        142
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541504855.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
-  },
-  {
-    "event_id": "EVT_1790541504548",
-    "camera_id": "demo_video",
-    "camera_code": "demo_video",
-    "camera_name": "Demo Highway Video",
-    "dept_name": "Demo Highway Video",
-    "timestamp": "2026-09-27T20:38:24.550451+00:00",
-    "vehicle": {
-      "type": "Auto-Rickshaw",
-      "confidence": 0.66
-    },
-    "plate": {
-      "number": "IN-TRANSIT (Auto-Rickshaw)",
-      "raw_number": "Auto-Rickshaw",
-      "confidence": 0.66,
-      "bounding_box": [
-        431,
-        103,
-        615,
-        383
-      ]
-    },
-    "crop_url": "/api/anpr/crops/EVT_1790541504548.jpg",
-    "is_target_catched": false,
-    "status": "NORMAL",
-    "speed": 42
   }
 ]

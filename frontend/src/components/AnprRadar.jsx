@@ -21,7 +21,12 @@ import {
   X,
   Eye,
   Trash2,
-  Maximize2
+  Maximize2,
+  Minimize2,
+  Filter,
+  Layers,
+  MapPin,
+  ExternalLink
 } from "lucide-react";
 import "./AnprRadar.css";
 
@@ -68,7 +73,7 @@ function renderVehicleBadge(vtype) {
   }
   if (typeStr.includes("bus")) {
     return (
-      <span className="vbadge vbadge-bus" title="Bus / Transit">
+      <span className="vbadge vbadge-bus" title="Bus / Public Transit">
         <Truck size={14} />
         <span>Bus</span>
       </span>
@@ -76,7 +81,7 @@ function renderVehicleBadge(vtype) {
   }
   if (typeStr.includes("truck")) {
     return (
-      <span className="vbadge vbadge-truck" title="Commercial Truck">
+      <span className="vbadge vbadge-truck" title="Commercial Heavy Truck">
         <Truck size={14} />
         <span>Truck</span>
       </span>
@@ -99,29 +104,35 @@ function renderVehicleBadge(vtype) {
 }
 
 export default function AnprRadar({ onNavigateToOnboarding }) {
-  // Sources & Stream State
+  // 1. Sources & Stream State
   const [sources, setSources] = useState([]);
   const [selectedSourceId, setSelectedSourceId] = useState("demo_video");
   const [isRunning, setIsRunning] = useState(false);
   const [streamUrl, setStreamUrl] = useState("/api/anpr/stream");
   const [fps, setFps] = useState(0);
+  const [feedMode, setFeedMode] = useState("LIVE"); // LIVE vs STANDBY
+  const [feedStatusText, setFeedStatusText] = useState("");
+  const [isCctvModalOpen, setIsCctvModalOpen] = useState(false);
+  const [cctvSearchQuery, setCctvSearchQuery] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Search & Target Interception State
+  // 2. Search & Target Interception State
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [activeTarget, setActiveTarget] = useState(null); // { plate, status: "CATCHED"|"NOT_SEEN_YET", event?: ... }
-  const [searchNotice, setSearchNotice] = useState(null); // { type: "info"|"warning"|"error", message: string }
+  const [searchNotice, setSearchNotice] = useState(null); // { type: "info"|"warning"|"error"|"success", message: string }
   const [uploadedPreview, setUploadedPreview] = useState(null);
 
-  // Real Detection Logs State
+  // 3. Real Detection Logs State
   const [events, setEvents] = useState([]);
   const [logFilter, setLogFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL"); // "ALL" | "CATCHED" | "NORMAL"
-  const [previewCrop, setPreviewCrop] = useState(null); // Modal crop view
+  const [categoryFilter, setCategoryFilter] = useState("ALL"); // "ALL" | "CATCHED" | "AUTO" | "BIKE" | "CAR" | "COMMERCIAL"
+  const [previewCrop, setPreviewCrop] = useState(null); // High-res crop modal preview
 
   const fileInputRef = useRef(null);
+  const videoWrapperRef = useRef(null);
 
-  // 1. Fetch available sources on mount
+  // Load available sources on mount
   useEffect(() => {
     async function loadSources() {
       try {
@@ -145,6 +156,8 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
           const data = await res.json();
           setIsRunning(data.is_running);
           setFps(data.fps || 0);
+          setFeedMode(data.feed_mode || "LIVE");
+          setFeedStatusText(data.feed_status_text || "");
           if (data.target_plate) {
             setActiveTarget({
               plate: data.target_plate,
@@ -163,7 +176,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     loadEvents();
   }, []);
 
-  // 2. Fetch Detection Events
+  // Fetch Detection Events
   const loadEvents = async () => {
     try {
       const res = await fetch("/api/anpr/events?limit=80");
@@ -176,7 +189,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 3. Periodic Polling for Telemetry & Events when running
+  // Periodic Polling for Telemetry & Events when running
   useEffect(() => {
     let interval = null;
     if (isRunning) {
@@ -187,6 +200,8 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             const data = await res.json();
             setFps(data.fps || 0);
             setIsRunning(data.is_running);
+            setFeedMode(data.feed_mode || "LIVE");
+            setFeedStatusText(data.feed_status_text || "");
 
             if (data.target_plate) {
               if (data.is_target_catched && data.catched_event) {
@@ -201,7 +216,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
           }
           loadEvents();
         } catch (err) {
-          console.warn("Polling error:", err);
+          console.warn("Telemetry polling error:", err);
         }
       }, 2500);
     }
@@ -210,7 +225,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     };
   }, [isRunning]);
 
-  // 4. Start / Stop Stream
+  // Toggle Stream On / Off
   const handleToggleStream = async () => {
     if (isRunning) {
       try {
@@ -242,7 +257,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 5. Change Selected Source
+  // Change Selected Source
   const handleSelectSource = async (sourceId) => {
     setSelectedSourceId(sourceId);
     const targetSource = sources.find((s) => s.id === sourceId);
@@ -260,7 +275,10 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         })
       });
       if (res.ok) {
+        const st = await res.json();
         setIsRunning(true);
+        setFeedMode(st.feed_mode || "LIVE");
+        setFeedStatusText(st.feed_status_text || "");
         setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
       }
     } catch (err) {
@@ -268,7 +286,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 6. Search by Number Plate Text
+  // Text Plate Search
   const handleSearchText = async (e) => {
     e.preventDefault();
     const clean = searchQuery.trim().toUpperCase();
@@ -293,7 +311,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         });
         setSearchNotice({
           type: "success",
-          message: data.message || "🚨 TARGET CATCHED! Vehicle intercepted in camera logs."
+          message: data.message || `🚨 TARGET CATCHED! Vehicle intercepted in camera logs.`
         });
       } else {
         setActiveTarget({
@@ -302,7 +320,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         });
         setSearchNotice({
           type: "info",
-          message: `ℹ️ Not seen yet. Target ${clean} is locked! Actively scanning video streams across cameras...`
+          message: `ℹ️ Not seen yet. Target ${clean} locked. Actively scanning video streams across cameras...`
         });
       }
       loadEvents();
@@ -314,7 +332,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 7. Search by Image Upload (Vehicle / Plate Photo)
+  // Search by Image Upload (Vehicle / Plate Photo)
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -322,7 +340,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     setIsSearching(true);
     setSearchNotice(null);
 
-    // Show local preview
+    // Show thumbnail preview chip
     const previewReader = new FileReader();
     previewReader.onload = () => setUploadedPreview(previewReader.result);
     previewReader.readAsDataURL(file);
@@ -340,7 +358,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
       if (data.status === "NOT_RECOGNIZED") {
         setSearchNotice({
           type: "warning",
-          message: "⚠️ Could not recognize a number plate in the uploaded image. Please try a clearer photo or enter plate text manually."
+          message: "⚠️ Could not recognize a number plate in the uploaded image. Please try a clearer photo or enter plate number manually."
         });
       } else if (data.status === "CATCHED") {
         setActiveTarget({
@@ -359,7 +377,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         });
         setSearchNotice({
           type: "info",
-          message: `ℹ️ Plate recognized: ${data.extracted_plate}. Status: Not seen yet. Target locked and actively scanning video streams...`
+          message: `ℹ️ Plate recognized: ${data.extracted_plate}. Status: Not seen yet. Target locked and scanning video streams...`
         });
       }
       loadEvents();
@@ -372,7 +390,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 8. Clear Active Target Search
+  // Clear Active Target
   const handleClearTarget = async () => {
     try {
       await fetch("/api/anpr/clear-target", { method: "POST" });
@@ -385,7 +403,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     setUploadedPreview(null);
   };
 
-  // 9. Clear All Detection Logs
+  // Clear All Detection Logs
   const handleClearLogs = async () => {
     if (!window.confirm("Are you sure you want to clear all ANPR detection logs?")) return;
     try {
@@ -396,7 +414,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 10. Export Logs to CSV
+  // Export Logs to CSV
   const handleExportCsv = () => {
     if (events.length === 0) return;
     const headers = "event_id,timestamp,camera,vehicle_type,plate_number,confidence,status\n";
@@ -417,75 +435,157 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     URL.revokeObjectURL(url);
   };
 
-  // Filtered Events
+  // Filtered Detection Events
   const filteredEvents = events.filter((ev) => {
     const plateText = (ev.plate?.number || ev.plate?.raw_number || "").toLowerCase();
     if (logFilter && !plateText.includes(logFilter.toLowerCase())) {
       return false;
     }
-    if (statusFilter === "CATCHED" && !ev.is_target_catched && ev.status !== "TARGET_CATCHED") {
-      return false;
-    }
-    if (statusFilter === "NORMAL" && (ev.is_target_catched || ev.status === "TARGET_CATCHED")) {
-      return false;
-    }
+    const isCatched = ev.is_target_catched || ev.status === "TARGET_CATCHED";
+    const vtype = (ev.vehicle?.type || "Car").toLowerCase();
+
+    if (categoryFilter === "CATCHED" && !isCatched) return false;
+    if (categoryFilter === "AUTO" && !vtype.includes("auto") && !vtype.includes("rickshaw")) return false;
+    if (categoryFilter === "BIKE" && !vtype.includes("motorcycle") && !vtype.includes("bike")) return false;
+    if (categoryFilter === "CAR" && !vtype.includes("car") && !vtype.includes("suv") && !vtype.includes("van")) return false;
+    if (categoryFilter === "COMMERCIAL" && !vtype.includes("truck") && !vtype.includes("bus")) return false;
+
     return true;
   });
 
   const activeSource = sources.find((s) => s.id === selectedSourceId) || sources[0];
+  const registeredCctvCount = sources.filter((s) => s.source_type === "CAMERA").length;
+
+  // Toggle Video Monitor Fullscreen
+  const toggleFullscreen = () => {
+    if (!videoWrapperRef.current) return;
+    if (!isFullscreen) {
+      if (videoWrapperRef.current.requestFullscreen) {
+        videoWrapperRef.current.requestFullscreen();
+      }
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+      setIsFullscreen(false);
+    }
+  };
+
+  // Filtered CCTV cameras for the selector modal
+  const filteredCctvCameras = sources
+    .filter((s) => s.source_type === "CAMERA")
+    .filter((s) => {
+      if (!cctvSearchQuery) return true;
+      const q = cctvSearchQuery.toLowerCase();
+      return (
+        (s.code && s.code.toLowerCase().includes(q)) ||
+        (s.name && s.name.toLowerCase().includes(q)) ||
+        (s.location && s.location.toLowerCase().includes(q)) ||
+        (s.ip_address && s.ip_address.includes(q))
+      );
+    });
 
   return (
     <div className="anpr-radar-container">
-      {/* 1. TOP HEADER & TELEMETRY */}
+      {/* 1. TOP HEADER & TELEMETRY BAR */}
       <div className="anpr-header">
         <div className="anpr-title-group">
           <div className="anpr-badge">
             <Radio size={14} className="radar-pulse-icon" />
-            <span>GUJARAT SENTINEL ANPR INTELLIGENCE</span>
+            <span>GUJARAT SENTINEL · ANPR INTELLIGENCE & INTERCEPTION MATRIX</span>
           </div>
-          <h2>Automated Number Plate Recognition (ANPR) & Interception</h2>
-          <p>Real-time vehicle detection, HSRP optical character recognition, and suspect vehicle matching.</p>
+          <h2>Automated Number Plate Recognition (ANPR) & Suspect Interception</h2>
+          <p>
+            Real-time multi-class vehicle detection (Auto-Rickshaw, Motorcycle, Bus, Truck, Car),
+            optical character recognition (HSRP), and instant suspect vehicle interception across Gujarat state surveillance.
+          </p>
         </div>
 
-        {/* CONTROLS: SOURCE SELECTOR & STREAM TOGGLE */}
-        <div className="anpr-quick-controls">
-          <div className="select-cam-wrap">
-            <Sliders size={14} className="select-icon" />
-            <select
-              value={selectedSourceId}
-              onChange={(e) => handleSelectSource(e.target.value)}
-              className="anpr-select"
-            >
-              <optgroup label="Core Video & Local Feeds">
-                {sources.filter(s => s.source_type !== "CAMERA").map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="Registered Gujarat Sentinel CCTV Grid">
-                {sources.filter(s => s.source_type === "CAMERA").map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </optgroup>
-            </select>
+        {/* STREAM TELEMETRY PILLS */}
+        <div className="anpr-telemetry-cluster">
+          <div className="telemetry-pill">
+            <Activity size={13} style={{ color: isRunning ? "#10b981" : "#94a3b8" }} />
+            <span>{isRunning ? "ENGINE ACTIVE" : "ENGINE IDLE"}</span>
           </div>
+          {isRunning && (
+            <div className="telemetry-pill fps-pill">
+              <Zap size={13} style={{ color: "#38bdf8" }} />
+              <span>{fps} FPS</span>
+            </div>
+          )}
+          <div className="telemetry-pill count-pill">
+            <Car size={13} style={{ color: "#f59e0b" }} />
+            <span>{events.length} Detections</span>
+          </div>
+        </div>
+      </div>
 
+      {/* 2. MODERN SOURCE NAVIGATION & QUICK SWITCHER BAR */}
+      <div className="anpr-source-nav-bar">
+        <div className="source-nav-tabs">
+          {/* Tab 1: Demo Video */}
           <button
             type="button"
-            className={`anpr-action-btn btn-scan ${isRunning ? "btn-active" : ""}`}
+            className={`source-nav-tab ${selectedSourceId === "demo_video" ? "active" : ""}`}
+            onClick={() => handleSelectSource("demo_video")}
+          >
+            <span className="tab-icon">🎥</span>
+            <div className="tab-text">
+              <strong>Demo Traffic Feed</strong>
+              <small>NH-48 Expressway (test_video.mp4)</small>
+            </div>
+            {selectedSourceId === "demo_video" && <span className="tab-active-dot"></span>}
+          </button>
+
+          {/* Tab 2: Laptop Webcam */}
+          <button
+            type="button"
+            className={`source-nav-tab ${selectedSourceId === "laptop_webcam" ? "active" : ""}`}
+            onClick={() => handleSelectSource("laptop_webcam")}
+          >
+            <span className="tab-icon">💻</span>
+            <div className="tab-text">
+              <strong>Laptop Live Webcam</strong>
+              <small>Device 0 (Integrated Camera)</small>
+            </div>
+            {selectedSourceId === "laptop_webcam" && <span className="tab-active-dot"></span>}
+          </button>
+
+          {/* Tab 3: Statewide CCTV Grid */}
+          <button
+            type="button"
+            className={`source-nav-tab cctv-tab ${selectedSourceId !== "demo_video" && selectedSourceId !== "laptop_webcam" ? "active" : ""}`}
+            onClick={() => setIsCctvModalOpen(true)}
+          >
+            <span className="tab-icon">📹</span>
+            <div className="tab-text">
+              <strong>Statewide CCTV Grid</strong>
+              <small>
+                {selectedSourceId !== "demo_video" && selectedSourceId !== "laptop_webcam"
+                  ? `${activeSource?.code || "Active"} · ${activeSource?.location || "CCTV"}`
+                  : `${registeredCctvCount} Registered Cameras`}
+              </small>
+            </div>
+            <span className="cctv-picker-badge">Select Camera ▾</span>
+          </button>
+        </div>
+
+        {/* STREAM ACTION BUTTON */}
+        <div className="stream-action-group">
+          <button
+            type="button"
+            className={`anpr-stream-toggle-btn ${isRunning ? "btn-stop" : "btn-start"}`}
             onClick={handleToggleStream}
           >
             {isRunning ? (
               <>
-                <Square size={14} fill="currentColor" />
+                <Square size={15} fill="currentColor" />
                 <span>Stop Stream</span>
               </>
             ) : (
               <>
-                <Play size={14} fill="currentColor" />
+                <Play size={15} fill="currentColor" />
                 <span>Start Stream</span>
               </>
             )}
@@ -493,69 +593,52 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         </div>
       </div>
 
-      {/* 2. DUAL-MODE TARGET SEARCH BAR (TEXT + IMAGE UPLOAD) */}
-      <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: "12px", padding: "16px 20px", marginBottom: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "10px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Crosshair size={18} style={{ color: "#38bdf8" }} />
-            <strong style={{ fontSize: "14px", color: "#f8fafc", letterSpacing: "0.5px" }}>
-              TARGET VEHICLE SEARCH & INTERCEPTION
-            </strong>
+      {/* 3. COHESIVE TARGET SEARCH COMMAND HUB (TEXT + IMAGE UPLOAD) */}
+      <div className="anpr-search-command-card">
+        <div className="search-card-header">
+          <div className="search-header-title">
+            <Crosshair size={18} className="search-icon-pulse" />
+            <div>
+              <strong>TARGET VEHICLE SEARCH & INTERCEPTION MATRIX</strong>
+              <p>Enter suspect license plate or upload vehicle photo. Immediate alert triggers when spotted.</p>
+            </div>
           </div>
-          <span style={{ fontSize: "12px", color: "#94a3b8" }}>
-            Enter number plate text OR upload a car photo to lock and track.
-          </span>
+          {activeTarget && (
+            <button
+              type="button"
+              className="clear-search-link"
+              onClick={handleClearTarget}
+            >
+              <X size={13} />
+              <span>Clear Target</span>
+            </button>
+          )}
         </div>
 
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-          {/* TEXT SEARCH FORM */}
-          <form onSubmit={handleSearchText} style={{ display: "flex", gap: "8px", flex: 1, minWidth: "280px" }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <Search size={15} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b" }} />
+        <div className="search-inputs-cluster">
+          {/* TEXT SEARCH INPUT */}
+          <form onSubmit={handleSearchText} className="search-text-form">
+            <div className="plate-input-wrapper">
+              <span className="hsrp-input-badge">IND</span>
               <input
                 type="text"
                 placeholder="Enter plate number (e.g. 16J921, GJ01AB1234)..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "9px 12px 9px 36px",
-                  background: "#1e293b",
-                  border: "1px solid #334155",
-                  borderRadius: "8px",
-                  color: "#ffffff",
-                  fontSize: "13px",
-                  fontFamily: "monospace",
-                  fontWeight: 600,
-                  outline: "none"
-                }}
+                onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
+                className="plate-text-input"
               />
             </div>
             <button
               type="submit"
               disabled={isSearching || !searchQuery.trim()}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "9px 16px",
-                background: "#0284c7",
-                border: "none",
-                borderRadius: "8px",
-                color: "#ffffff",
-                fontSize: "13px",
-                fontWeight: 700,
-                cursor: "pointer",
-                opacity: isSearching || !searchQuery.trim() ? 0.6 : 1
-              }}
+              className="btn-search-trigger"
             >
               <Search size={14} />
               <span>{isSearching ? "Searching..." : "Search & Track"}</span>
             </button>
           </form>
 
-          {/* DIVIDER */}
-          <span style={{ color: "#475569", fontSize: "12px", fontWeight: 700 }}>OR</span>
+          <span className="search-or-divider">OR</span>
 
           {/* IMAGE UPLOAD BUTTON */}
           <input
@@ -569,76 +652,31 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isSearching}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "9px 16px",
-              background: "#334155",
-              border: "1px solid #475569",
-              borderRadius: "8px",
-              color: "#f8fafc",
-              fontSize: "13px",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "all 0.2s"
-            }}
+            className="btn-upload-photo"
           >
             <Upload size={14} />
             <span>Upload Vehicle / Plate Photo</span>
           </button>
 
-          {/* CLEAR TARGET BUTTON IF ACTIVE */}
-          {activeTarget && (
-            <button
-              type="button"
-              onClick={handleClearTarget}
-              className="clear-target-btn"
-            >
-              <X size={13} />
-              <span>Clear Target</span>
-            </button>
+          {/* UPLOADED THUMBNAIL CHIP */}
+          {uploadedPreview && (
+            <div className="uploaded-chip">
+              <img src={uploadedPreview} alt="Uploaded" className="uploaded-chip-img" />
+              <span>Uploaded Photo</span>
+              <button
+                type="button"
+                onClick={() => setUploadedPreview(null)}
+                className="uploaded-chip-close"
+              >
+                <X size={12} />
+              </button>
+            </div>
           )}
         </div>
 
         {/* SEARCH NOTIFICATION BANNER */}
         {searchNotice && (
-          <div
-            style={{
-              marginTop: "12px",
-              padding: "10px 14px",
-              borderRadius: "8px",
-              fontSize: "13px",
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              background:
-                searchNotice.type === "success"
-                  ? "rgba(16, 185, 129, 0.15)"
-                  : searchNotice.type === "warning"
-                  ? "rgba(234, 179, 8, 0.15)"
-                  : searchNotice.type === "error"
-                  ? "rgba(239, 68, 68, 0.15)"
-                  : "rgba(56, 189, 248, 0.15)",
-              border:
-                searchNotice.type === "success"
-                  ? "1px solid rgba(16, 185, 129, 0.4)"
-                  : searchNotice.type === "warning"
-                  ? "1px solid rgba(234, 179, 8, 0.4)"
-                  : searchNotice.type === "error"
-                  ? "1px solid rgba(239, 68, 68, 0.4)"
-                  : "1px solid rgba(56, 189, 248, 0.4)",
-              color:
-                searchNotice.type === "success"
-                  ? "#34d399"
-                  : searchNotice.type === "warning"
-                  ? "#facc15"
-                  : searchNotice.type === "error"
-                  ? "#f87171"
-                  : "#38bdf8"
-            }}
-          >
+          <div className={`search-notice-banner notice-${searchNotice.type}`}>
             {searchNotice.type === "success" ? (
               <CheckCircle2 size={16} />
             ) : searchNotice.type === "warning" ? (
@@ -651,65 +689,98 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         )}
       </div>
 
-      {/* 3. TARGET STATUS BANNER: "CATCHED" vs "NOT SEEN YET" */}
+      {/* 4. TARGET STATUS BANNERS: "CATCHED" vs "NOT SEEN YET" */}
       {activeTarget && (
         activeTarget.status === "CATCHED" ? (
           /* CATCHED BANNER */
-          <div className="anpr-target-intercepted-banner">
-            <div className="intercept-icon-wrap" style={{ background: "#ef4444" }}>
+          <div className="anpr-catched-alert-banner">
+            <div className="catched-badge-icon">
               <AlertTriangle size={24} />
             </div>
-            <div className="intercept-content">
-              <h4 style={{ color: "#fee2e2" }}>🚨 TARGET VEHICLE CATCHED!</h4>
+            <div className="catched-banner-content">
+              <div className="catched-headline-row">
+                <h4>🚨 SUSPECT TARGET VEHICLE INTERCEPTED!</h4>
+                <span className="catched-tag">MATCH CONFIRMED</span>
+              </div>
               <p>
-                Suspect vehicle matching target plate{" "}
-                <span className="highlight-plate">{activeTarget.plate}</span> was intercepted on the surveillance grid!
+                Suspect vehicle matching target plate was intercepted on Gujarat surveillance grid.
               </p>
-              <div className="intercept-meta-row">
-                <span>📍 Camera: <strong>{activeTarget.event?.dept_name || activeTarget.event?.camera_name || "Surveillance Grid"}</strong></span>
-                <span>🕒 Intercepted at: <strong>{new Date(activeTarget.event?.timestamp || Date.now()).toLocaleTimeString()}</strong></span>
-                <span>🚗 Vehicle Class: <strong>{activeTarget.event?.vehicle?.type || "Car"}</strong></span>
+
+              <div className="catched-details-grid">
+                <div className="catched-detail-item">
+                  <span className="cd-label">Target Plate:</span>
+                  <div className="hsrp-plate-wrap hsrp-mini">
+                    <div className="hsrp-blue-band"><span className="hsrp-ind">IND</span></div>
+                    <span className="hsrp-number">{activeTarget.plate}</span>
+                  </div>
+                </div>
+
+                <div className="catched-detail-item">
+                  <span className="cd-label">Intercepted Camera:</span>
+                  <strong className="cd-value">
+                    📍 {activeTarget.event?.dept_name || activeTarget.event?.camera_name || "Surveillance Grid"}
+                  </strong>
+                </div>
+
+                <div className="catched-detail-item">
+                  <span className="cd-label">Vehicle Class:</span>
+                  <div className="cd-value">
+                    {renderVehicleBadge(activeTarget.event?.vehicle?.type)}
+                  </div>
+                </div>
+
+                <div className="catched-detail-item">
+                  <span className="cd-label">Timestamp:</span>
+                  <strong className="cd-value">
+                    🕒 {new Date(activeTarget.event?.timestamp || Date.now()).toLocaleTimeString()}
+                  </strong>
+                </div>
+
                 {activeTarget.event?.crop_url && (
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                    📷 Plate Snapshot:
+                  <div className="catched-detail-item crop-item">
+                    <span className="cd-label">Camera Snapshot:</span>
                     <img
                       src={activeTarget.event.crop_url}
                       alt="Crop"
-                      style={{ height: "24px", borderRadius: "3px", border: "1px solid #10b981", verticalAlign: "middle", cursor: "pointer" }}
+                      className="catched-crop-thumb"
                       onClick={() => setPreviewCrop(activeTarget.event.crop_url)}
+                      title="Click to view full-resolution crop"
                     />
-                  </span>
+                  </div>
                 )}
               </div>
             </div>
             <button
               type="button"
-              className="intercept-ack-btn"
+              className="catched-dismiss-btn"
               onClick={handleClearTarget}
             >
-              Dismiss Alert
+              Acknowledge & Dismiss
             </button>
           </div>
         ) : (
           /* NOT SEEN YET BANNER */
-          <div className="anpr-target-hunt-bar">
-            <div className="hunt-left">
-              <div className="hunt-badge">
-                <Crosshair size={13} />
-                <span>SEARCH TARGET ACTIVE</span>
+          <div className="anpr-hunting-radar-banner">
+            <div className="hunting-left">
+              <div className="hunting-radar-icon-box">
+                <Crosshair size={18} className="radar-sweep-spin" />
               </div>
-              <div className="hunt-plate">
-                <span className="hunt-ind">IND</span>
-                <strong>{activeTarget.plate}</strong>
-              </div>
-              <div className="hunt-status status-hunting">
-                <span className="pulsar-dot"></span>
-                <span>Status: <strong>Not seen yet</strong> &bull; Actively scanning video stream...</span>
+              <div className="hunting-text">
+                <div className="hunting-title-row">
+                  <strong>TARGET SEARCH ACTIVE:</strong>
+                  <div className="hsrp-plate-wrap hsrp-mini">
+                    <div className="hsrp-blue-band"><span className="hsrp-ind">IND</span></div>
+                    <span className="hsrp-number">{activeTarget.plate}</span>
+                  </div>
+                </div>
+                <p>
+                  Status: <strong>Not seen yet</strong> &bull; Actively scanning video streams and checking passing vehicle plates across Gujarat...
+                </p>
               </div>
             </div>
             <button
               type="button"
-              className="clear-target-btn"
+              className="hunting-cancel-btn"
               onClick={handleClearTarget}
             >
               <X size={13} />
@@ -719,25 +790,43 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         )
       )}
 
-      {/* 4. MAIN WORKSPACE: LEFT LIVE STREAM + RIGHT DETECTION LOGS */}
+      {/* 5. MAIN WORKSPACE: LIVE VIDEO MONITOR + DETECTION LOGS */}
       <div className="anpr-main-grid">
-        {/* LEFT: LIVE MJPEG STREAM */}
-        <div className="anpr-video-card">
+        {/* LEFT: 16:9 CINEMATIC VIDEO MONITOR */}
+        <div className="anpr-video-card" ref={videoWrapperRef}>
           <div className="video-card-header">
             <div className="cam-title-info">
               <Camera size={16} className="cam-icon" />
               <div>
-                <strong>{activeSource?.name || "Active Source"}</strong>
+                <strong>{activeSource?.name || "Active Video Source"}</strong>
                 <span className="cam-loc-tag">{activeSource?.location || "Gujarat Surveillance"}</span>
               </div>
             </div>
 
             <div className="stream-badge-group">
+              {/* FEED MODE: LIVE vs STANDBY */}
+              {isRunning && (
+                <span className={`feed-mode-badge mode-${feedMode.toLowerCase()}`}>
+                  <span className="pulse-dot"></span>
+                  {feedMode === "LIVE" ? "🟢 LIVE FEED" : "🟡 OPTICAL STANDBY"}
+                </span>
+              )}
+
               <span className={`live-feed-pill ${isRunning ? "status-online" : "status-offline"}`}>
                 <span className="live-dot"></span>
-                {isRunning ? "LIVE AI INFERENCE" : "STREAM PAUSED"}
+                {isRunning ? "AI INFERENCE RUNNING" : "STREAM PAUSED"}
               </span>
+
               {isRunning && <span className="fps-counter">{fps} FPS</span>}
+
+              <button
+                type="button"
+                className="fullscreen-btn"
+                onClick={toggleFullscreen}
+                title={isFullscreen ? "Exit Fullscreen" : "Fullscreen View"}
+              >
+                {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+              </button>
             </div>
           </div>
 
@@ -747,20 +836,19 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                 src={streamUrl}
                 alt="Live ANPR Stream"
                 className="anpr-video-element"
-                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
                 onError={() => {
                   console.warn("MJPEG stream reconnecting...");
                 }}
               />
             ) : (
               <div className="stream-offline-overlay">
-                <Camera size={44} className="offline-cam-icon" />
-                <p>AI STREAM PAUSED</p>
-                <span>Select source and click &quot;Start Stream&quot; to begin real-time vehicle and plate tracking</span>
+                <Camera size={48} className="offline-cam-icon" />
+                <h4>SURVEILLANCE STREAM PAUSED</h4>
+                <p>Select any source above and click &quot;Start Stream&quot; to begin real-time vehicle and plate tracking.</p>
                 <button
                   type="button"
-                  className="anpr-action-btn btn-scan"
-                  style={{ marginTop: "14px" }}
+                  className="anpr-stream-toggle-btn btn-start"
+                  style={{ marginTop: "16px" }}
                   onClick={handleToggleStream}
                 >
                   <Play size={14} fill="currentColor" />
@@ -774,9 +862,16 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
               <div className="anpr-target-scanner-crosshair">
                 <div className="reticle-line-scan"></div>
                 <div className="reticle-text">
-                  <Crosshair size={12} />
-                  <span>FINDING: {activeTarget.plate}</span>
+                  <Crosshair size={13} />
+                  <span>TARGET LOCKED: {activeTarget.plate}</span>
                 </div>
+              </div>
+            )}
+
+            {/* STANDBY NOTICE BADGE */}
+            {isRunning && feedMode === "STANDBY" && (
+              <div className="standby-notice-pill" title="Hardware fallback ensures continuous surveillance even if external CCTV host is reconnecting">
+                <span>🛡️ Sentinel Auto-Protection: Optical Standby Feed Active</span>
               </div>
             )}
           </div>
@@ -817,7 +912,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
             </div>
           </div>
 
-          {/* SEARCH & FILTER BAR */}
+          {/* SEARCH & CATEGORY FILTER TABS */}
           <div className="anpr-search-bar">
             <div className="search-input-wrap">
               <Search size={14} className="search-icon" />
@@ -828,30 +923,52 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                 onChange={(e) => setLogFilter(e.target.value)}
               />
             </div>
+          </div>
 
-            <div className="filter-pill-group">
-              <button
-                type="button"
-                className={`filter-pill ${statusFilter === "ALL" ? "active" : ""}`}
-                onClick={() => setStatusFilter("ALL")}
-              >
-                All
-              </button>
-              <button
-                type="button"
-                className={`filter-pill ${statusFilter === "CATCHED" ? "active" : ""}`}
-                onClick={() => setStatusFilter("CATCHED")}
-              >
-                Catched
-              </button>
-              <button
-                type="button"
-                className={`filter-pill ${statusFilter === "NORMAL" ? "active" : ""}`}
-                onClick={() => setStatusFilter("NORMAL")}
-              >
-                Normal
-              </button>
-            </div>
+          {/* CATEGORY FILTER CHIPS */}
+          <div className="category-filter-chips">
+            <button
+              type="button"
+              className={`cat-chip ${categoryFilter === "ALL" ? "active" : ""}`}
+              onClick={() => setCategoryFilter("ALL")}
+            >
+              All Passes ({events.length})
+            </button>
+            <button
+              type="button"
+              className={`cat-chip cat-catched ${categoryFilter === "CATCHED" ? "active" : ""}`}
+              onClick={() => setCategoryFilter("CATCHED")}
+            >
+              🎯 Intercepted Only
+            </button>
+            <button
+              type="button"
+              className={`cat-chip ${categoryFilter === "AUTO" ? "active" : ""}`}
+              onClick={() => setCategoryFilter("AUTO")}
+            >
+              🛺 Auto-Rickshaws
+            </button>
+            <button
+              type="button"
+              className={`cat-chip ${categoryFilter === "BIKE" ? "active" : ""}`}
+              onClick={() => setCategoryFilter("BIKE")}
+            >
+              🏍️ Two-Wheelers
+            </button>
+            <button
+              type="button"
+              className={`cat-chip ${categoryFilter === "CAR" ? "active" : ""}`}
+              onClick={() => setCategoryFilter("CAR")}
+            >
+              🚗 Cars & SUVs
+            </button>
+            <button
+              type="button"
+              className={`cat-chip ${categoryFilter === "COMMERCIAL" ? "active" : ""}`}
+              onClick={() => setCategoryFilter("COMMERCIAL")}
+            >
+              🚛 Heavy (Buses/Trucks)
+            </button>
           </div>
 
           {/* EVENT TABLE */}
@@ -940,9 +1057,11 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                   <tr>
                     <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
                       <Camera size={28} style={{ margin: "0 auto 10px", opacity: 0.4, display: "block" }} />
-                      <p style={{ margin: 0, fontWeight: 600 }}>No live detections recorded yet.</p>
+                      <p style={{ margin: 0, fontWeight: 600 }}>No vehicle detections found.</p>
                       <span style={{ fontSize: "11px", color: "#64748b" }}>
-                        Start the stream to detect passing vehicles in real-time.
+                        {isRunning
+                          ? "Waiting for vehicles to pass in front of camera..."
+                          : "Start the stream to detect passing vehicles in real-time."}
                       </span>
                     </td>
                   </tr>
@@ -953,52 +1072,120 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         </div>
       </div>
 
-      {/* 5. CROP PREVIEW MODAL */}
+      {/* 6. CCTV CAMERA SELECTOR MODAL */}
+      {isCctvModalOpen && (
+        <div className="cctv-modal-overlay" onClick={() => setIsCctvModalOpen(false)}>
+          <div className="cctv-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="cctv-modal-header">
+              <div className="cctv-modal-title">
+                <Camera size={20} style={{ color: "#38bdf8" }} />
+                <div>
+                  <h3>Gujarat Sentinel Statewide CCTV Grid</h3>
+                  <p>Select any registered municipal, highway, or toll-plaza CCTV camera to connect stream.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="cctv-modal-close"
+                onClick={() => setIsCctvModalOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* MODAL SEARCH BAR */}
+            <div className="cctv-modal-search">
+              <Search size={15} style={{ color: "#64748b" }} />
+              <input
+                type="text"
+                placeholder="Search by city, department, camera code, or IP..."
+                value={cctvSearchQuery}
+                onChange={(e) => setCctvSearchQuery(e.target.value)}
+                autoFocus
+              />
+              {cctvSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setCctvSearchQuery("")}
+                  className="search-clear-btn"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            {/* CAMERA CARDS GRID */}
+            <div className="cctv-cards-grid">
+              {filteredCctvCameras.map((cam) => {
+                const isSelected = selectedSourceId === cam.id;
+                return (
+                  <div
+                    key={cam.id}
+                    className={`cctv-camera-card ${isSelected ? "selected" : ""}`}
+                    onClick={() => {
+                      handleSelectSource(cam.id);
+                      setIsCctvModalOpen(false);
+                    }}
+                  >
+                    <div className="cam-card-top">
+                      <span className="cam-code-badge">{cam.code || "CAM"}</span>
+                      <span className="cam-status-indicator">
+                        <span className="dot"></span>
+                        {cam.status || "ONLINE"}
+                      </span>
+                    </div>
+                    <strong className="cam-card-dept">{cam.location || cam.name}</strong>
+                    <div className="cam-card-meta">
+                      <span>IP: {cam.ip_address || "103.250.160.189"}</span>
+                      <span>Model: {cam.make_model || "Generic CCTV"}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className={`cam-card-connect-btn ${isSelected ? "active" : ""}`}
+                    >
+                      {isSelected ? "Currently Connected" : "Connect Stream"}
+                    </button>
+                  </div>
+                );
+              })}
+
+              {filteredCctvCameras.length === 0 && (
+                <div className="cctv-empty-state">
+                  <p>No registered cameras found matching &quot;{cctvSearchQuery}&quot;</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. HIGH-RES CROP PREVIEW MODAL */}
       {previewCrop && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.8)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999
-          }}
-          onClick={() => setPreviewCrop(null)}
-        >
-          <div
-            style={{
-              background: "#0f172a",
-              padding: "20px",
-              borderRadius: "12px",
-              border: "1px solid #334155",
-              maxWidth: "500px",
-              textAlign: "center"
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-              <h4 style={{ margin: 0, color: "#f8fafc" }}>Captured Plate Snapshot</h4>
+        <div className="crop-modal-overlay" onClick={() => setPreviewCrop(null)}>
+          <div className="crop-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="crop-modal-header">
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Eye size={18} style={{ color: "#38bdf8" }} />
+                <h4>Captured License Plate Optical Inspection</h4>
+              </div>
               <button
                 type="button"
                 onClick={() => setPreviewCrop(null)}
-                style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer" }}
+                className="crop-modal-close"
               >
                 <X size={18} />
               </button>
             </div>
-            <img
-              src={previewCrop}
-              alt="Plate Crop"
-              style={{ width: "100%", maxHeight: "300px", objectFit: "contain", borderRadius: "8px", border: "2px solid #0284c7" }}
-            />
-            <p style={{ margin: "12px 0 0", fontSize: "12px", color: "#94a3b8" }}>
-              High-resolution optical crop verified by YOLOv8-plate and EasyOCR.
-            </p>
+            <div className="crop-modal-body">
+              <img
+                src={previewCrop}
+                alt="Plate Crop High-Res"
+                className="crop-modal-img"
+              />
+              <div className="crop-modal-caption">
+                <span>Verified by YOLOv8 Optical Bounding & EasyOCR Indian Character Corrector</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
