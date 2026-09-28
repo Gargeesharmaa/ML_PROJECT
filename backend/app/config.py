@@ -30,10 +30,18 @@ class Settings(BaseSettings):
 
     @property
     def allowed_cors_origins(self) -> list[str]:
-        """Parses comma-separated CORS origins or returns wildcard."""
-        if not self.cors_origins or self.cors_origins.strip() == "*":
-            return ["*"]
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+        """Parses comma-separated CORS origins and includes production frontend domains."""
+        origins = [
+            "https://drishtigrid.vercel.app",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173"
+        ]
+        if self.cors_origins and self.cors_origins.strip() != "*":
+            for origin in self.cors_origins.split(","):
+                clean = origin.strip()
+                if clean and clean not in origins and clean != "*":
+                    origins.append(clean)
+        return origins
 
     model_config = SettingsConfigDict(
         env_file=".env",
