@@ -222,52 +222,95 @@ def format_plate_text(raw_text: str) -> str:
 def classify_vehicle(crop: np.ndarray, raw_cls: str, conf: float) -> str:
     """
     Intelligently classifies vehicles on Indian roads.
-    Distinguishes Auto-Rickshaw (3-wheeler), Motorcycle, Bus, Truck, Van, and Car.
+    Differentiates:
+    - Auto-rickshaw / 3-wheeler (yellow/green canopy, compact profile, narrow top)
+    - Motorcycle / Scooter (two-wheelers, narrow silhouette)
+    - Bus (large passenger transit, high vertical profile, large windshield)
+    - Truck (heavy commercial, separate cargo bed, container)
+    - SUV / Van (tall passenger vehicles, high clearance, boxy rear/front)
+    - Car (standard sedans, hatchbacks, compact cars)
+    - Other (non-standard motorized vehicles, tractors, machinery)
     """
-    if raw_cls == "motorcycle":
-        return "Motorcycle"
-    if raw_cls == "bus":
-        return "Bus"
-
     if crop is None or crop.size == 0:
-        return raw_cls.capitalize()
+        if raw_cls == "motorcycle":
+            return "Motorcycle / Scooter"
+        if raw_cls == "bus":
+            return "Bus"
+        if raw_cls == "truck":
+            return "Truck"
+        return "Car"
 
     h, w = crop.shape[:2]
     aspect = h / max(1, w)
 
-    # Detect Indian Auto-Rickshaw (Yellow roof/visor/hood + CNG green + compact profile)
+    # 1. Color feature extraction in HSV
     try:
         hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-        lower_yellow = np.array([15, 60, 80])
-        upper_yellow = np.array([35, 255, 255])
-        mask_y = cv2.inRange(hsv, lower_yellow, upper_yellow)
-        yellow_ratio = np.sum(mask_y > 0) / float(h * w)
 
-        lower_green = np.array([35, 40, 40])
-        upper_green = np.array([85, 255, 255])
-        mask_g = cv2.inRange(hsv, lower_green, upper_green)
-        green_ratio = np.sum(mask_g > 0) / float(h * w)
+        # Yellow / Gold / Mustard / Amber (Auto-rickshaw hood/visor/roof)
+        mask_y = cv2.inRange(hsv, np.array([11, 40, 50]), np.array([38, 255, 255]))
+        y_ratio = np.sum(mask_y > 0) / float(h * w)
 
-        if (yellow_ratio > 0.015 or (yellow_ratio > 0.008 and green_ratio > 0.025)) and aspect > 1.05:
-            return "Auto-Rickshaw"
+        # CNG Green (Lower body of Indian Auto-rickshaws)
+        mask_g = cv2.inRange(hsv, np.array([36, 35, 35]), np.array([86, 255, 255]))
+        g_ratio = np.sum(mask_g > 0) / float(h * w)
+
+        # Upper 55% yellow ratio (Rickshaw canopy is on the upper body)
+        top_half = crop[:int(h * 0.55), :]
+        top_hsv = cv2.cvtColor(top_half, cv2.COLOR_BGR2HSV)
+        top_y_ratio = np.sum(cv2.inRange(top_hsv, np.array([11, 40, 50]), np.array([38, 255, 255])) > 0) / float(top_half.size / 3)
+
+        is_auto_color = (
+            y_ratio >= 0.020 or
+            top_y_ratio >= 0.035 or
+            (y_ratio >= 0.008 and g_ratio >= 0.015)
+        )
     except Exception:
-        pass
+        is_auto_color = False
+
+    # 2. AUTO-RICKSHAW / 3-WHEELER CLASSIFICATION (Priority rescue from Car/Truck)
+    if is_auto_color and aspect >= 0.90 and w < 290:
+        return "Auto-rickshaw / 3-wheeler"
 
     if raw_cls == "truck":
-        if aspect > 1.25 and w < 240:
-            return "Auto-Rickshaw"
-        if w < 260 and h < 320:
-            return "Van / Mini-Truck"
-        return "Truck"
+        # Small tall vehicle detected as truck is an auto-rickshaw / 3-wheeled tempo
+        if aspect >= 1.15 and w < 265:
+            return "Auto-rickshaw / 3-wheeler"
+        if is_auto_color:
+            return "Auto-rickshaw / 3-wheeler"
 
     if raw_cls == "car":
-        if aspect > 1.25 and w < 230:
-            return "Auto-Rickshaw"
-        if w > 270 and h > 270 and aspect > 0.95:
-            return "Van / SUV"
+        # Narrow, tall vehicle detected as car
+        if aspect >= 1.18 and w < 240:
+            return "Auto-rickshaw / 3-wheeler"
+        if is_auto_color and aspect >= 0.88:
+            return "Auto-rickshaw / 3-wheeler"
+
+    # 3. MOTORCYCLE / SCOOTER
+    if raw_cls == "motorcycle":
+        if is_auto_color and w > 160 and aspect < 1.35:
+            return "Auto-rickshaw / 3-wheeler"
+        return "Motorcycle / Scooter"
+
+    # 4. BUS
+    if raw_cls == "bus":
+        if is_auto_color and w < 200 and h < 220:
+            return "Auto-rickshaw / 3-wheeler"
+        return "Bus"
+
+    # 5. TRUCK vs SUV / VAN
+    if raw_cls == "truck":
+        if w < 270 and h < 320 and aspect < 1.15:
+            return "SUV / Van"
+        return "Truck"
+
+    # 6. SUV / VAN vs CAR
+    if raw_cls == "car":
+        if aspect >= 0.92 and (w >= 240 or h >= 240):
+            return "SUV / Van"
         return "Car"
 
-    return raw_cls.capitalize()
+    return "Other"
 
 
 class ANPREngine:
@@ -879,16 +922,32 @@ class ANPREngine:
                                     clean_text = clean_indian_plate(plate_text)
                                     formatted = format_plate_text(clean_text)
 
-                                    # Associate with enclosing vehicle
+                                    # Associate with closest enclosing vehicle
                                     matched_vtype = "Car"
                                     matched_vconf = 0.92
+                                    best_dist = float("inf")
+                                    pcx, pcy = (bx1 + bx2) // 2, (by1 + by2) // 2
+
                                     for v in current_v_boxes:
                                         vx1, vy1, vx2, vy2 = v[1]
-                                        pcx, pcy = (bx1 + bx2) // 2, (by1 + by2) // 2
-                                        if (vx1 - 30) <= pcx <= (vx2 + 30) and (vy1 - 40) <= pcy <= (vy2 + 50):
-                                            matched_vtype = v[0]
-                                            matched_vconf = v[2]
-                                            break
+                                        if (vx1 - 25) <= pcx <= (vx2 + 25) and (vy1 - 35) <= pcy <= (vy2 + 45):
+                                            vcx, vcy = (vx1 + vx2) // 2, (vy1 + vy2) // 2
+                                            dist = (pcx - vcx) ** 2 + (pcy - vcy) ** 2
+                                            if dist < best_dist:
+                                                best_dist = dist
+                                                matched_vtype = v[0]
+                                                matched_vconf = v[2]
+
+                                    # If no vehicle box was enclosing, infer vehicle class from plate surroundings
+                                    if best_dist == float("inf"):
+                                        vw_pad = max(40, int(bw * 1.5))
+                                        vh_pad = max(60, int(bh * 4.0))
+                                        v_crop_x1 = max(0, bx1 - vw_pad)
+                                        v_crop_y1 = max(0, by1 - vh_pad)
+                                        v_crop_x2 = min(w, bx2 + vw_pad)
+                                        v_crop_y2 = min(h, by2 + int(bh * 1.2))
+                                        v_context = frame[v_crop_y1:v_crop_y2, v_crop_x1:v_crop_x2]
+                                        matched_vtype = classify_vehicle(v_context, "car", 0.70)
 
                                     is_match = False
                                     if self.target_plate and are_plates_similar(clean_text, self.target_plate):
@@ -952,7 +1011,7 @@ class ANPREngine:
                 # Also track passing Auto-Rickshaws or Motorcycles even if plate was obscured
                 for v in current_v_boxes:
                     vtype, vbox, vconf = v
-                    if vtype in ["Auto-Rickshaw", "Motorcycle", "Bus"]:
+                    if any(k in vtype for k in ["Auto", "3-wheeler", "Motorcycle", "Scooter", "Bus"]):
                         # Center of vehicle
                         vcx = (vbox[0] + vbox[2]) // 2
                         vcy = (vbox[1] + vbox[3]) // 2
@@ -1036,14 +1095,18 @@ class ANPREngine:
             vx1, vy1, vx2, vy2 = vbox
 
             # Specific colors for vehicle classes
-            if vtype == "Auto-Rickshaw":
+            if "Auto" in vtype or "3-wheeler" in vtype:
                 v_color = (0, 180, 255)  # Amber / Yellow
-            elif vtype == "Motorcycle":
+            elif "Motorcycle" in vtype or "Scooter" in vtype:
                 v_color = (255, 128, 0)  # Cyan-Blue
-            elif vtype == "Bus":
+            elif "Bus" in vtype:
                 v_color = (180, 0, 255)  # Purple
-            elif vtype == "Truck":
+            elif "Truck" in vtype:
                 v_color = (0, 140, 255)  # Orange
+            elif "SUV" in vtype or "Van" in vtype:
+                v_color = (240, 150, 0)  # Teal
+            elif "Other" in vtype:
+                v_color = (160, 160, 160)  # Gray
             else:
                 v_color = (180, 220, 0)  # Lime / Cyan for Car
 

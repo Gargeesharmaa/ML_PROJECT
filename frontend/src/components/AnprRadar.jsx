@@ -50,19 +50,19 @@ function AutoRickshawIcon({ size = 15 }) {
 
 function renderVehicleBadge(vtype) {
   const typeStr = (vtype || "Car").toLowerCase();
-  if (typeStr.includes("auto") || typeStr.includes("rickshaw")) {
+  if (typeStr.includes("auto") || typeStr.includes("rickshaw") || typeStr.includes("3-wheeler") || typeStr.includes("three")) {
     return (
-      <span className="vbadge vbadge-auto" title="Auto-Rickshaw (Three-Wheeler)">
+      <span className="vbadge vbadge-auto" title="Auto-Rickshaw / 3-Wheeler">
         <AutoRickshawIcon size={14} />
-        <span>Auto-Rickshaw</span>
+        <span>Auto-rickshaw / 3-wheeler</span>
       </span>
     );
   }
-  if (typeStr.includes("motorcycle") || typeStr.includes("bike")) {
+  if (typeStr.includes("motorcycle") || typeStr.includes("bike") || typeStr.includes("scooter")) {
     return (
-      <span className="vbadge vbadge-bike" title="Motorcycle / Two-Wheeler">
+      <span className="vbadge vbadge-bike" title="Motorcycle / Scooter">
         <Bike size={14} />
-        <span>Motorcycle</span>
+        <span>Motorcycle / Scooter</span>
       </span>
     );
   }
@@ -84,9 +84,17 @@ function renderVehicleBadge(vtype) {
   }
   if (typeStr.includes("van") || typeStr.includes("suv")) {
     return (
-      <span className="vbadge vbadge-van" title="Van / SUV">
+      <span className="vbadge vbadge-van" title="SUV / Van">
         <Car size={14} />
-        <span>Van / SUV</span>
+        <span>SUV / Van</span>
+      </span>
+    );
+  }
+  if (typeStr.includes("other")) {
+    return (
+      <span className="vbadge vbadge-other" title="Other Vehicle">
+        <Car size={14} />
+        <span>Other</span>
       </span>
     );
   }
