@@ -163,13 +163,16 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
 
     loadSources();
     checkStatus();
-    loadEvents();
   }, []);
 
-  // 2. Fetch Detection Events
-  const loadEvents = async () => {
+  // 2. Fetch Detection Events (camera-specific)
+  const loadEvents = async (camId) => {
+    const targetCamId = camId !== undefined ? camId : selectedSourceId;
     try {
-      const res = await fetch("/api/anpr/events?limit=80");
+      const url = targetCamId
+        ? `/api/anpr/events?camera_id=${encodeURIComponent(targetCamId)}&limit=100`
+        : `/api/anpr/events?limit=100`;
+      const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
         setEvents(data);
@@ -181,6 +184,9 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
 
   // 3. Periodic Polling for Telemetry & Events when running
   useEffect(() => {
+    // Initial fetch for the active camera
+    loadEvents(selectedSourceId);
+
     let interval = null;
     if (isRunning) {
       interval = setInterval(async () => {
@@ -202,7 +208,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
               }
             }
           }
-          loadEvents();
+          loadEvents(selectedSourceId);
         } catch (err) {
           console.warn("Polling error:", err);
         }
@@ -211,7 +217,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning]);
+  }, [isRunning, selectedSourceId]);
 
   // 4. Start / Stop Stream
   const handleToggleStream = async () => {
@@ -238,6 +244,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         if (res.ok) {
           setIsRunning(true);
           setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
+          loadEvents(curSource?.id);
         }
       } catch (err) {
         console.error("Failed to start stream:", err);
@@ -245,9 +252,12 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
   };
 
-  // 5. Change Selected Source
+  // 5. Change Selected Source (Instant Camera Switch)
   const handleSelectSource = async (sourceId) => {
     setSelectedSourceId(sourceId);
+    // Immediately stop displaying logs from the previously selected camera
+    setEvents([]);
+
     const targetSource = sources.find((s) => s.id === sourceId);
     if (!targetSource) return;
 
@@ -266,6 +276,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         setIsRunning(true);
         setStreamUrl(`/api/anpr/stream?t=${Date.now()}`);
       }
+      loadEvents(sourceId);
     } catch (err) {
       console.error("Failed to switch source:", err);
     }
@@ -388,11 +399,11 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     setUploadedPreview(null);
   };
 
-  // 9. Clear All Detection Logs
+  // 9. Clear Detection Logs for Selected Camera
   const handleClearLogs = async () => {
-    if (!window.confirm("Are you sure you want to clear all ANPR detection logs?")) return;
+    if (!window.confirm(`Clear detections for ${activeSource?.name || "this camera"}?`)) return;
     try {
-      await fetch("/api/anpr/events", { method: "DELETE" });
+      await fetch(`/api/anpr/events?camera_id=${encodeURIComponent(selectedSourceId)}`, { method: "DELETE" });
       setEvents([]);
     } catch (err) {
       console.error("Failed to clear logs:", err);
@@ -401,31 +412,40 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
 
   // 10. Export Logs to CSV
   const handleExportCsv = () => {
-    if (events.length === 0) return;
-    const headers = "event_id,timestamp,camera,vehicle_type,plate_number,confidence,status\n";
-    const rows = events
+    if (filteredEvents.length === 0) return;
+    const headers = "event_id,timestamp,camera_id,camera_code,camera,vehicle_type,plate_number,confidence,status\n";
+    const rows = filteredEvents
       .map(
         (e) =>
-          `"${e.event_id}","${e.timestamp}","${e.dept_name || e.camera_name || e.camera_id}","${e.vehicle?.type || "Car"}","${e.plate?.number || ""}","${e.plate?.confidence || 0.9}","${e.status || "NORMAL"}"`
+          `"${e.event_id}","${e.timestamp}","${e.camera_id || ""}","${e.camera_code || ""}","${e.dept_name || e.camera_name || ""}","${e.vehicle?.type || "Car"}","${e.plate?.number || ""}","${e.plate?.confidence || 0.9}","${e.status || "NORMAL"}"`
       )
       .join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `anpr_detections_${Date.now()}.csv`;
+    a.download = `anpr_${selectedSourceId}_${Date.now()}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  // Filtered Events
+  // Filtered Events (strictly scoped to selected camera)
   const filteredEvents = events.filter((ev) => {
+    // 1. Strict camera filter
+    if (selectedSourceId && ev.camera_id) {
+      const isMatch =
+        ev.camera_id === selectedSourceId ||
+        (selectedSourceId === "demo_video" && (ev.camera_id === "demo_video" || ev.camera_id === "demo_highway"));
+      if (!isMatch) return false;
+    }
+    // 2. Plate search filter
     const plateText = (ev.plate?.number || ev.plate?.raw_number || "").toLowerCase();
     if (logFilter && !plateText.includes(logFilter.toLowerCase())) {
       return false;
     }
+    // 3. Status filter
     if (statusFilter === "CATCHED" && !ev.is_target_catched && ev.status !== "TARGET_CATCHED") {
       return false;
     }
@@ -906,9 +926,11 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                   <tr>
                     <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "#94a3b8" }}>
                       <Camera size={28} style={{ margin: "0 auto 10px", opacity: 0.4, display: "block" }} />
-                      <p style={{ margin: 0, fontWeight: 600 }}>No live detections recorded yet.</p>
+                      <p style={{ margin: 0, fontWeight: 600 }}>No vehicle detections yet.</p>
                       <span style={{ fontSize: "11px", color: "#64748b" }}>
-                        Start the stream to detect passing vehicles in real-time.
+                        {isRunning
+                          ? `Actively monitoring ${activeSource?.name || "selected camera"}. Detections will appear here in real-time.`
+                          : `Start stream to monitor ${activeSource?.name || "selected camera"} for passing vehicles.`}
                       </span>
                     </td>
                   </tr>

@@ -183,8 +183,11 @@ class ANPREngine:
 
         self.is_running = False
         self.source_type = "DEMO_VIDEO"  # "DEMO_VIDEO" | "LOCAL_WEBCAM" | "CAMERA"
-        self.source_id = "demo_highway"
-        self.source_name = "Highway Traffic Video (test_video.mp4)"
+        self.source_id = "demo_video"
+        self.camera_id = "demo_video"
+        self.camera_code = "DEMO-01"
+        self.dept_name = "NH-48 Ahmedabad Expressway"
+        self.source_name = "Demo Highway Traffic"
         self.rtsp_url = ""
 
         self.target_plate = None
@@ -234,6 +237,7 @@ class ANPREngine:
                 "name": "🎥 Demo Highway Traffic (test_video.mp4)",
                 "source_type": "DEMO_VIDEO",
                 "location": "NH-48 Ahmedabad-Surat Expressway",
+                "camera_code": "DEMO-01",
                 "rtsp_url": "",
                 "status": "ONLINE"
             },
@@ -242,6 +246,7 @@ class ANPREngine:
                 "name": "💻 Laptop Webcam (Local Device 0)",
                 "source_type": "LOCAL_WEBCAM",
                 "location": "Local Surveillance Station",
+                "camera_code": "WEBCAM-01",
                 "rtsp_url": "0",
                 "status": "ONLINE"
             }
@@ -261,6 +266,7 @@ class ANPREngine:
                             "name": f"📷 {code} - {dept}",
                             "source_type": "CAMERA",
                             "location": dept,
+                            "camera_code": code,
                             "rtsp_url": rtsp,
                             "status": cam.get("status", "ONLINE")
                         })
@@ -297,23 +303,40 @@ class ANPREngine:
 
         self.source_type = source_type
         self.source_id = source_id or "demo_video"
-        self.source_name = source_name or ("Demo Highway Video" if source_type == "DEMO_VIDEO" else "Live Camera")
+        self.camera_id = self.source_id
         self.rtsp_url = rtsp_url or ""
 
-        # Auto-resolve rtsp_url and details if missing for registered CAMERA
-        if not self.rtsp_url and self.source_type == "CAMERA" and CAMERAS_FILE.exists():
-            try:
-                with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
-                    cams = json.load(f)
-                    for c in cams:
-                        if str(c.get("id")) == str(self.source_id):
-                            self.rtsp_url = c.get("rtsp_url", "")
-                            c_code = c.get("camera_code", "CAM")
-                            c_dept = c.get("dept_name", "Gujarat CCTV")
-                            self.source_name = f"📷 {c_code} - {c_dept}"
-                            break
-            except Exception as e:
-                logger.warning(f"Error looking up camera {self.source_id}: {e}")
+        if self.source_type == "DEMO_VIDEO":
+            self.camera_code = "DEMO-01"
+            self.dept_name = "NH-48 Ahmedabad Expressway"
+            self.source_name = "Demo Highway Traffic (test_video.mp4)"
+
+        elif self.source_type == "LOCAL_WEBCAM":
+            self.camera_code = "WEBCAM-01"
+            self.dept_name = "Local Surveillance Station"
+            self.source_name = "Laptop Testing Webcam"
+            self.rtsp_url = "0"
+
+        elif self.source_type == "CAMERA":
+            self.camera_code = "CAM"
+            self.dept_name = "Gujarat Surveillance Grid"
+            self.source_name = source_name or "Gujarat CCTV Camera"
+
+            # Auto-resolve from cameras.json if registered
+            if CAMERAS_FILE.exists():
+                try:
+                    with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                        cams = json.load(f)
+                        for c in cams:
+                            if str(c.get("id")) == str(self.source_id):
+                                if not self.rtsp_url:
+                                    self.rtsp_url = c.get("rtsp_url", "")
+                                self.camera_code = c.get("camera_code", "CAM")
+                                self.dept_name = c.get("dept_name", "Gujarat CCTV")
+                                self.source_name = f"📷 {self.camera_code} - {self.dept_name}"
+                                break
+                except Exception as e:
+                    logger.warning(f"Error looking up camera {self.source_id}: {e}")
 
         self.recent_plates = {}
         self.recent_vehicles = {}
@@ -322,7 +345,7 @@ class ANPREngine:
         self._thread = threading.Thread(target=self._worker_loop, daemon=True)
         self._thread.start()
 
-        logger.info(f"ANPR Engine started on source: {self.source_name} ({self.source_type}) -> RTSP: {self.rtsp_url}")
+        logger.info(f"ANPR Engine started on camera_id: {self.camera_id}, code: {self.camera_code}, source: {self.source_name} ({self.source_type}) -> RTSP: {self.rtsp_url}")
         return self.get_status()
 
     def stop(self) -> Dict[str, Any]:
@@ -341,7 +364,10 @@ class ANPREngine:
             "is_running": self.is_running,
             "source_type": self.source_type,
             "source_id": self.source_id,
+            "camera_id": self.camera_id,
+            "camera_code": self.camera_code,
             "source_name": self.source_name,
+            "dept_name": self.dept_name,
             "fps": round(self.fps, 1),
             "target_plate": self.target_plate,
             "last_detected_plate": self.last_detected_plate,
@@ -686,10 +712,10 @@ class ANPREngine:
 
                                         event_record = {
                                             "event_id": evt_id,
-                                            "camera_id": self.source_id,
-                                            "camera_code": self.source_id[:10],
+                                            "camera_id": self.camera_id,
+                                            "camera_code": self.camera_code,
                                             "camera_name": self.source_name,
-                                            "dept_name": self.source_name,
+                                            "dept_name": self.dept_name,
                                             "timestamp": datetime.now(timezone.utc).isoformat(),
                                             "vehicle": {
                                                 "type": matched_vtype,
@@ -744,10 +770,10 @@ class ANPREngine:
 
                                     self.save_event({
                                         "event_id": evt_id,
-                                        "camera_id": self.source_id,
-                                        "camera_code": self.source_id[:10],
+                                        "camera_id": self.camera_id,
+                                        "camera_code": self.camera_code,
                                         "camera_name": self.source_name,
-                                        "dept_name": self.source_name,
+                                        "dept_name": self.dept_name,
                                         "timestamp": datetime.now(timezone.utc).isoformat(),
                                         "vehicle": {
                                             "type": vtype,

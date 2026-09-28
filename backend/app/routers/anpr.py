@@ -91,20 +91,47 @@ async def get_stream():
 
 
 @router.get("/events")
-async def get_events(limit: int = 60):
-    """Returns real vehicle passing logs with plate text, vehicle class, timestamp, and crop URL."""
+async def get_events(camera_id: Optional[str] = None, camera_code: Optional[str] = None, limit: int = 100):
+    """
+    Returns real vehicle passing logs.
+    If camera_id or camera_code is provided, strictly filters detections for that camera.
+    """
     events = anpr_engine.load_events()
+    if camera_id:
+        def match_cam(e):
+            e_cam = str(e.get("camera_id", ""))
+            if e_cam == str(camera_id):
+                return True
+            if camera_id in ["demo_video", "demo_highway"] and e_cam in ["demo_video", "demo_highway"]:
+                return True
+            return False
+        events = [e for e in events if match_cam(e)]
+    elif camera_code:
+        events = [
+            e for e in events
+            if str(e.get("camera_code", "")).lower() == str(camera_code).lower()
+        ]
     return events[:limit]
 
 
 @router.delete("/events")
-async def clear_events():
-    """Clears all stored events."""
+async def clear_events(camera_id: Optional[str] = None):
+    """Clears all stored events or only those for the specified camera."""
     try:
         from app.services.anpr_engine import EVENTS_FILE
-        with open(EVENTS_FILE, "w", encoding="utf-8") as f:
-            json.dump([], f)
-        return {"status": "cleared", "message": "All ANPR detection logs cleared."}
+        if not camera_id:
+            with open(EVENTS_FILE, "w", encoding="utf-8") as f:
+                json.dump([], f)
+        else:
+            all_events = anpr_engine.load_events()
+            remaining = [
+                e for e in all_events
+                if str(e.get("camera_id")) != str(camera_id)
+                and not (camera_id in ["demo_video", "demo_highway"] and str(e.get("camera_id")) in ["demo_video", "demo_highway"])
+            ]
+            with open(EVENTS_FILE, "w", encoding="utf-8") as f:
+                json.dump(remaining, f, indent=2)
+        return {"status": "cleared", "message": "ANPR detection logs cleared."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
