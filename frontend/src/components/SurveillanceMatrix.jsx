@@ -14,46 +14,98 @@ import {
   Layers,
   Sparkles,
   Shield,
-  Eye
+  Eye,
+  ExternalLink,
+  Wifi,
+  WifiOff
 } from "lucide-react";
+import "./SurveillanceMatrix.css";
 
-export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
+export default function SurveillanceMatrix({ onOpenDetailedView, onNavigateToOnboarding }) {
   const [cameras, setCameras] = useState([]);
   const [loading, setLoading] = useState(true);
   const [layout, setLayout] = useState("2x2"); // "2x2" | "3x3" | "1+3"
   const [selectedSlots, setSelectedSlots] = useState({}); // slotIndex -> camera object
+  const [streamErrors, setStreamErrors] = useState({}); // slotIndex -> boolean
   const [currentTime, setCurrentTime] = useState(new Date().toUTCString());
   const [fullscreenTile, setFullscreenTile] = useState(null); // slotIndex | null
   const localVideoRefs = useRef({});
+  const streamImgRefs = useRef({});
 
-  // 1. Fetch Registered Cameras
+  // 1. Fetch Registered Cameras & ANPR Sources
   useEffect(() => {
-    async function fetchCameras() {
+    async function loadCameras() {
       setLoading(true);
       try {
-        const res = await fetch("/api/cameras");
-        if (res.ok) {
-          const data = await res.json();
-          const camList = Array.isArray(data) ? data : (data.cameras || []);
-          setCameras(camList);
+        // Fetch both registered cameras and anpr sources for complete fleet
+        const [camsRes, sourcesRes] = await Promise.all([
+          fetch("/api/cameras").catch(() => null),
+          fetch("/api/anpr/sources").catch(() => null),
+        ]);
 
-          // Auto-fill initial slots with available cameras
-          const initialSlots = {};
-          camList.slice(0, 4).forEach((cam, idx) => {
-            initialSlots[idx] = cam;
-          });
-          setSelectedSlots(initialSlots);
+        let combined = [];
+        const seenIds = new Set();
+
+        // Add ANPR sources first (Demo Video, Webcam, etc.)
+        if (sourcesRes && sourcesRes.ok) {
+          const sData = await sourcesRes.json();
+          if (Array.isArray(sData)) {
+            sData.forEach((s) => {
+              const uid = String(s.id || s.camera_code);
+              if (!seenIds.has(uid)) {
+                seenIds.add(uid);
+                combined.push({
+                  id: s.id,
+                  camera_code: s.camera_code || "DEMO",
+                  dept_name: s.location || s.name || "Surveillance Feed",
+                  location: s.location || "Gujarat",
+                  source_type: s.source_type,
+                  status: s.status || "ONLINE",
+                  camera_type: "ANPR",
+                  rtsp_url: s.rtsp_url || "",
+                });
+              }
+            });
+          }
         }
+
+        // Add registered cameras
+        if (camsRes && camsRes.ok) {
+          const cData = await camsRes.json();
+          const camList = Array.isArray(cData) ? cData : (cData.cameras || []);
+          camList.forEach((c) => {
+            const uid = String(c.id || c.camera_code);
+            if (!seenIds.has(uid)) {
+              seenIds.add(uid);
+              combined.push({
+                ...c,
+                id: c.id || c.camera_code,
+                dept_name: c.dept_name || "Gujarat CCTV",
+                status: c.status || "ONLINE",
+              });
+            }
+          });
+        }
+
+        setCameras(combined);
+
+        // Auto-populate initial 4 slots with unique available feeds
+        const initialSlots = {};
+        combined.slice(0, 4).forEach((cam, idx) => {
+          initialSlots[idx] = cam;
+        });
+        setSelectedSlots(initialSlots);
       } catch (err) {
         console.error("Error fetching cameras for matrix:", err);
       } finally {
         setLoading(false);
       }
     }
-    fetchCameras();
+
+    loadCameras();
   }, []);
 
-  // 2. Real-time UTC surveillance clock
+  // 2. Real-time Surveillance Clock
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
@@ -68,7 +120,7 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
     return () => clearInterval(timer);
   }, []);
 
-  // 3. Setup Local Webcam Streams when a slot has LOCAL_WEBCAM
+  // 3. Local Webcam Management with proper cleanup
   useEffect(() => {
     const activeStreams = [];
     Object.entries(selectedSlots).forEach(([slotIdx, cam]) => {
@@ -84,17 +136,32 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
             })
             .catch((err) => {
               console.warn("Could not start local webcam stream:", err);
+              setStreamErrors((prev) => ({ ...prev, [slotIdx]: true }));
             });
         }
       }
     });
 
     return () => {
-      activeStreams.forEach((s) => s.getTracks().forEach((t) => t.stop()));
+      activeStreams.forEach((s) => {
+        try {
+          s.getTracks().forEach((t) => t.stop());
+        } catch (_) {}
+      });
     };
   }, [selectedSlots]);
 
-  // Determine slot count based on layout
+  // Cleanup image connections on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(streamImgRefs.current).forEach((img) => {
+        if (img) {
+          img.src = "";
+        }
+      });
+    };
+  }, []);
+
   const getSlotCount = () => {
     if (layout === "3x3") return 9;
     if (layout === "1+3") return 4;
@@ -113,6 +180,7 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
         newSlots[slotIdx] = anprCams[slotIdx];
       }
     });
+    setStreamErrors({});
     setSelectedSlots(newSlots);
   };
 
@@ -125,30 +193,80 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
         newSlots[slotIdx] = onlineCams[slotIdx];
       }
     });
+    setStreamErrors({});
     setSelectedSlots(newSlots);
   };
 
-  // Clear Matrix
+  // Clear Matrix with cleanup
   const handleClearMatrix = () => {
+    Object.values(streamImgRefs.current).forEach((img) => {
+      if (img) img.src = "";
+    });
+    setStreamErrors({});
     setSelectedSlots({});
   };
 
-  // Assign Camera to Slot
+  // Assign Camera to Slot (prevents duplicate streams across tiles)
   const handleAssignCamera = (slotIdx, camId) => {
+    // If clearing slot
     if (!camId) {
+      if (streamImgRefs.current[slotIdx]) {
+        streamImgRefs.current[slotIdx].src = "";
+      }
       const next = { ...selectedSlots };
       delete next[slotIdx];
       setSelectedSlots(next);
+      setStreamErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[slotIdx];
+        return copy;
+      });
       return;
     }
+
     const found = cameras.find((c) => String(c.id || c.camera_code) === String(camId));
-    if (found) {
-      setSelectedSlots({
-        ...selectedSlots,
-        [slotIdx]: found,
-      });
+    if (!found) return;
+
+    // Check if camera is already assigned to another slot; if so, swap or unassign old slot
+    const updated = { ...selectedSlots };
+    Object.entries(updated).forEach(([sIdx, c]) => {
+      if (String(sIdx) !== String(slotIdx) && String(c.id || c.camera_code) === String(camId)) {
+        if (streamImgRefs.current[sIdx]) {
+          streamImgRefs.current[sIdx].src = "";
+        }
+        delete updated[sIdx];
+      }
+    });
+
+    updated[slotIdx] = found;
+    setSelectedSlots(updated);
+    setStreamErrors((prev) => ({ ...prev, [slotIdx]: false }));
+  };
+
+  const handleRetryStream = (slotIdx) => {
+    setStreamErrors((prev) => ({ ...prev, [slotIdx]: false }));
+    const img = streamImgRefs.current[slotIdx];
+    const cam = selectedSlots[slotIdx];
+    if (img && cam) {
+      const srcId = encodeURIComponent(cam.id || cam.camera_code);
+      img.src = `/api/cameras/${srcId}/stream?t=${Date.now()}`;
     }
   };
+
+  // Clicking a camera opens detailed view in ANPR
+  const handleOpenDetailed = (cam) => {
+    if (!cam) return;
+    if (typeof onOpenDetailedView === "function") {
+      onOpenDetailedView(cam);
+    }
+  };
+
+  // Set of camera IDs currently active in matrix (for duplicate prevention)
+  const activeCameraIds = new Set(
+    Object.values(selectedSlots)
+      .filter(Boolean)
+      .map((c) => String(c.id || c.camera_code))
+  );
 
   return (
     <div className="surveillance-matrix-container">
@@ -165,7 +283,6 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
 
         {/* CONTROLS */}
         <div className="matrix-actions-group">
-          {/* Quick Presets */}
           <button
             type="button"
             className="matrix-preset-btn"
@@ -173,7 +290,7 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
             title="Auto-fill video wall with all registered ANPR cameras"
           >
             <Shield size={14} />
-            <span>Tile ANPR Cameras</span>
+            <span>Tile ANPR Feeds</span>
           </button>
 
           <button
@@ -224,21 +341,23 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
         </div>
       </div>
 
-      {/* MATRIX EMPTY STATE IF NO CAMERAS REGISTERED */}
+      {/* MATRIX EMPTY STATE */}
       {cameras.length === 0 && !loading && (
         <div className="matrix-no-cams-card">
           <Camera size={44} />
-          <h4>No Registered Cameras in Registry</h4>
+          <h4>No Registered Cameras Available</h4>
           <p>
-            You haven't registered any CCTV or ANPR cameras yet. Onboard your first camera or import sample cameras via CSV to monitor them simultaneously on this video wall.
+            You haven't registered any CCTV cameras yet. Onboard your first camera or upload via CSV to monitor multiple feeds on this video wall.
           </p>
-          <button
-            type="button"
-            className="primary-button"
-            onClick={onNavigateToOnboarding}
-          >
-            Onboard Cameras Now
-          </button>
+          {onNavigateToOnboarding && (
+            <button
+              type="button"
+              className="primary-button"
+              onClick={onNavigateToOnboarding}
+            >
+              Onboard Cameras Now
+            </button>
+          )}
         </div>
       )}
 
@@ -250,6 +369,8 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
             const isFullscreen = fullscreenTile === slotIdx;
             const isAnpr = (cam?.camera_type || "").toUpperCase() === "ANPR";
             const isLocal = cam?.source_type === "LOCAL_WEBCAM";
+            const isOffline = (cam?.status || "").toUpperCase() === "OFFLINE";
+            const hasError = Boolean(streamErrors[slotIdx]) || isOffline;
 
             if (fullscreenTile !== null && !isFullscreen) return null;
 
@@ -260,54 +381,97 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
                   layout === "1+3" && slotIdx === 0 ? "focus-tile" : ""
                 }`}
               >
-                {/* TILE HEADER / CAMERA SELECTOR */}
+                {/* TILE HEADER */}
                 <div className="tile-top-bar">
                   <div className="tile-cam-info">
                     {cam ? (
                       <>
-                        <span className="live-rec-dot">● REC</span>
-                        <strong className="tile-code">{cam.camera_code}</strong>
+                        <span className={`status-badge-mini ${isOffline ? "offline" : "online"}`}>
+                          <span className="status-dot-mini"></span>
+                          <span>{isOffline ? "OFFLINE" : "LIVE"}</span>
+                        </span>
+                        <strong className="tile-code">{cam.camera_code || "CAM"}</strong>
                         {isAnpr && <span className="anpr-tile-pill">ANPR</span>}
-                        <span className="tile-dept">{cam.dept_name}</span>
+                        <span className="tile-dept" title={cam.dept_name || cam.location}>
+                          {cam.dept_name || cam.location}
+                        </span>
                       </>
                     ) : (
-                      <span className="empty-slot-label">Slot #{slotIdx + 1} — Idle</span>
+                      <span className="empty-slot-label">Slot #{slotIdx + 1} — Standby</span>
                     )}
                   </div>
 
                   <div className="tile-actions">
+                    {/* CAMERA SELECTOR WITH DUPLICATE PREVENTION */}
                     <select
                       className="tile-cam-select"
                       value={cam ? (cam.id || cam.camera_code) : ""}
                       onChange={(e) => handleAssignCamera(slotIdx, e.target.value)}
                     >
                       <option value="">-- Choose Camera --</option>
-                      {cameras.map((c) => (
-                        <option key={c.id || c.camera_code} value={c.id || c.camera_code}>
-                          {c.camera_code} ({c.camera_type || "CCTV"}) - {c.dept_name}
-                        </option>
-                      ))}
+                      {cameras.map((c) => {
+                        const cid = String(c.id || c.camera_code);
+                        const isAssignedElsewhere = activeCameraIds.has(cid) && (!cam || String(cam.id || cam.camera_code) !== cid);
+                        return (
+                          <option key={cid} value={cid}>
+                            {c.camera_code} ({c.camera_type || "CCTV"}) - {c.dept_name || c.location}
+                            {isAssignedElsewhere ? " [In Use]" : ""}
+                          </option>
+                        );
+                      })}
                     </select>
 
                     {cam && (
-                      <button
-                        type="button"
-                        className="tile-tool-btn"
-                        onClick={() => setFullscreenTile(isFullscreen ? null : slotIdx)}
-                        title={isFullscreen ? "Exit Fullscreen" : "Fullscreen this feed"}
-                      >
-                        {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
-                      </button>
+                      <>
+                        {/* OPEN IN ANPR BUTTON */}
+                        <button
+                          type="button"
+                          className="tile-inspect-btn"
+                          onClick={() => handleOpenDetailed(cam)}
+                          title="Open detailed ANPR intelligence view for this camera"
+                        >
+                          <Eye size={12} />
+                          <span>ANPR</span>
+                        </button>
+
+                        {/* FULLSCREEN TOGGLE */}
+                        <button
+                          type="button"
+                          className="tile-tool-btn"
+                          onClick={() => setFullscreenTile(isFullscreen ? null : slotIdx)}
+                          title={isFullscreen ? "Exit Fullscreen" : "Fullscreen Feed"}
+                        >
+                          {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
 
-                {/* TILE VIDEO DISPLAY AREA */}
-                <div className="tile-video-viewport">
+                {/* TILE VIEWPORT */}
+                <div
+                  className="tile-video-viewport"
+                  onClick={() => cam && handleOpenDetailed(cam)}
+                  title={cam ? "Click to open detailed ANPR view" : "Select a camera to start stream"}
+                >
                   {cam ? (
                     <>
-                      {/* Video Stream Element */}
-                      {isLocal ? (
+                      {/* STREAM DISPLAY */}
+                      {hasError ? (
+                        <div className="tile-offline-state" onClick={(e) => e.stopPropagation()}>
+                          <WifiOff size={32} color="#f87171" />
+                          <h5>Feed Unavailable / Offline</h5>
+                          <p>{cam.camera_code} ({cam.dept_name || cam.location})</p>
+                          <button
+                            type="button"
+                            className="tile-retry-btn"
+                            onClick={() => handleRetryStream(slotIdx)}
+                          >
+                            <RefreshCw size={12} />
+                            <span>Retry Connection</span>
+                          </button>
+                        </div>
+                      ) : isLocal ? (
                         <video
                           ref={(el) => (localVideoRefs.current[slotIdx] = el)}
                           className="tile-video-element"
@@ -317,45 +481,40 @@ export default function SurveillanceMatrix({ onNavigateToOnboarding }) {
                         />
                       ) : (
                         <img
-                          src={`/api/cameras/${cam.id || cam.camera_code}/stream?t=${Date.now()}`}
+                          ref={(el) => (streamImgRefs.current[slotIdx] = el)}
+                          src={`/api/cameras/${encodeURIComponent(cam.id || cam.camera_code)}/stream`}
                           alt={cam.camera_code}
                           className="tile-stream-img"
-                          onError={(e) => {
-                            // Fallback simulation background if stream server is offline
-                            e.currentTarget.style.display = "none";
-                            const fallback = e.currentTarget.parentElement.querySelector(".tile-fallback-sim");
-                            if (fallback) fallback.style.display = "flex";
+                          onError={() => {
+                            setStreamErrors((prev) => ({ ...prev, [slotIdx]: true }));
                           }}
                         />
                       )}
-
-                      {/* Stream Fallback Simulation */}
-                      <div className="tile-fallback-sim" style={{ display: isLocal ? "none" : "none" }}>
-                        <div className="sim-scanline"></div>
-                        <div className="sim-crosshair"></div>
-                        <p>CONNECTING RTSP GATEWAY</p>
-                        <span>{cam.rtsp_url || "1080p @ 25 FPS"}</span>
-                      </div>
 
                       {/* TILE OSD OVERLAYS */}
                       <div className="tile-osd-top-left">
                         <span>{currentTime}</span>
                       </div>
                       <div className="tile-osd-top-right">
-                        <span>CH-0{slotIdx + 1} | 1080P @ 25FPS</span>
+                        <span>CH-0{slotIdx + 1} | 1080P</span>
                       </div>
                       <div className="tile-osd-bottom-left">
-                        <span>{cam.ip_address || "NETWORK STREAM"}</span>
+                        <span>{cam.location || cam.dept_name || "Surveillance"}</span>
                       </div>
-                      <div className="tile-osd-bottom-right">
-                        <span>{cam.status || "ONLINE"}</span>
+
+                      {/* HOVER QUICK ACTION */}
+                      <div className="tile-hover-overlay">
+                        <span>
+                          <ExternalLink size={13} />
+                          Open in ANPR Detailed View
+                        </span>
                       </div>
                     </>
                   ) : (
-                    <div className="empty-tile-prompt">
-                      <Camera size={32} />
-                      <p>Slot #{slotIdx + 1} Available</p>
-                      <span>Select a camera from the dropdown above</span>
+                    <div className="empty-tile-prompt" onClick={(e) => e.stopPropagation()}>
+                      <Camera size={30} />
+                      <p>Tile #{slotIdx + 1} Ready</p>
+                      <span>Select camera from dropdown above</span>
                     </div>
                   )}
                 </div>

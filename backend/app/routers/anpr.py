@@ -9,9 +9,12 @@ from pathlib import Path
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 
+import io
+import csv
+import math
 import numpy as np
 from fastapi import APIRouter, HTTPException, UploadFile, File, Body, status
-from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.responses import StreamingResponse, FileResponse, Response
 from pydantic import BaseModel, Field
 
 from app.services.anpr_engine import anpr_engine, CROPS_DIR, format_plate_text
@@ -136,6 +139,348 @@ async def get_events(camera_id: Optional[str] = None, camera_code: Optional[str]
 
         events = [e for e in events if match_cam(e)]
     return events[:limit]
+
+
+def _filter_investigation_events(
+    events: List[Dict[str, Any]],
+    plate: Optional[str] = None,
+    camera_id: Optional[str] = None,
+    camera_code: Optional[str] = None,
+    vehicle_type: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    watchlist_status: Optional[str] = "all",
+    location: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """Helper to apply search and audit filters across detection records."""
+    # 1. Parse Date Bounds
+    from_dt = None
+    if from_date:
+        try:
+            fd_clean = str(from_date).strip().replace("Z", "+00:00")
+            if len(fd_clean) == 10:  # YYYY-MM-DD
+                from_dt = datetime.fromisoformat(fd_clean).replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)
+            else:
+                from_dt = datetime.fromisoformat(fd_clean)
+                if from_dt.tzinfo is None:
+                    from_dt = from_dt.replace(tzinfo=timezone.utc)
+        except Exception:
+            from_dt = None
+
+    to_dt = None
+    if to_date:
+        try:
+            td_clean = str(to_date).strip().replace("Z", "+00:00")
+            if len(td_clean) == 10:  # YYYY-MM-DD
+                to_dt = datetime.fromisoformat(td_clean).replace(hour=23, minute=59, second=59, microsecond=999999, tzinfo=timezone.utc)
+            else:
+                to_dt = datetime.fromisoformat(td_clean)
+                if to_dt.tzinfo is None:
+                    to_dt = to_dt.replace(tzinfo=timezone.utc)
+        except Exception:
+            to_dt = None
+
+    # 2. Normalize Plate Query
+    norm_query = re.sub(r"[^A-Z0-9]", "", str(plate).upper()) if plate else ""
+    raw_query_lower = str(plate).strip().lower() if plate else ""
+
+    # 3. Camera Identifier Matching & Aliases
+    target_cam = str(camera_id or camera_code or "").strip().lower()
+    cam_identifiers = set()
+    if target_cam and target_cam != "all":
+        cam_identifiers.add(target_cam)
+        if target_cam in ["demo_video", "demo_highway", "demo-01"]:
+            cam_identifiers.update(["demo_video", "demo_highway", "demo-01"])
+        elif target_cam in ["local_webcam", "webcam", "webcam-01"]:
+            cam_identifiers.update(["local_webcam", "webcam", "webcam-01"])
+
+        from app.services.anpr_engine import CAMERAS_FILE
+        if CAMERAS_FILE.exists():
+            try:
+                with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                    cams = json.load(f)
+                    for c in cams:
+                        c_id = str(c.get("id", "")).strip().lower()
+                        c_code = str(c.get("camera_code", "")).strip().lower()
+                        if c_id in cam_identifiers or c_code in cam_identifiers:
+                            if c_id:
+                                cam_identifiers.add(c_id)
+                            if c_code:
+                                cam_identifiers.add(c_code)
+            except Exception:
+                pass
+
+    # 4. Vehicle Type Filter
+    vt_filter = vehicle_type.strip().lower() if vehicle_type and vehicle_type.strip().lower() != "all" else None
+
+    # 5. Location Search
+    loc_filter = location.strip().lower() if location and location.strip() else None
+
+    filtered = []
+    for e in events:
+        # Date filtering
+        ts_str = str(e.get("timestamp") or "").strip()
+        if (from_dt or to_dt) and ts_str:
+            try:
+                clean_ts = ts_str.replace("Z", "+00:00")
+                e_dt = datetime.fromisoformat(clean_ts)
+                if e_dt.tzinfo is None:
+                    e_dt = e_dt.replace(tzinfo=timezone.utc)
+                if from_dt and e_dt < from_dt:
+                    continue
+                if to_dt and e_dt > to_dt:
+                    continue
+            except Exception:
+                pass
+
+        # Camera filtering
+        if cam_identifiers:
+            e_cam = str(e.get("camera_id") or "").strip().lower()
+            e_code = str(e.get("camera_code") or "").strip().lower()
+            if e_cam not in cam_identifiers and e_code not in cam_identifiers:
+                continue
+
+        # Plate filtering
+        if norm_query or raw_query_lower:
+            p_val = str(e.get("plate", {}).get("number") or e.get("plate_number") or "").upper()
+            raw_val = str(e.get("plate", {}).get("raw_number") or "").upper()
+            clean_p = re.sub(r"[^A-Z0-9]", "", p_val)
+            clean_raw = re.sub(r"[^A-Z0-9]", "", raw_val)
+
+            match_found = False
+            if norm_query and (norm_query in clean_p or norm_query in clean_raw):
+                match_found = True
+            elif raw_query_lower and (raw_query_lower in p_val.lower() or raw_query_lower in raw_val.lower()):
+                match_found = True
+
+            if not match_found:
+                continue
+
+        # Vehicle Type filtering
+        if vt_filter:
+            e_vt = str(e.get("vehicle", {}).get("type") or e.get("vehicle_type") or "").strip().lower()
+            if vt_filter not in e_vt and e_vt not in vt_filter:
+                continue
+
+        # Watchlist filtering
+        is_wl = bool(e.get("is_watchlist_alert") or str(e.get("status") or "").upper() == "WATCHLIST_ALERT")
+        if watchlist_status == "watchlist_only" and not is_wl:
+            continue
+        if watchlist_status == "non_watchlist" and is_wl:
+            continue
+
+        # Location filtering
+        if loc_filter:
+            dept = str(e.get("dept_name") or "").lower()
+            cam_name = str(e.get("camera_name") or "").lower()
+            loc_data = e.get("location")
+            loc_text = ""
+            if isinstance(loc_data, dict):
+                loc_text = str(loc_data.get("name") or "").lower()
+            elif isinstance(loc_data, str):
+                loc_text = loc_data.lower()
+
+            if loc_filter not in dept and loc_filter not in cam_name and loc_filter not in loc_text:
+                continue
+
+        filtered.append(e)
+
+    return filtered
+
+
+@router.get("/investigation/search")
+async def search_detection_metadata(
+    plate: Optional[str] = None,
+    camera_id: Optional[str] = None,
+    camera_code: Optional[str] = None,
+    vehicle_type: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    watchlist_status: Optional[str] = "all",
+    location: Optional[str] = None,
+    page: int = 1,
+    page_size: int = 25,
+):
+    """
+    Search and filter ANPR detection metadata with server-side pagination.
+    Performs fast in-memory indexing on stored detection events without expensive re-inference.
+    """
+    events = anpr_engine.load_events()
+    filtered = _filter_investigation_events(
+        events=events,
+        plate=plate,
+        camera_id=camera_id,
+        camera_code=camera_code,
+        vehicle_type=vehicle_type,
+        from_date=from_date,
+        to_date=to_date,
+        watchlist_status=watchlist_status,
+        location=location,
+    )
+
+    page = max(1, page)
+    page_size = max(5, min(page_size, 100))
+    total = len(filtered)
+    total_pages = max(1, math.ceil(total / page_size))
+    start = (page - 1) * page_size
+    end = start + page_size
+    sliced = filtered[start:end]
+
+    # Format items for clean presentation
+    items = []
+    for e in sliced:
+        loc_val = e.get("dept_name") or ""
+        loc_obj = e.get("location")
+        lat = e.get("latitude")
+        lon = e.get("longitude")
+        if isinstance(loc_obj, dict):
+            loc_val = loc_obj.get("name") or loc_val
+            lat = lat or loc_obj.get("latitude")
+            lon = lon or loc_obj.get("longitude")
+        elif isinstance(loc_obj, str) and loc_obj:
+            loc_val = loc_obj
+
+        p_num = e.get("plate", {}).get("number") or e.get("plate_number") or ""
+        raw_num = e.get("plate", {}).get("raw_number") or ""
+        v_type = e.get("vehicle", {}).get("type") or e.get("vehicle_type") or "Car"
+        conf = float(e.get("plate", {}).get("confidence") or 0.0)
+        is_wl = bool(e.get("is_watchlist_alert") or str(e.get("status") or "").upper() == "WATCHLIST_ALERT")
+        wl_reason = e.get("watchlist_reason") or ("SUSPECT VEHICLE" if is_wl else None)
+
+        items.append({
+            "event_id": e.get("event_id"),
+            "timestamp": e.get("timestamp"),
+            "camera_id": e.get("camera_id"),
+            "camera_code": e.get("camera_code"),
+            "camera_name": e.get("camera_name"),
+            "dept_name": e.get("dept_name"),
+            "location": loc_val,
+            "latitude": lat,
+            "longitude": lon,
+            "plate_number": p_num,
+            "raw_plate": raw_num,
+            "vehicle_type": v_type,
+            "ocr_confidence": round(conf, 2),
+            "is_watchlist_alert": is_wl,
+            "watchlist_reason": wl_reason,
+            "status": e.get("status", "NORMAL"),
+            "crop_url": e.get("crop_url"),
+            "speed": e.get("speed", 0),
+        })
+
+    # Available cameras summary for filter dropdown
+    available_cams = []
+    sources = anpr_engine.get_sources()
+    for s in sources:
+        available_cams.append({
+            "id": s.get("id"),
+            "code": s.get("camera_code"),
+            "name": s.get("name"),
+            "location": s.get("location"),
+        })
+
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "available_cameras": available_cams,
+        "available_vehicle_types": [
+            "Car",
+            "SUV / Van",
+            "Motorcycle / Scooter",
+            "Auto-rickshaw / 3-wheeler",
+            "Bus",
+            "Truck",
+            "Other"
+        ]
+    }
+
+
+@router.get("/investigation/export-csv")
+async def export_investigation_csv(
+    plate: Optional[str] = None,
+    camera_id: Optional[str] = None,
+    camera_code: Optional[str] = None,
+    vehicle_type: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    watchlist_status: Optional[str] = "all",
+    location: Optional[str] = None,
+):
+    """
+    Exports ONLY the currently filtered detection records to a standard CSV file.
+    Columns: Timestamp, Camera ID, Camera Code, Location, Number Plate, Vehicle Type, OCR Confidence, Watchlist Status
+    """
+    events = anpr_engine.load_events()
+    filtered = _filter_investigation_events(
+        events=events,
+        plate=plate,
+        camera_id=camera_id,
+        camera_code=camera_code,
+        vehicle_type=vehicle_type,
+        from_date=from_date,
+        to_date=to_date,
+        watchlist_status=watchlist_status,
+        location=location,
+    )
+
+    output = io.StringIO()
+    writer = csv.writer(output, quoting=csv.QUOTE_MINIMAL)
+    writer.writerow([
+        "Timestamp",
+        "Camera ID",
+        "Camera Code",
+        "Location",
+        "Number Plate",
+        "Vehicle Type",
+        "OCR Confidence",
+        "Watchlist Status"
+    ])
+
+    for e in filtered:
+        ts = str(e.get("timestamp") or "")
+        cam_id = str(e.get("camera_id") or "")
+        cam_code = str(e.get("camera_code") or "")
+
+        loc_val = e.get("dept_name") or ""
+        loc_obj = e.get("location")
+        if isinstance(loc_obj, dict):
+            loc_val = loc_obj.get("name") or loc_val
+        elif isinstance(loc_obj, str) and loc_obj:
+            loc_val = loc_obj
+
+        p_num = str(e.get("plate", {}).get("number") or e.get("plate_number") or "")
+        v_type = str(e.get("vehicle", {}).get("type") or e.get("vehicle_type") or "Car")
+        conf = float(e.get("plate", {}).get("confidence") or 0.0)
+
+        is_wl = bool(e.get("is_watchlist_alert") or str(e.get("status") or "").upper() == "WATCHLIST_ALERT")
+        wl_str = f"ALERT ({e.get('watchlist_reason', 'Suspect')})" if is_wl else "NORMAL"
+
+        writer.writerow([
+            ts,
+            cam_id,
+            cam_code,
+            loc_val,
+            p_num,
+            v_type,
+            f"{conf:.2f}",
+            wl_str
+        ])
+
+    csv_data = output.getvalue()
+    timestamp_tag = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    filename = f"sentinel_investigation_export_{timestamp_tag}.csv"
+
+    return Response(
+        content=csv_data,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Cache-Control": "no-cache",
+        }
+    )
 
 
 @router.delete("/events")

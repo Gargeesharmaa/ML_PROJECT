@@ -16,13 +16,17 @@ import {
   AlertTriangle,
   Play,
   FileSpreadsheet,
-  Radio
+  Radio,
+  LayoutGrid,
+  Search
 } from "lucide-react";
 
 import GisMap from "./components/GisMap";
 import CsvImport from "./components/CsvImport";
 import CameraFeedModal from "./components/CameraFeedModal";
 import AnprRadar from "./components/AnprRadar";
+import SurveillanceMatrix from "./components/SurveillanceMatrix";
+import DetectionInvestigation from "./components/DetectionInvestigation";
 import "./App.css";
 
 const fallbackDepartments = [
@@ -52,9 +56,10 @@ const emptyCamera = {
 };
 
 function App() {
-  const [activeTab, setActiveTab] = useState("onboarding"); // "onboarding" | "map"
+  const [activeTab, setActiveTab] = useState("onboarding"); // "onboarding" | "bulk_csv" | "map" | "video_wall" | "anpr" | "investigation"
   const [step, setStep] = useState(1);
   const [gisTrackPlate, setGisTrackPlate] = useState(null);
+  const [anprInitialSource, setAnprInitialSource] = useState(null);
 
   // Departments state
   const [departments, setDepartments] = useState(fallbackDepartments);
@@ -481,11 +486,29 @@ function App() {
 
           <button
             type="button"
+            className={`nav-tab-btn ${activeTab === "video_wall" ? "active" : ""}`}
+            onClick={() => setActiveTab("video_wall")}
+          >
+            <LayoutGrid size={16} />
+            <span>Video Wall</span>
+          </button>
+
+          <button
+            type="button"
             className={`nav-tab-btn ${activeTab === "anpr" ? "active" : ""}`}
             onClick={() => setActiveTab("anpr")}
           >
             <Radio size={16} />
             <span>ANPR Intelligence</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "investigation" ? "active" : ""}`}
+            onClick={() => setActiveTab("investigation")}
+          >
+            <Search size={16} />
+            <span>Search &amp; Audit</span>
           </button>
         </nav>
 
@@ -524,10 +547,35 @@ function App() {
         <main className="onboarding-main" style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 20px" }}>
           <CsvImport onNavigateToMap={() => setActiveTab("map")} />
         </main>
+      ) : activeTab === "video_wall" ? (
+        <main className="video-wall-page-main">
+          <SurveillanceMatrix
+            onNavigateToOnboarding={() => setActiveTab("onboarding")}
+            onOpenDetailedView={(camera) => {
+              setAnprInitialSource(camera.id || camera.camera_code);
+              setActiveTab("anpr");
+            }}
+          />
+        </main>
+      ) : activeTab === "investigation" ? (
+        <main className="investigation-page-main">
+          <DetectionInvestigation
+            onTrackOnMap={(plate) => {
+              setGisTrackPlate(plate);
+              setActiveTab("map");
+            }}
+            onOpenAnpr={(camera) => {
+              setAnprInitialSource(camera.id || camera.camera_code);
+              setActiveTab("anpr");
+            }}
+          />
+        </main>
       ) : activeTab === "anpr" ? (
         <main className="anpr-page-main">
           <AnprRadar
             onNavigateToOnboarding={() => setActiveTab("onboarding")}
+            initialSourceId={anprInitialSource}
+            onClearInitialSource={() => setAnprInitialSource(null)}
             onTrackOnMap={(plate) => {
               setGisTrackPlate(plate);
               setActiveTab("map");

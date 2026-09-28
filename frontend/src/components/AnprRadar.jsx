@@ -143,7 +143,7 @@ function renderVehicleBadge(vtype) {
   );
 }
 
-export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap }) {
+export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap, initialSourceId, onClearInitialSource }) {
   // Sources & Stream State
   const [sources, setSources] = useState([]);
   const [selectedSourceId, setSelectedSourceId] = useState("demo_video");
@@ -433,6 +433,21 @@ export default function AnprRadar({ onNavigateToOnboarding, onTrackOnMap }) {
       console.error("Failed to switch source:", err);
     }
   };
+
+  // Auto-switch to camera when selected from Video Wall or Investigation
+  useEffect(() => {
+    if (initialSourceId && sources.length > 0) {
+      const match = sources.find(
+        (s) =>
+          String(s.id).toLowerCase() === String(initialSourceId).toLowerCase() ||
+          String(s.camera_code).toLowerCase() === String(initialSourceId).toLowerCase()
+      );
+      if (match && match.id !== selectedSourceId) {
+        handleSelectSource(match.id);
+        if (onClearInitialSource) onClearInitialSource();
+      }
+    }
+  }, [initialSourceId, sources]);
 
   // 6. Search by Number Plate Text
   const handleSearchText = async (e) => {
