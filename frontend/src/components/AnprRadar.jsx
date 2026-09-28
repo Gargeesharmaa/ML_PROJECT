@@ -21,9 +21,44 @@ import {
   X,
   Eye,
   Trash2,
-  Maximize2
+  Maximize2,
+  Volume2,
+  VolumeX,
+  Plus,
+  AlertOctagon
 } from "lucide-react";
 import "./AnprRadar.css";
+
+// Synthesizes a high-urgency alternating police siren sound via Web Audio API
+function playSirenSound() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sawtooth";
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+
+    const now = ctx.currentTime;
+    osc.frequency.setValueAtTime(650, now);
+    osc.frequency.linearRampToValueAtTime(950, now + 0.25);
+    osc.frequency.linearRampToValueAtTime(650, now + 0.5);
+    osc.frequency.linearRampToValueAtTime(950, now + 0.75);
+    osc.frequency.linearRampToValueAtTime(650, now + 1.0);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.25);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.25);
+  } catch (err) {
+    console.warn("AudioContext alert sound error:", err);
+  }
+}
 
 function AutoRickshawIcon({ size = 15 }) {
   return (
@@ -121,6 +156,20 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
   const [searchNotice, setSearchNotice] = useState(null); // { type: "info"|"warning"|"error", message: string }
   const [uploadedPreview, setUploadedPreview] = useState(null);
 
+  // Watchlist / Suspect Vehicles State
+  const [activeTab, setActiveTab] = useState("SEARCH"); // "SEARCH" | "WATCHLIST"
+  const [watchlist, setWatchlist] = useState([]);
+  const [newPlate, setNewPlate] = useState("");
+  const [newReason, setNewReason] = useState("Stolen");
+  const [newNotes, setNewNotes] = useState("");
+  const [isAddingWatchlist, setIsAddingWatchlist] = useState(false);
+  const [watchlistNotice, setWatchlistNotice] = useState(null);
+
+  // Active Real-Time RED ALERT State
+  const [activeAlert, setActiveAlert] = useState(null); // { alert_id, plate, reason, notes, camera_id, camera_name, dept_name, timestamp, crop_url, vehicle_type }
+  const dismissedAlertIds = useRef(new Set());
+  const [isMuted, setIsMuted] = useState(false);
+
   // Real Detection Logs State
   const [events, setEvents] = useState([]);
   const [logFilter, setLogFilter] = useState("");
@@ -128,6 +177,87 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
   const [previewCrop, setPreviewCrop] = useState(null); // Modal crop view
 
   const fileInputRef = useRef(null);
+
+  // Load Suspect Vehicles Watchlist
+  const loadWatchlist = async () => {
+    try {
+      const res = await fetch("/api/anpr/watchlist");
+      if (res.ok) {
+        const data = await res.json();
+        setWatchlist(data);
+      }
+    } catch (err) {
+      console.error("Failed to load suspect watchlist:", err);
+    }
+  };
+
+  // Add Plate to Watchlist
+  const handleAddWatchlist = async (e) => {
+    e.preventDefault();
+    const clean = newPlate.trim().toUpperCase();
+    if (!clean) return;
+
+    setIsAddingWatchlist(true);
+    setWatchlistNotice(null);
+
+    try {
+      const res = await fetch("/api/anpr/watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plate_number: clean,
+          reason: newReason,
+          notes: newNotes.trim()
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setWatchlistNotice({
+          type: "success",
+          message: data.message || `Plate ${clean} added to suspect watchlist.`
+        });
+        setNewPlate("");
+        setNewNotes("");
+        loadWatchlist();
+      } else {
+        setWatchlistNotice({
+          type: "error",
+          message: data.detail || "Failed to add plate to watchlist."
+        });
+      }
+    } catch (err) {
+      console.error("Add watchlist error:", err);
+      setWatchlistNotice({ type: "error", message: "Error contacting watchlist service." });
+    } finally {
+      setIsAddingWatchlist(false);
+    }
+  };
+
+  // Delete Plate from Watchlist
+  const handleDeleteWatchlist = async (id, plateStr) => {
+    if (!window.confirm(`Remove ${plateStr || "vehicle"} from suspect watchlist?`)) return;
+    try {
+      const res = await fetch(`/api/anpr/watchlist/${encodeURIComponent(id)}`, { method: "DELETE" });
+      if (res.ok) {
+        loadWatchlist();
+      }
+    } catch (err) {
+      console.error("Delete watchlist error:", err);
+    }
+  };
+
+  // Dismiss / Acknowledge Active Red Alert
+  const handleAcknowledgeAlert = async () => {
+    if (activeAlert?.alert_id) {
+      dismissedAlertIds.current.add(activeAlert.alert_id);
+    }
+    setActiveAlert(null);
+    try {
+      await fetch("/api/anpr/alert/acknowledge", { method: "POST" });
+    } catch (err) {
+      console.warn("Acknowledge alert error:", err);
+    }
+  };
 
   // 1. Fetch available sources on mount
   useEffect(() => {
@@ -163,6 +293,9 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
               event: data.catched_event
             });
           }
+          if (data.active_alert && !dismissedAlertIds.current.has(data.active_alert.alert_id)) {
+            setActiveAlert(data.active_alert);
+          }
         }
       } catch (err) {
         console.error("Failed to check ANPR status:", err);
@@ -170,6 +303,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     }
 
     loadSources();
+    loadWatchlist();
     checkStatus();
   }, []);
 
@@ -215,6 +349,14 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                 }));
               }
             }
+
+            // Real-Time Suspect Watchlist Alert
+            if (data.active_alert && !dismissedAlertIds.current.has(data.active_alert.alert_id)) {
+              setActiveAlert(data.active_alert);
+              if (!isMuted) {
+                playSirenSound();
+              }
+            }
           }
           loadEvents(selectedSourceId);
         } catch (err) {
@@ -225,7 +367,7 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, selectedSourceId]);
+  }, [isRunning, selectedSourceId, isMuted]);
 
   // 4. Start / Stop Stream
   const handleToggleStream = async () => {
@@ -454,10 +596,11 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
       return false;
     }
     // 3. Status filter
-    if (statusFilter === "CATCHED" && !ev.is_target_catched && ev.status !== "TARGET_CATCHED") {
+    const isAlert = ev.is_target_catched || ev.status === "TARGET_CATCHED" || ev.is_watchlist_alert || ev.status === "WATCHLIST_ALERT";
+    if (statusFilter === "CATCHED" && !isAlert) {
       return false;
     }
-    if (statusFilter === "NORMAL" && (ev.is_target_catched || ev.status === "TARGET_CATCHED")) {
+    if (statusFilter === "NORMAL" && isAlert) {
       return false;
     }
     return true;
@@ -524,126 +667,352 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
         </div>
       </div>
 
-      {/* 2. DUAL-MODE TARGET SEARCH BAR (TEXT + IMAGE UPLOAD) */}
-      <div className="anpr-search-card">
-        <div className="search-card-header">
-          <div className="search-card-header-left">
-            <Crosshair size={18} className="search-header-icon" />
-            <strong className="search-card-title">
-              TARGET VEHICLE SEARCH & INTERCEPTION
-            </strong>
+      {/* 2. REAL-TIME RED ALERT BANNER: SUSPECT VEHICLE INTERCEPTED */}
+      {activeAlert && (
+        <div className="anpr-red-alert-banner">
+          <div className="red-alert-pulse-ring">
+            <AlertTriangle size={30} className="red-alert-icon" />
           </div>
-          <span className="search-card-subtitle">
-            Enter number plate text OR upload a car photo to lock and track.
-          </span>
-        </div>
-
-        <div className="search-form-row">
-          {/* TEXT SEARCH FORM */}
-          <form onSubmit={handleSearchText} className="plate-search-form">
-            <div className="plate-input-wrap">
-              <Search size={15} className="search-icon" />
-              <input
-                type="text"
-                placeholder="Enter plate number (e.g. 16J921, GJ01AB1234)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="plate-search-input"
-              />
+          <div className="red-alert-content">
+            <div className="red-alert-badge-row">
+              <span className="red-alert-title-tag">🚨 RED ALERT: SUSPECT VEHICLE INTERCEPTED!</span>
+              <span className={`reason-pill reason-${(activeAlert.reason || "suspect").toLowerCase()}`}>
+                {activeAlert.reason?.toUpperCase() || "SUSPECT"}
+              </span>
+              <span className="live-intercept-pulse">LIVE INTERCEPTION</span>
             </div>
-            <button
-              type="submit"
-              disabled={isSearching || !searchQuery.trim()}
-              className="search-track-btn"
-            >
-              <Search size={14} />
-              <span>{isSearching ? "Searching..." : "Search & Track"}</span>
-            </button>
-          </form>
 
-          {/* DIVIDER */}
-          <span className="search-divider">OR</span>
+            <div className="red-alert-main-row">
+              <div className="hsrp-plate-wrap hsrp-plate-alert">
+                <div className="hsrp-blue-band"><span className="hsrp-ind">IND</span></div>
+                <span className="hsrp-number">{activeAlert.plate}</span>
+              </div>
 
-          {/* IMAGE UPLOAD BUTTON */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleImageUpload}
-          />
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isSearching}
-            className="upload-photo-btn"
-          >
-            <Upload size={14} />
-            <span>Upload Vehicle / Plate Photo</span>
-          </button>
+              <div className="red-alert-details">
+                <div>📍 Camera / Grid: <strong>{activeAlert.dept_name || activeAlert.camera_name || "Surveillance Grid"}</strong> <span className="alert-code-tag">[{activeAlert.camera_code || activeAlert.camera_id || "CAM"}]</span></div>
+                <div>🕒 Intercepted at: <strong>{new Date(activeAlert.timestamp || Date.now()).toLocaleTimeString()}</strong></div>
+                <div>🚗 Vehicle Class: <strong>{activeAlert.vehicle_type || "Vehicle"}</strong></div>
+              </div>
 
-          {/* CLEAR TARGET BUTTON IF ACTIVE */}
-          {activeTarget && (
+              {activeAlert.crop_url && (
+                <div
+                  className="red-alert-crop-box"
+                  onClick={() => setPreviewCrop(activeAlert.crop_url)}
+                  title="Click to enlarge detected suspect crop"
+                >
+                  <img src={activeAlert.crop_url} alt="Suspect Plate Crop" />
+                  <span className="crop-tag-alert">LIVE CROP</span>
+                </div>
+              )}
+            </div>
+
+            {activeAlert.notes && (
+              <div className="red-alert-notes">
+                <strong>Suspect Profile / Notes:</strong> {activeAlert.notes}
+              </div>
+            )}
+          </div>
+
+          <div className="red-alert-actions">
             <button
               type="button"
-              onClick={handleClearTarget}
-              className="clear-target-btn"
+              className="red-alert-ack-btn"
+              onClick={handleAcknowledgeAlert}
             >
-              <X size={13} />
-              <span>Clear Target</span>
+              <CheckCircle2 size={16} />
+              <span>Acknowledge &amp; Dismiss Alert</span>
             </button>
-          )}
+          </div>
+        </div>
+      )}
+
+      {/* 3. SECTION NAVIGATION TABS & SIREN CONTROLS */}
+      <div className="anpr-nav-tabs-bar">
+        <div className="anpr-tab-btn-group">
+          <button
+            type="button"
+            className={`anpr-tab-btn ${activeTab === "SEARCH" ? "active" : ""}`}
+            onClick={() => setActiveTab("SEARCH")}
+          >
+            <Crosshair size={15} />
+            <span>Target Search &amp; Interception</span>
+          </button>
+
+          <button
+            type="button"
+            className={`anpr-tab-btn ${activeTab === "WATCHLIST" ? "active" : ""}`}
+            onClick={() => setActiveTab("WATCHLIST")}
+          >
+            <AlertOctagon size={15} />
+            <span>Watchlist / Suspect Vehicles</span>
+            <span className="tab-count-badge">{watchlist.length}</span>
+          </button>
         </div>
 
-        {/* SEARCH NOTIFICATION BANNER */}
-        {searchNotice && (
-          <div
-            style={{
-              marginTop: "12px",
-              padding: "10px 14px",
-              borderRadius: "8px",
-              fontSize: "13px",
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              background:
-                searchNotice.type === "success"
-                  ? "rgba(16, 185, 129, 0.15)"
-                  : searchNotice.type === "warning"
-                  ? "rgba(234, 179, 8, 0.15)"
-                  : searchNotice.type === "error"
-                  ? "rgba(239, 68, 68, 0.15)"
-                  : "rgba(56, 189, 248, 0.15)",
-              border:
-                searchNotice.type === "success"
-                  ? "1px solid rgba(16, 185, 129, 0.4)"
-                  : searchNotice.type === "warning"
-                  ? "1px solid rgba(234, 179, 8, 0.4)"
-                  : searchNotice.type === "error"
-                  ? "1px solid rgba(239, 68, 68, 0.4)"
-                  : "1px solid rgba(56, 189, 248, 0.4)",
-              color:
-                searchNotice.type === "success"
-                  ? "#34d399"
-                  : searchNotice.type === "warning"
-                  ? "#facc15"
-                  : searchNotice.type === "error"
-                  ? "#f87171"
-                  : "#38bdf8"
-            }}
-          >
-            {searchNotice.type === "success" ? (
-              <CheckCircle2 size={16} />
-            ) : searchNotice.type === "warning" ? (
-              <AlertTriangle size={16} />
-            ) : (
-              <Activity size={16} />
-            )}
-            <span>{searchNotice.message}</span>
-          </div>
-        )}
+        {/* SIREN AUDIO MUTE / UNMUTE BUTTON */}
+        <button
+          type="button"
+          className={`siren-mute-btn ${isMuted ? "muted" : "active"}`}
+          onClick={() => setIsMuted(!isMuted)}
+          title={isMuted ? "Click to enable audio siren on suspect detection" : "Audio siren active on suspect detection"}
+        >
+          {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+          <span>{isMuted ? "Siren Muted" : "Siren Alert Armed"}</span>
+        </button>
       </div>
+
+      {/* 4. TAB 1: DUAL-MODE TARGET SEARCH (TEXT + PHOTO) */}
+      {activeTab === "SEARCH" && (
+        <div className="anpr-search-card">
+          <div className="search-card-header">
+            <div className="search-card-header-left">
+              <Crosshair size={18} className="search-header-icon" />
+              <strong className="search-card-title">
+                TARGET VEHICLE SEARCH &amp; INTERCEPTION
+              </strong>
+            </div>
+            <span className="search-card-subtitle">
+              Enter number plate text OR upload a car photo to lock and track.
+            </span>
+          </div>
+
+          <div className="search-form-row">
+            {/* TEXT SEARCH FORM */}
+            <form onSubmit={handleSearchText} className="plate-search-form">
+              <div className="plate-input-wrap">
+                <Search size={15} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Enter plate number (e.g. 16J921, GJ01AB1234)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="plate-search-input"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSearching || !searchQuery.trim()}
+                className="search-track-btn"
+              >
+                <Search size={14} />
+                <span>{isSearching ? "Searching..." : "Search & Track"}</span>
+              </button>
+            </form>
+
+            {/* DIVIDER */}
+            <span className="search-divider">OR</span>
+
+            {/* IMAGE UPLOAD BUTTON */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleImageUpload}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isSearching}
+              className="upload-photo-btn"
+            >
+              <Upload size={14} />
+              <span>Upload Vehicle / Plate Photo</span>
+            </button>
+
+            {/* CLEAR TARGET BUTTON IF ACTIVE */}
+            {activeTarget && (
+              <button
+                type="button"
+                onClick={handleClearTarget}
+                className="clear-target-btn"
+              >
+                <X size={13} />
+                <span>Clear Target</span>
+              </button>
+            )}
+          </div>
+
+          {/* SEARCH NOTIFICATION BANNER */}
+          {searchNotice && (
+            <div
+              style={{
+                marginTop: "12px",
+                padding: "10px 14px",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                background:
+                  searchNotice.type === "success"
+                    ? "rgba(16, 185, 129, 0.15)"
+                    : searchNotice.type === "warning"
+                    ? "rgba(234, 179, 8, 0.15)"
+                    : searchNotice.type === "error"
+                    ? "rgba(239, 68, 68, 0.15)"
+                    : "rgba(56, 189, 248, 0.15)",
+                border:
+                  searchNotice.type === "success"
+                    ? "1px solid rgba(16, 185, 129, 0.4)"
+                    : searchNotice.type === "warning"
+                    ? "1px solid rgba(234, 179, 8, 0.4)"
+                    : searchNotice.type === "error"
+                    ? "1px solid rgba(239, 68, 68, 0.4)"
+                    : "1px solid rgba(56, 189, 248, 0.4)",
+                color:
+                  searchNotice.type === "success"
+                    ? "#34d399"
+                    : searchNotice.type === "warning"
+                    ? "#facc15"
+                    : searchNotice.type === "error"
+                    ? "#f87171"
+                    : "#38bdf8"
+              }}
+            >
+              {searchNotice.type === "success" ? (
+                <CheckCircle2 size={16} />
+              ) : searchNotice.type === "warning" ? (
+                <AlertTriangle size={16} />
+              ) : (
+                <Activity size={16} />
+              )}
+              <span>{searchNotice.message}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 5. TAB 2: SUSPECT VEHICLE WATCHLIST MANAGEMENT */}
+      {activeTab === "WATCHLIST" && (
+        <div className="anpr-watchlist-card">
+          <div className="search-card-header">
+            <div className="search-card-header-left">
+              <AlertOctagon size={18} className="search-header-icon" style={{ color: "#ef4444" }} />
+              <strong className="search-card-title">
+                SUSPECT VEHICLE WATCHLIST &amp; HOTLIST
+              </strong>
+            </div>
+            <span className="search-card-subtitle">
+              Register stolen, wanted, or suspect vehicle plates for automated real-time alerts.
+            </span>
+          </div>
+
+          {/* ADD SUSPECT VEHICLE FORM */}
+          <form onSubmit={handleAddWatchlist} className="watchlist-add-form">
+            <div className="watchlist-form-inputs">
+              <div className="plate-input-wrap watchlist-input-plate">
+                <input
+                  type="text"
+                  placeholder="Plate number (e.g. GJ01AB1234, GJ22H4546)..."
+                  value={newPlate}
+                  onChange={(e) => setNewPlate(e.target.value)}
+                  className="plate-search-input"
+                  required
+                />
+              </div>
+
+              <div className="watchlist-select-wrap">
+                <select
+                  value={newReason}
+                  onChange={(e) => setNewReason(e.target.value)}
+                  className="watchlist-reason-select"
+                >
+                  <option value="Stolen">🚨 Stolen</option>
+                  <option value="Wanted">⚠️ Wanted</option>
+                  <option value="Suspect">👁️ Suspect</option>
+                  <option value="Other">📋 Other</option>
+                </select>
+              </div>
+
+              <div className="plate-input-wrap watchlist-input-notes">
+                <input
+                  type="text"
+                  placeholder="Optional Notes / Reason (e.g. White Scorpio stolen from Navrangpura)..."
+                  value={newNotes}
+                  onChange={(e) => setNewNotes(e.target.value)}
+                  className="plate-search-input"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isAddingWatchlist || !newPlate.trim()}
+                className="watchlist-add-btn"
+              >
+                <Plus size={15} />
+                <span>{isAddingWatchlist ? "Adding..." : "Add to Watchlist"}</span>
+              </button>
+            </div>
+          </form>
+
+          {/* WATCHLIST NOTICE */}
+          {watchlistNotice && (
+            <div className={`watchlist-notice-banner notice-${watchlistNotice.type}`}>
+              {watchlistNotice.type === "success" ? <CheckCircle2 size={15} /> : <AlertTriangle size={15} />}
+              <span>{watchlistNotice.message}</span>
+            </div>
+          )}
+
+          {/* WATCHLIST TABLE */}
+          <div className="watchlist-table-scroll">
+            <table className="watchlist-table">
+              <thead>
+                <tr>
+                  <th>Suspect Plate</th>
+                  <th>Reason</th>
+                  <th>Notes / Investigation Details</th>
+                  <th>Date Added</th>
+                  <th style={{ textAlign: "right" }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {watchlist.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <div className="hsrp-plate-wrap hsrp-plate-sm">
+                        <div className="hsrp-blue-band"><span className="hsrp-ind">IND</span></div>
+                        <span className="hsrp-number">{item.formatted_plate || item.plate_number}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`reason-pill reason-${(item.reason || "suspect").toLowerCase()}`}>
+                        {item.reason}
+                      </span>
+                    </td>
+                    <td className="watchlist-notes-cell">
+                      {item.notes || item.description || <span className="no-notes">—</span>}
+                    </td>
+                    <td className="watchlist-date-cell">
+                      {item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <button
+                        type="button"
+                        className="watchlist-del-btn"
+                        onClick={() => handleDeleteWatchlist(item.id, item.formatted_plate || item.plate_number)}
+                        title="Remove from suspect watchlist"
+                      >
+                        <Trash2 size={13} />
+                        <span>Remove</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
+                {watchlist.length === 0 && (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "24px", color: "#94a3b8" }}>
+                      No suspect vehicles in watchlist. Add a license plate above to activate automated alerting.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* 3. TARGET STATUS BANNER: "CATCHED" vs "NOT SEEN YET" */}
       {activeTarget && (
@@ -863,10 +1232,18 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
               <tbody>
                 {filteredEvents.map((log) => {
                   const isCatched = log.is_target_catched || log.status === "TARGET_CATCHED";
+                  const isWatchlistAlert = log.is_watchlist_alert || log.status === "WATCHLIST_ALERT";
+                  const isAlert = isCatched || isWatchlistAlert;
                   return (
                     <tr
                       key={log.event_id}
-                      className={isCatched ? "row-alert row-target-intercepted" : ""}
+                      className={
+                        isWatchlistAlert
+                          ? "row-alert row-watchlist-hit"
+                          : isCatched
+                          ? "row-alert row-target-intercepted"
+                          : ""
+                      }
                     >
                       <td className="time-cell">
                         {new Date(log.timestamp).toLocaleTimeString()}
@@ -935,10 +1312,18 @@ export default function AnprRadar({ onNavigateToOnboarding }) {
                       <td>
                         <span
                           className={`status-pill ${
-                            isCatched ? "status-target" : "status-normal"
+                            isWatchlistAlert
+                              ? "status-watchlist-alert"
+                              : isCatched
+                              ? "status-target"
+                              : "status-normal"
                           }`}
                         >
-                          {isCatched ? "🎯 CATCHED" : "PASSED"}
+                          {isWatchlistAlert
+                            ? `🚨 ${log.watchlist_match?.reason?.toUpperCase() || "SUSPECT"}`
+                            : isCatched
+                            ? "🎯 CATCHED"
+                            : "PASSED"}
                         </span>
                       </td>
                     </tr>

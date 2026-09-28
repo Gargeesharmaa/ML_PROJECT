@@ -340,6 +340,10 @@ class ANPREngine:
 
         self.target_plate = None
         self.catched_event = None
+        self.active_alert = None  # { alert_id, plate, raw_plate, reason, notes, camera_id, ... }
+        self.recent_watchlist_alerts = {}  # { plate_str: last_alert_timestamp }
+        self._cached_watchlist = None
+        self._watchlist_mtime = 0.0
 
         self.latest_frame_bytes = None
         self.fps = 0.0
@@ -520,7 +524,9 @@ class ANPREngine:
             "target_plate": self.target_plate,
             "last_detected_plate": self.last_detected_plate,
             "is_target_catched": bool(self.catched_event is not None),
-            "catched_event": self.catched_event
+            "catched_event": self.catched_event,
+            "active_alert": self.active_alert,
+            "watchlist_count": len(self.load_watchlist())
         }
 
     def set_target_plate(self, plate_number: str) -> Dict[str, Any]:
@@ -618,6 +624,172 @@ class ANPREngine:
         self.target_plate = None
         self.catched_event = None
         return {"status": "CLEARED", "message": "Search target cleared."}
+
+    def load_watchlist(self) -> List[Dict[str, Any]]:
+        """Load registered suspect vehicles watchlist with file-mtime caching."""
+        if WATCHLIST_FILE.exists():
+            try:
+                mtime = WATCHLIST_FILE.stat().st_mtime
+                if self._cached_watchlist is not None and mtime == self._watchlist_mtime:
+                    return self._cached_watchlist
+
+                with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
+                    raw_list = json.load(f)
+                    cleaned = []
+                    for idx, item in enumerate(raw_list):
+                        p_raw = item.get("plate_number") or item.get("plate", "")
+                        clean_p = clean_indian_plate(p_raw)
+                        if not clean_p:
+                            continue
+
+                        item_id = str(item.get("id") or f"WL_{clean_p}_{idx}")
+                        reason = str(item.get("reason", "Suspect")).strip()
+
+                        # Map legacy reason formats
+                        if "STOLEN" in reason.upper():
+                            reason = "Stolen"
+                        elif "WANTED" in reason.upper():
+                            reason = "Wanted"
+                        elif "DEFALUTER" in reason.upper() or "CHALLAN" in reason.upper():
+                            reason = "Suspect"
+                        elif "MISSING" in reason.upper():
+                            reason = "Wanted"
+                        elif reason not in ["Stolen", "Wanted", "Suspect", "Other"]:
+                            reason = "Suspect"
+
+                        notes = item.get("notes") or item.get("description", "")
+                        created_at = item.get("created_at") or item.get("date_added") or datetime.now(timezone.utc).isoformat()
+
+                        cleaned.append({
+                            "id": item_id,
+                            "plate_number": clean_p,
+                            "formatted_plate": format_plate_text(clean_p),
+                            "reason": reason,
+                            "notes": notes,
+                            "fir_number": item.get("fir_number", ""),
+                            "district": item.get("district", ""),
+                            "severity": item.get("severity", "CRITICAL" if reason in ["Stolen", "Wanted"] else "WARNING"),
+                            "created_at": created_at
+                        })
+                    self._cached_watchlist = cleaned
+                    self._watchlist_mtime = mtime
+                    return cleaned
+            except Exception as e:
+                logger.error(f"Error loading watchlist: {e}")
+        return []
+
+    def save_watchlist(self, watchlist: List[Dict[str, Any]]) -> bool:
+        """Persist watchlist entries to disk."""
+        try:
+            with open(WATCHLIST_FILE, "w", encoding="utf-8") as f:
+                json.dump(watchlist, f, indent=2)
+            self._cached_watchlist = watchlist
+            if WATCHLIST_FILE.exists():
+                self._watchlist_mtime = WATCHLIST_FILE.stat().st_mtime
+            return True
+        except Exception as e:
+            logger.error(f"Error saving watchlist: {e}")
+            return False
+
+    def add_watchlist_entry(self, plate_number: str, reason: str, notes: str = "") -> Dict[str, Any]:
+        """Adds a suspect vehicle number plate to the watchlist in normalized format."""
+        clean_p = clean_indian_plate(plate_number)
+        if not clean_p or len(clean_p) < 4:
+            raise ValueError("Invalid number plate format. Must contain at least 4 alphanumeric characters.")
+
+        valid_reasons = ["Stolen", "Wanted", "Suspect", "Other"]
+        matched_reason = "Suspect"
+        for r in valid_reasons:
+            if r.lower() == reason.lower():
+                matched_reason = r
+                break
+
+        watchlist = self.load_watchlist()
+        # If plate already exists, update entry
+        existing = next((item for item in watchlist if item["plate_number"] == clean_p), None)
+        now_iso = datetime.now(timezone.utc).isoformat()
+
+        if existing:
+            existing["reason"] = matched_reason
+            existing["notes"] = notes or existing.get("notes", "")
+            existing["formatted_plate"] = format_plate_text(clean_p)
+            entry = existing
+        else:
+            entry = {
+                "id": f"WL_{clean_p}_{int(time.time())}",
+                "plate_number": clean_p,
+                "formatted_plate": format_plate_text(clean_p),
+                "reason": matched_reason,
+                "notes": notes or "",
+                "severity": "CRITICAL" if matched_reason in ["Stolen", "Wanted"] else "WARNING",
+                "created_at": now_iso
+            }
+            watchlist.insert(0, entry)
+
+        self.save_watchlist(watchlist)
+
+        # Check if already intercepted in recent logged events and trigger immediate alert
+        events = self.load_events()
+        for evt in events[:60]:
+            evt_plate = evt.get("plate", {}).get("raw_number") or evt.get("plate", {}).get("number", "")
+            clean_evt = clean_indian_plate(evt_plate)
+            if clean_evt == clean_p or are_plates_similar(clean_evt, clean_p):
+                now_ts = time.time()
+                self.active_alert = {
+                    "alert_id": f"ALT_{int(now_ts * 1000)}",
+                    "plate": format_plate_text(clean_p),
+                    "raw_plate": clean_p,
+                    "reason": matched_reason,
+                    "notes": notes or entry.get("notes", ""),
+                    "camera_id": evt.get("camera_id", self.camera_id),
+                    "camera_code": evt.get("camera_code", self.camera_code),
+                    "camera_name": evt.get("camera_name", self.source_name),
+                    "dept_name": evt.get("dept_name", self.dept_name),
+                    "timestamp": evt.get("timestamp", now_iso),
+                    "crop_url": evt.get("crop_url", ""),
+                    "vehicle_type": evt.get("vehicle", {}).get("type", "Car"),
+                    "event_id": evt.get("event_id", "")
+                }
+                break
+
+        return entry
+
+    def delete_watchlist_entry(self, item_id: str) -> bool:
+        """Removes a suspect plate entry from the watchlist."""
+        watchlist = self.load_watchlist()
+        orig_len = len(watchlist)
+        clean_id = clean_indian_plate(item_id)
+        watchlist = [
+            item for item in watchlist
+            if item["id"] != item_id and item["plate_number"] != clean_id
+        ]
+        if len(watchlist) < orig_len:
+            self.save_watchlist(watchlist)
+            return True
+        return False
+
+    def check_watchlist_match(self, detected_plate: str) -> Optional[Dict[str, Any]]:
+        """
+        Compares detected plate with all watchlist entries using normalized comparison
+        and fuzzy OCR similarity.
+        """
+        clean_det = clean_indian_plate(detected_plate)
+        if not clean_det or len(clean_det) < 4:
+            return None
+
+        watchlist = self.load_watchlist()
+        for item in watchlist:
+            clean_target = item["plate_number"]
+            if clean_det == clean_target:
+                return item
+            if are_plates_similar(clean_det, clean_target):
+                return item
+        return None
+
+    def acknowledge_alert(self, alert_id: Optional[str] = None) -> Dict[str, Any]:
+        """Dismiss / acknowledge active suspect vehicle alert."""
+        self.active_alert = None
+        return {"status": "ACKNOWLEDGED", "message": "Alert acknowledged and dismissed."}
 
     def _run_crop_ocr(self, crop: np.ndarray) -> (str, float):
         """
@@ -949,9 +1121,15 @@ class ANPREngine:
                                         v_context = frame[v_crop_y1:v_crop_y2, v_crop_x1:v_crop_x2]
                                         matched_vtype = classify_vehicle(v_context, "car", 0.70)
 
-                                    is_match = False
+                                    # Check watchlist and target matching
+                                    wl_match = self.check_watchlist_match(clean_text)
+                                    is_wl_match = bool(wl_match is not None)
+
+                                    is_target_match = False
                                     if self.target_plate and are_plates_similar(clean_text, self.target_plate):
-                                        is_match = True
+                                        is_target_match = True
+
+                                    is_match = is_target_match or is_wl_match
 
                                     current_p_boxes.append({
                                         "bbox": [bx1, by1, bx2, by2],
@@ -959,6 +1137,9 @@ class ANPREngine:
                                         "raw_plate": clean_text,
                                         "conf": conf,
                                         "is_match": is_match,
+                                        "is_wl_match": is_wl_match,
+                                        "is_target_match": is_target_match,
+                                        "wl_match": wl_match,
                                         "vtype": matched_vtype
                                     })
 
@@ -997,16 +1178,40 @@ class ANPREngine:
                                                 "bounding_box": [px1, py1, px2 - px1, py2 - py1]
                                             },
                                             "crop_url": crop_url,
-                                            "is_target_catched": is_match,
-                                            "status": "TARGET_CATCHED" if is_match else "NORMAL",
+                                            "is_target_catched": is_target_match,
+                                            "is_watchlist_alert": is_wl_match,
+                                            "watchlist_match": wl_match,
+                                            "status": "WATCHLIST_ALERT" if is_wl_match else ("TARGET_CATCHED" if is_target_match else "NORMAL"),
                                             "speed": 48
                                         }
 
                                         self.save_event(event_record)
 
-                                        if is_match:
+                                        if is_target_match:
                                             self.catched_event = event_record
                                             logger.info(f"🚨 TARGET CATCHED ON CAMERA: {formatted} ({matched_vtype})")
+
+                                        # Suspect Vehicle Watchlist Alert with 12s debouncing
+                                        if is_wl_match:
+                                            last_alert_time = self.recent_watchlist_alerts.get(clean_text, 0)
+                                            if (now_ts - last_alert_time) > 12.0:
+                                                self.recent_watchlist_alerts[clean_text] = now_ts
+                                                self.active_alert = {
+                                                    "alert_id": f"ALT_{int(now_ts * 1000)}",
+                                                    "plate": formatted,
+                                                    "raw_plate": clean_text,
+                                                    "reason": wl_match.get("reason", "Suspect"),
+                                                    "notes": wl_match.get("notes") or wl_match.get("description", ""),
+                                                    "camera_id": self.camera_id,
+                                                    "camera_code": self.camera_code,
+                                                    "camera_name": self.source_name,
+                                                    "dept_name": self.dept_name,
+                                                    "timestamp": event_record["timestamp"],
+                                                    "crop_url": crop_url,
+                                                    "vehicle_type": matched_vtype,
+                                                    "event_id": evt_id
+                                                }
+                                                logger.warning(f"🚨🚨 SUSPECT VEHICLE WATCHLIST ALERT: {formatted} [{wl_match.get('reason')}] at {self.source_name}")
 
                 # Also track passing Auto-Rickshaws or Motorcycles even if plate was obscured
                 for v in current_v_boxes:
@@ -1121,7 +1326,9 @@ class ANPREngine:
         # 2. DRAW PLATE BOUNDING BOXES
         for item in plates:
             bx1, by1, bx2, by2 = item["bbox"]
-            is_match = item["is_match"]
+            is_wl = item.get("is_wl_match", False)
+            is_tgt = item.get("is_target_match", False)
+            is_match = is_wl or is_tgt
             plate_str = item["plate"]
             v_type = item.get("vtype", "Vehicle")
 
@@ -1130,7 +1337,8 @@ class ANPREngine:
 
             cv2.rectangle(vis, (bx1, by1), (bx2, by2), box_color, thickness)
 
-            label_text = f"{'TARGET HIT: ' if is_match else ''}{plate_str} ({v_type})"
+            prefix = "SUSPECT HIT: " if is_wl else ("TARGET HIT: " if is_tgt else "")
+            label_text = f"{prefix}{plate_str} ({v_type})"
             (tw, th), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.55, 2)
             cv2.rectangle(vis, (bx1, max(0, by1 - th - 10)), (bx1 + tw + 10, by1), box_color, -1)
             cv2.putText(
@@ -1152,7 +1360,10 @@ class ANPREngine:
 
         status_text = "STATUS: SCANNING ACTIVE"
         status_color = (0, 230, 115)
-        if self.catched_event:
+        if self.active_alert:
+            status_text = f"ALERT: {self.active_alert.get('reason', 'SUSPECT').upper()} DETECTED!"
+            status_color = (0, 0, 255)
+        elif self.catched_event:
             status_text = "STATUS: TARGET CATCHED!"
             status_color = (0, 0, 255)
 

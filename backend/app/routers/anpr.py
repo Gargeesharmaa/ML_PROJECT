@@ -31,6 +31,12 @@ class SearchPlateRequest(BaseModel):
     plate_number: str
 
 
+class WatchlistEntryRequest(BaseModel):
+    plate_number: str
+    reason: str = Field("Suspect", description="Stolen | Wanted | Suspect | Other")
+    notes: Optional[str] = ""
+
+
 class FrameDetectionRequest(BaseModel):
     image_base64: str
     camera_id: Optional[str] = "CAM-LOCAL-WEBCAM"
@@ -180,15 +186,33 @@ async def get_plate_crop(filename: str):
 
 @router.get("/watchlist")
 async def get_watchlist():
-    """Returns registered hotlist/stolen vehicles watchlist."""
-    from app.services.anpr_engine import WATCHLIST_FILE
-    if WATCHLIST_FILE.exists():
-        try:
-            with open(WATCHLIST_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return []
+    """Returns registered hotlist/suspect vehicles watchlist."""
+    return anpr_engine.load_watchlist()
+
+
+@router.post("/watchlist")
+async def add_watchlist_entry(req: WatchlistEntryRequest):
+    """Add a suspect vehicle plate to the watchlist."""
+    try:
+        entry = anpr_engine.add_watchlist_entry(req.plate_number, req.reason, req.notes or "")
+        return {"status": "SUCCESS", "entry": entry, "message": f"Plate {entry['formatted_plate']} added to watchlist."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete("/watchlist/{entry_id}")
+async def delete_watchlist_entry(entry_id: str):
+    """Remove a vehicle plate from the watchlist."""
+    success = anpr_engine.delete_watchlist_entry(entry_id)
+    if success:
+        return {"status": "SUCCESS", "message": "Vehicle removed from suspect watchlist."}
+    raise HTTPException(status_code=404, detail="Vehicle entry not found in watchlist.")
+
+
+@router.post("/alert/acknowledge")
+async def acknowledge_alert():
+    """Acknowledge / dismiss active suspect vehicle alert."""
+    return anpr_engine.acknowledge_alert()
 
 
 @router.post("/detect-frame")

@@ -1129,3 +1129,461 @@
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
   font-weight: 800;
 }
+
+.status-pill.status-watchlist-alert {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border: 1px solid #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  font-weight: 800;
+  animation: liveBlink 1.8s infinite;
+}
+
+.row-watchlist-hit {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-left: 3px solid #ef4444 !important;
+}
+
+/* ============================================================
+   REAL-TIME RED ALERT BANNER & SUSPECT WATCHLIST
+   ============================================================ */
+
+/* Red Alert Banner */
+.anpr-red-alert-banner {
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.95) 0%, rgba(153, 27, 27, 0.92) 50%, rgba(185, 28, 28, 0.88) 100%);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.5), inset 0 0 15px rgba(239, 68, 68, 0.2);
+  border-radius: 14px;
+  padding: 18px 24px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  animation: redBannerFlash 2.5s infinite;
+}
+
+@keyframes redBannerFlash {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+    border-color: #ef4444;
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(239, 68, 68, 0.75);
+    border-color: #f87171;
+  }
+}
+
+.red-alert-pulse-ring {
+  width: 52px;
+  height: 52px;
+  background: rgba(239, 68, 68, 0.35);
+  border: 2px solid #fca5a5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: liveBlink 1.2s infinite;
+}
+
+.red-alert-icon {
+  color: #ffffff;
+}
+
+.red-alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.red-alert-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.red-alert-title-tag {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fee2e2;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.live-intercept-pulse {
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 12px;
+  letter-spacing: 0.6px;
+  animation: liveBlink 1s infinite;
+}
+
+.red-alert-main-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hsrp-plate-alert {
+  transform: scale(1.1);
+  transform-origin: left center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.red-alert-details {
+  font-size: 13px;
+  color: #fecaca;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.red-alert-details strong {
+  color: #ffffff;
+}
+
+.alert-code-tag {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.red-alert-crop-box {
+  position: relative;
+  height: 48px;
+  border: 1.5px solid #ef4444;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #0f172a;
+}
+
+.red-alert-crop-box img {
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crop-tag-alert {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(239, 68, 68, 0.9);
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 3px;
+}
+
+.red-alert-notes {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #fee2e2;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 5px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #ef4444;
+}
+
+.red-alert-actions {
+  flex-shrink: 0;
+}
+
+.red-alert-ack-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  color: #991b1b;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.red-alert-ack-btn:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+/* Section Navigation Tabs Bar */
+.anpr-nav-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.anpr-tab-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #111827;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid #1f2937;
+}
+
+.anpr-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.anpr-tab-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.anpr-tab-btn.active {
+  color: #ffffff;
+  background: #1e293b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tab-count-badge {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.siren-mute-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.siren-mute-btn.active {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.siren-mute-btn.active:hover {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.siren-mute-btn.muted {
+  color: #94a3b8;
+}
+
+/* Watchlist Card */
+.anpr-watchlist-card {
+  background: #111c38;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+}
+
+.watchlist-add-form {
+  margin: 14px 0 16px;
+}
+
+.watchlist-form-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.watchlist-input-plate {
+  flex: 1 1 200px;
+}
+
+.watchlist-input-notes {
+  flex: 2 1 280px;
+}
+
+.watchlist-select-wrap {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0 10px;
+}
+
+.watchlist-reason-select {
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.watchlist-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.watchlist-add-btn:hover:not(:disabled) {
+  background: #dc2626;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.watchlist-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.watchlist-notice-banner {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.watchlist-notice-banner.notice-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.watchlist-notice-banner.notice-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+
+.watchlist-table-scroll {
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  background: #090e1f;
+}
+
+.watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.watchlist-table th {
+  background: #0d152d;
+  color: #94a3b8;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #1e293b;
+}
+
+.watchlist-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+  color: #cbd5e1;
+}
+
+.watchlist-table tr:hover {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.reason-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.reason-pill.reason-stolen {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.reason-pill.reason-wanted {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.reason-pill.reason-suspect {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.reason-pill.reason-other {
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.watchlist-del-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.watchlist-del-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.hsrp-plate-sm {
+  font-size: 11px;
+  padding: 0;
+}
