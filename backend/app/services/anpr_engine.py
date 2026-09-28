@@ -182,9 +182,6 @@ class ANPREngine:
         self.ocr_reader = None
 
         self.is_running = False
-        self.connection_status = "IDLE"  # "IDLE" | "CONNECTING" | "CONNECTED" | "ERROR"
-        self.error_message = None
-        self.session_id = 0
         self.source_type = "DEMO_VIDEO"  # "DEMO_VIDEO" | "LOCAL_WEBCAM" | "CAMERA"
         self.source_id = "demo_highway"
         self.source_name = "Highway Traffic Video (test_video.mp4)"
@@ -199,7 +196,6 @@ class ANPREngine:
         self.recent_plates = {}  # {plate_str: last_seen_timestamp}
         self.recent_vehicles = {}  # {v_signature: last_seen_timestamp}
 
-        self._active_cap = None
         self._thread = None
         self._stop_event = threading.Event()
         self._frame_lock = threading.Lock()
@@ -299,67 +295,43 @@ class ANPREngine:
         self.stop()
         self._load_models()
 
-        self.session_id += 1
-        current_session = self.session_id
-
         self.source_type = source_type
         self.source_id = source_id or "demo_video"
         self.source_name = source_name or ("Demo Highway Video" if source_type == "DEMO_VIDEO" else "Live Camera")
         self.rtsp_url = rtsp_url or ""
 
-        # Fallback: if source is CAMERA but rtsp_url wasn't passed, lookup from registered cameras.json
-        if self.source_type == "CAMERA" and not self.rtsp_url and CAMERAS_FILE.exists():
+        # Auto-resolve rtsp_url and details if missing for registered CAMERA
+        if not self.rtsp_url and self.source_type == "CAMERA" and CAMERAS_FILE.exists():
             try:
                 with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
                     cams = json.load(f)
-                    for cam in cams:
-                        if str(cam.get("id")) == str(self.source_id):
-                            self.rtsp_url = cam.get("rtsp_url", "")
-                            if cam.get("source_type") == "LOCAL_WEBCAM":
-                                self.source_type = "LOCAL_WEBCAM"
+                    for c in cams:
+                        if str(c.get("id")) == str(self.source_id):
+                            self.rtsp_url = c.get("rtsp_url", "")
+                            c_code = c.get("camera_code", "CAM")
+                            c_dept = c.get("dept_name", "Gujarat CCTV")
+                            self.source_name = f"📷 {c_code} - {c_dept}"
                             break
             except Exception as e:
-                logger.warning(f"Error looking up camera rtsp_url: {e}")
+                logger.warning(f"Error looking up camera {self.source_id}: {e}")
 
-        self.connection_status = "CONNECTING"
-        self.error_message = None
         self.recent_plates = {}
         self.recent_vehicles = {}
-
-        with self._frame_lock:
-            self.latest_frame_bytes = None
-        self.fps = 0.0
-
         self._stop_event.clear()
         self.is_running = True
-        self._thread = threading.Thread(target=self._worker_loop, args=(current_session,), daemon=True)
+        self._thread = threading.Thread(target=self._worker_loop, daemon=True)
         self._thread.start()
 
-        logger.info(f"ANPR Engine starting session #{current_session} on source: {self.source_name} ({self.source_type})")
+        logger.info(f"ANPR Engine started on source: {self.source_name} ({self.source_type}) -> RTSP: {self.rtsp_url}")
         return self.get_status()
 
     def stop(self) -> Dict[str, Any]:
-        """Stops the active ANPR engine and cleans up stream handles."""
+        """Stops the active ANPR engine."""
         self.is_running = False
-        self.connection_status = "IDLE"
-        self.error_message = None
         self._stop_event.set()
-
-        if self._active_cap is not None:
-            try:
-                self._active_cap.release()
-            except Exception:
-                pass
-            self._active_cap = None
-
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=2.0)
         self._thread = None
-
-        with self._frame_lock:
-            self.latest_frame_bytes = None
-        self.fps = 0.0
-
         logger.info("ANPR Engine stopped.")
         return self.get_status()
 
@@ -367,9 +339,6 @@ class ANPREngine:
         """Returns the current engine status."""
         return {
             "is_running": self.is_running,
-            "connection_status": self.connection_status,
-            "error_message": self.error_message,
-            "session_id": self.session_id,
             "source_type": self.source_type,
             "source_id": self.source_id,
             "source_name": self.source_name,
@@ -509,6 +478,18 @@ class ANPREngine:
 
         return best_text, best_conf
 
+    def _make_status_frame(self, title: str, subtitle: str, color=(0, 200, 255)) -> bytes:
+        """Generates an informative status screen frame for the MJPEG stream."""
+        frame = np.full((360, 640, 3), (20, 15, 11), dtype=np.uint8)
+        cv2.rectangle(frame, (10, 10), (630, 350), (40, 30, 25), 1)
+        clean_title = re.sub(r"[^\x00-\x7F]+", "", title).strip() or title
+        clean_sub = re.sub(r"[^\x00-\x7F]+", "", subtitle).strip() or subtitle
+        cv2.putText(frame, "GUJARAT SENTINEL ANPR GRID", (40, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (56, 189, 248), 1)
+        cv2.putText(frame, clean_title, (40, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.65, color, 2)
+        cv2.putText(frame, clean_sub, (40, 200), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (160, 175, 190), 1)
+        ret, jpeg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        return jpeg.tobytes() if ret else b""
+
     def _open_capture(self) -> Optional[cv2.VideoCapture]:
         """Opens video capture based on source_type."""
         if self.source_type == "DEMO_VIDEO":
@@ -524,119 +505,98 @@ class ANPREngine:
             return cap
 
         elif self.source_type == "CAMERA":
-            rtsp = (self.rtsp_url or "").strip()
+            rtsp = self.rtsp_url
+            if not rtsp and CAMERAS_FILE.exists():
+                try:
+                    with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                        cams = json.load(f)
+                        for c in cams:
+                            if str(c.get("id")) == str(self.source_id):
+                                rtsp = c.get("rtsp_url", "")
+                                self.rtsp_url = rtsp
+                                break
+                except Exception:
+                    pass
+
             if not rtsp:
                 logger.error("No RTSP URL provided for camera source.")
                 return None
-            if rtsp == "0" or "webrtc://" in rtsp.lower() or "webcam" in rtsp.lower():
+
+            if rtsp.startswith("webrtc:") or rtsp == "0" or rtsp == "127.0.0.1":
                 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_ANY)
                 if not cap.isOpened():
                     cap = cv2.VideoCapture(0)
                 return cap
 
-            # 5 second timeout on RTSP transport
-            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|stimeout;5000000"
-            cap = cv2.VideoCapture(rtsp, cv2.CAP_FFMPEG)
-            if cap.isOpened():
-                return cap
+            os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+            return cv2.VideoCapture(rtsp, cv2.CAP_FFMPEG)
 
-            # If failed, attempt alternative credentials for Gujarat Sentinel MediaMTX grid
-            alt_rtsp = None
-            if "shreyanshsharma049" in rtsp:
-                alt_rtsp = rtsp.replace("shreyanshsharma049@gmail.com:ETD6-KZJG-VGF4", "yashrathore2574@gmail.com:EXTL-F2F7-S7KT")
-            elif "yashrathore2574" in rtsp:
-                alt_rtsp = rtsp.replace("yashrathore2574@gmail.com:EXTL-F2F7-S7KT", "shreyanshsharma049@gmail.com:ETD6-KZJG-VGF4")
+        return None
 
-            if alt_rtsp and alt_rtsp != rtsp:
-                logger.info(f"Attempting fallback authentication on RTSP camera stream...")
-                cap = cv2.VideoCapture(alt_rtsp, cv2.CAP_FFMPEG)
-                if cap.isOpened():
-                    logger.info("Fallback RTSP authentication succeeded.")
-                    self.rtsp_url = alt_rtsp
-                    return cap
-
-            return None
-
-    def _worker_loop(self, session_id: int):
+    def _worker_loop(self):
         """
-        Main inference worker for a specific session:
-        1. Connects to video source and verifies initial frame.
-        2. Sets connection_status to CONNECTED.
-        3. Runs YOLOv8 vehicle detection & classification.
-        4. Runs YOLOv8 plate detector & EasyOCR on plate crops.
-        5. Matches plates with enclosing vehicles and logs events.
-        6. Renders tactical HUD overlay on stream.
+        Main inference worker:
+        1. Runs YOLOv8 vehicle detection & classification (Auto-Rickshaw, Motorcycle, Bus, Truck, Car).
+        2. Runs YOLOv8 plate detector & EasyOCR on plate crops.
+        3. Matches plates with enclosing vehicles.
+        4. Logs events and saves high-resolution plate crops.
+        5. Renders tactical HUD overlay on stream.
         """
-        if session_id != self.session_id or self._stop_event.is_set():
-            return
-
-        cap = self._open_capture()
-        self._active_cap = cap
+        cap = None
+        for attempt in range(1, 4):
+            if self._stop_event.is_set():
+                return
+            with self._frame_lock:
+                self.latest_frame_bytes = self._make_status_frame(
+                    f"CONNECTING TO {self.source_name[:28]}...",
+                    f"Establishing video link (Attempt {attempt}/3)...",
+                    (255, 200, 0)
+                )
+            cap = self._open_capture()
+            if cap is not None and cap.isOpened():
+                break
+            time.sleep(0.5)
 
         if cap is None or not cap.isOpened():
-            logger.error(f"[Session {session_id}] Failed to open capture device/stream: {self.source_name}")
-            if session_id == self.session_id:
-                self.connection_status = "ERROR"
-                self.error_message = f"Unable to connect to camera ({self.source_name}). Stream timed out or unreachable."
-                self.is_running = False
-            return
-
-        # Attempt to read initial frame to verify live feed
-        first_ret, first_frame = cap.read()
-        if not first_ret or first_frame is None:
-            logger.error(f"[Session {session_id}] Stream opened but received no video frames: {self.source_name}")
-            if session_id == self.session_id:
-                self.connection_status = "ERROR"
-                self.error_message = f"Connected to camera, but received no video frames from stream."
-                self.is_running = False
-            try:
+            logger.error(f"Failed to open capture device/stream: {self.source_name}")
+            with self._frame_lock:
+                self.latest_frame_bytes = self._make_status_frame(
+                    f"CAMERA OFFLINE: {self.source_name[:26]}",
+                    "RTSP/Webcam stream unavailable. Check camera IP or network.",
+                    (0, 0, 255)
+                )
+            while not self._stop_event.is_set():
+                time.sleep(0.5)
+            if cap:
                 cap.release()
-            except Exception:
-                pass
-            if self._active_cap == cap:
-                self._active_cap = None
             return
-
-        if session_id == self.session_id:
-            self.connection_status = "CONNECTED"
-            self.error_message = None
-            logger.info(f"[Session {session_id}] Successfully connected to camera: {self.source_name}")
 
         frame_count = 0
-        cached_vehicles = []
-        cached_plates = []
-        consecutive_read_failures = 0
-        pending_first_frame = first_frame
+        consecutive_empty = 0
+        cached_vehicles = []  # [(vtype, bbox, conf)]
+        cached_plates = []    # [{bbox, plate, raw_plate, conf, is_match, vtype}]
 
-        try:
-            while not self._stop_event.is_set() and session_id == self.session_id:
-                t_start = time.time()
+        while not self._stop_event.is_set():
+            t_start = time.time()
+            ret, frame = cap.read()
 
-                if pending_first_frame is not None:
-                    frame = pending_first_frame
-                    ret = True
-                    pending_first_frame = None
+            if not ret or frame is None:
+                if self.source_type == "DEMO_VIDEO":
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    time.sleep(0.02)
+                    continue
                 else:
-                    ret, frame = cap.read()
+                    consecutive_empty += 1
+                    if consecutive_empty > 30:
+                        logger.warning(f"RTSP stream empty frames, reconnecting to {self.source_name}...")
+                        cap.release()
+                        time.sleep(0.5)
+                        cap = self._open_capture()
+                        consecutive_empty = 0
+                    time.sleep(0.1)
+                    continue
 
-                if not ret or frame is None:
-                    if self.source_type == "DEMO_VIDEO":
-                        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                        time.sleep(0.02)
-                        continue
-                    else:
-                        consecutive_read_failures += 1
-                        if consecutive_read_failures > 30:
-                            logger.warning(f"[Session {session_id}] Stream disconnected after repeated read failures.")
-                            if session_id == self.session_id:
-                                self.connection_status = "ERROR"
-                                self.error_message = f"Camera connection lost: {self.source_name}"
-                                self.is_running = False
-                            break
-                        time.sleep(0.1)
-                        continue
-
-                consecutive_read_failures = 0
+            consecutive_empty = 0
 
             frame_count += 1
             h, w = frame.shape[:2]
@@ -825,17 +785,9 @@ class ANPREngine:
 
             sleep_time = max(0.005, (1.0 / 25.0) - elapsed)
             time.sleep(sleep_time)
-        finally:
-            try:
-                cap.release()
-            except Exception:
-                pass
-            if self._active_cap == cap:
-                self._active_cap = None
-            if session_id == self.session_id:
-                self.is_running = False
-                if self.connection_status == "CONNECTING":
-                    self.connection_status = "ERROR"
+
+        cap.release()
+        self.is_running = False
 
     def _render_hud(self, frame: np.ndarray, vehicles: List[Any], plates: List[Dict[str, Any]]) -> np.ndarray:
         """Renders futuristic tactical HUD overlays, boxes, and target interception alert."""
@@ -928,11 +880,7 @@ class ANPREngine:
 
     def generate_mjpeg_stream(self) -> Generator[bytes, None, None]:
         """Yields MJPEG stream chunks."""
-        wait_start = time.time()
-        while self.connection_status == "CONNECTING" and (time.time() - wait_start) < 6.0:
-            time.sleep(0.08)
-
-        while self.is_running and self.connection_status == "CONNECTED":
+        while self.is_running:
             with self._frame_lock:
                 frame_data = self.latest_frame_bytes
 
@@ -941,7 +889,7 @@ class ANPREngine:
                     b"--frame\r\n"
                     b"Content-Type: image/jpeg\r\n\r\n" + frame_data + b"\r\n"
                 )
-            time.sleep(0.033)
+            time.sleep(0.04)
 
 
 # Global Singleton Instance

@@ -598,18 +598,6 @@
   border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
-.live-feed-pill.status-connecting {
-  background: rgba(234, 179, 8, 0.15);
-  color: #facc15;
-  border: 1px solid rgba(234, 179, 8, 0.35);
-}
-
-.live-feed-pill.status-error {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.35);
-}
-
 .live-feed-pill .live-dot {
   width: 6px;
   height: 6px;
@@ -646,137 +634,6 @@
   display: block;
 }
 
-/* Connecting / Loading Overlay */
-.stream-connecting-overlay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 36px 24px;
-  text-align: center;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-}
-
-.connecting-spinner-wrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-  color: #38bdf8;
-}
-
-.connecting-title {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #f8fafc;
-  letter-spacing: 0.3px;
-}
-
-.connecting-source-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: #38bdf8;
-  margin-bottom: 6px;
-  display: block;
-}
-
-.connecting-subtext {
-  font-size: 11px;
-  color: #64748b;
-  max-width: 320px;
-}
-
-/* Error / Failed Connection Overlay */
-.stream-error-overlay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 36px 24px;
-  text-align: center;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-}
-
-.error-cam-icon {
-  color: #f87171;
-  margin-bottom: 12px;
-}
-
-.error-title {
-  margin: 0 0 6px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #fee2e2;
-  letter-spacing: 0.3px;
-}
-
-.error-desc {
-  font-size: 12px;
-  color: #94a3b8;
-  max-width: 380px;
-  line-height: 1.4;
-  margin-bottom: 16px;
-}
-
-.error-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.btn-retry {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #0284c7;
-  color: #ffffff;
-  border: 1px solid #0369a1;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-retry:hover {
-  background: #0369a1;
-}
-
-.btn-fallback-demo {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #1e293b;
-  color: #cbd5e1;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-fallback-demo:hover {
-  background: #334155;
-  color: #ffffff;
-}
-
 .stream-offline-overlay {
   display: flex;
   flex-direction: column;
@@ -804,15 +661,6 @@
   color: #94a3b8;
   max-width: 340px;
   line-height: 1.4;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
 }
 
 /* Radar reticle scan overlay */

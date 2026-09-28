@@ -72,9 +72,17 @@ async def get_engine_status():
 @router.get("/stream")
 async def get_stream():
     """Live MJPEG stream of annotated AI video with bounding boxes and HUD overlays."""
-    if not anpr_engine.is_running and anpr_engine.connection_status == "IDLE":
-        # Auto-start on demo video only on initial boot when engine is completely idle
-        anpr_engine.start("DEMO_VIDEO", "demo_video", "Demo Highway Video (test_video.mp4)")
+    if not anpr_engine.is_running:
+        # If user has already chosen a camera or webcam, resume that source
+        if anpr_engine.source_id and anpr_engine.source_type and anpr_engine.source_id != "demo_video":
+            anpr_engine.start(
+                anpr_engine.source_type,
+                anpr_engine.source_id,
+                anpr_engine.source_name,
+                anpr_engine.rtsp_url
+            )
+        else:
+            anpr_engine.start("DEMO_VIDEO", "demo_video", "Demo Highway Video (test_video.mp4)")
 
     return StreamingResponse(
         anpr_engine.generate_mjpeg_stream(),
