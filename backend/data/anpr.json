@@ -1,0 +1,667 @@
+[
+  {
+    "event_id": "EVT_1790577234375",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:33:53.322859+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.48552513122558594
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        10,
+        159,
+        177,
+        50
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790577122510",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:31:58.852344+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.20549510419368744
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        19,
+        163,
+        169,
+        46
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790577121278",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:31:58.032513+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.169066920876503
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.96,
+      "bounding_box": [
+        16,
+        165,
+        170,
+        43
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790577031230",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:30:29.051011+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.2842549681663513
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.95,
+      "bounding_box": [
+        11,
+        163,
+        185,
+        47
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576994907",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:29:52.824284+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.3194780945777893
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        9,
+        158,
+        186,
+        52
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576940474",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:28:56.634316+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.17987751960754395
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        19,
+        157,
+        173,
+        46
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576938720",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:28:55.851246+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.10709218680858612
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        19,
+        156,
+        172,
+        48
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576877003",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:27:51.356224+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.18919377028942108
+    },
+    "plate": {
+      "number": "ADVERTISEHERE",
+      "confidence": 0.99,
+      "bounding_box": [
+        5,
+        38,
+        171,
+        33
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576871729",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:27:49.175917+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.1065300926566124
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        10,
+        158,
+        177,
+        48
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576869910",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:27:47.804089+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.3050827383995056
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.98,
+      "bounding_box": [
+        11,
+        167,
+        172,
+        48
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576862968",
+    "camera_id": "CAM01",
+    "timestamp": "2026-09-28T06:27:39.700463+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.43944427371025085
+    },
+    "plate": {
+      "number": "BRIDGECSI",
+      "confidence": 0.99,
+      "bounding_box": [
+        410,
+        282,
+        354,
+        86
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576787325",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:26:24.083004+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.28917935490608215
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        0,
+        158,
+        180,
+        45
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576597962",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:23:13.114098+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.3473894000053406
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        18,
+        157,
+        194,
+        49
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576595550",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:23:11.964722+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.2600977122783661
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        19,
+        158,
+        173,
+        49
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576386518",
+    "camera_id": "CAM04",
+    "timestamp": "2026-09-28T06:19:43.500587+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.615172266960144
+    },
+    "plate": {
+      "number": "KISFSAAJANTA",
+      "confidence": 0.75,
+      "bounding_box": [
+        75,
+        145,
+        128,
+        42
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576289823",
+    "camera_id": "CAM04",
+    "timestamp": "2026-09-28T06:18:05.791383+00:00",
+    "vehicle": {
+      "type": "Truck",
+      "confidence": 0.4010734558105469
+    },
+    "plate": {
+      "number": "GSRTCO",
+      "confidence": 1.0,
+      "bounding_box": [
+        840,
+        274,
+        197,
+        88
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576213966",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:16:47.644259+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.13314145803451538
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        6,
+        156,
+        179,
+        49
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576201638",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:16:38.177342+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.31847190856933594
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        9,
+        158,
+        186,
+        52
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576148325",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:15:41.254955+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.1576293259859085
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        18,
+        157,
+        173,
+        46
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576144157",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:15:39.227116+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.4614293873310089
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.96,
+      "bounding_box": [
+        19,
+        156,
+        193,
+        47
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790576143806",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:15:40.123285+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.1245931088924408
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        18,
+        156,
+        172,
+        48
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575972478",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:12:51.143426+00:00",
+    "vehicle": {
+      "type": "Truck",
+      "confidence": 0.25979775190353394
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        7,
+        155,
+        174,
+        46
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575959290",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:12:37.454081+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.311872661113739
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        15,
+        157,
+        171,
+        47
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575954810",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:12:32.089619+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.3433350622653961
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        18,
+        168,
+        176,
+        43
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575950639",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:12:29.576708+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.10162540525197983
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        14,
+        163,
+        171,
+        43
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575949949",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:12:28.888341+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.49492496252059937
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        13,
+        163,
+        169,
+        43
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575865260",
+    "camera_id": "CAM02",
+    "timestamp": "2026-09-28T06:11:04.338916+00:00",
+    "vehicle": {
+      "type": "Car",
+      "confidence": 0.6594385504722595
+    },
+    "plate": {
+      "number": "TMS10",
+      "confidence": 1.0,
+      "bounding_box": [
+        29,
+        219,
+        249,
+        76
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575802368",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:09:57.224742+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.2808942496776581
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        24,
+        157,
+        168,
+        45
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575800466",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:09:55.996017+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.17402364313602448
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        24,
+        158,
+        169,
+        46
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575798255",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:09:54.929361+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.5233380198478699
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        22,
+        162,
+        171,
+        49
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575578810",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:06:16.953111+00:00",
+    "vehicle": {
+      "type": "Truck",
+      "confidence": 0.14152219891548157
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        11,
+        164,
+        167,
+        45
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575578117",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:06:16.418342+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.13273243606090546
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        13,
+        166,
+        179,
+        46
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575577456",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:06:16.060272+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.30675655603408813
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 0.99,
+      "bounding_box": [
+        16,
+        160,
+        182,
+        48
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575487805",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:04:40.299687+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.284302294254303
+    },
+    "plate": {
+      "number": "ADVERTISEHERE",
+      "confidence": 1.0,
+      "bounding_box": [
+        17,
+        41,
+        168,
+        32
+      ]
+    }
+  },
+  {
+    "event_id": "EVT_1790575482942",
+    "camera_id": "CAM05",
+    "timestamp": "2026-09-28T06:04:39.202248+00:00",
+    "vehicle": {
+      "type": "Bus",
+      "confidence": 0.46513667702674866
+    },
+    "plate": {
+      "number": "7575083008",
+      "confidence": 1.0,
+      "bounding_box": [
+        17,
+        160,
+        177,
+        45
+      ]
+    }
+  }
+]

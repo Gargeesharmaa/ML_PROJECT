@@ -15,6 +15,7 @@ through environment variables instead of hard-coding credentials.
 
 import json
 import os
+import sys
 import re
 import time
 import warnings
@@ -33,14 +34,26 @@ except ImportError:
 from paddleocr import PaddleOCR
 from ultralytics import YOLO
 
-warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
+os.environ["FLAGS_use_mkldnn"] = "0"
+os.environ["PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT"] = "0"
+os.environ["OPENCV_FFMPEG_LOGLEVEL"] = "-8"  # Sets FFmpeg log to QUIET/PANIC only
+os.environ["AV_LOG_FORCE_NOCOLOR"] = "1"
+
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
+cv2.setLogLevel(0)  
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "data"))
+EVENTS_FILE = os.path.join(DATA_DIR, "anpr.json")
+CAMERAS_FILE = os.path.join(DATA_DIR, "cameras.json")
+
+
+
 
 VEHICLE_MODEL = os.getenv(
     "VEHICLE_MODEL",
@@ -53,11 +66,11 @@ PLATE_MODEL = os.getenv(
 )
 
 # CPU-safe defaults. Increase only after the single-camera test works.
-NUM_WORKERS = max(1, int(os.getenv("NUM_WORKERS", "1")))
+NUM_WORKERS = max(1, int(os.getenv("NUM_WORKERS", "2")))
 NUM_CAMERAS = max(1, int(os.getenv("NUM_CAMERAS", "1")))
 
-SAMPLE_RATE = max(1, int(os.getenv("SAMPLE_RATE", "3")))
-QUEUE_SIZE = max(10, int(os.getenv("QUEUE_SIZE", "100")))
+SAMPLE_RATE = max(1, int(os.getenv("SAMPLE_RATE", "15")))
+QUEUE_SIZE = max(10, int(os.getenv("QUEUE_SIZE", "200")))
 
 # Default is local test video. For RTSP, set CAMERA_SOURCES_JSON.
 DEFAULT_CAMERA_SOURCE = os.getenv(
@@ -83,35 +96,33 @@ def model_path_check(path, label):
             f"environment variable."
         )
 
+def load_camera_sources(use_test_video=False, max_cams=None):
+    if use_test_video:
+        print("[CAMERA LOADER] Using local test_video.mp4", flush=True)
+        return {"Cam_01": os.path.join(BASE_DIR, "test_video.mp4")}
 
-def load_camera_sources():
-    """
-    Load camera sources without exposing RTSP credentials in source code.
-
-    Priority:
-    1. CAMERA_SOURCES_JSON
-    2. DEFAULT_CAMERA_SOURCE for one camera
-    """
-    if CAMERA_SOURCES_JSON:
+    if os.path.exists(CAMERAS_FILE):
         try:
-            sources = json.loads(CAMERA_SOURCES_JSON)
-        except json.JSONDecodeError as exc:
-            raise ValueError(
-                "CAMERA_SOURCES_JSON is not valid JSON."
-            ) from exc
-
-        if not isinstance(sources, dict) or not sources:
-            raise ValueError("CAMERA_SOURCES_JSON must be a non-empty JSON object.")
-
-        return {str(k): str(v) for k, v in sources.items()}
-
-    if NUM_CAMERAS != 1:
-        raise RuntimeError(
-            "NUM_CAMERAS > 1 requires CAMERA_SOURCES_JSON. "
-            "Do not generate fake 192.168.x.x camera addresses."
-        )
+            with open(CAMERAS_FILE, "r", encoding="utf-8") as f:
+                cams = json.load(f)
+            rtsp_sources = {}
+            for c in cams:
+                url = c.get("rtsp_url", "")
+                if url.startswith("rtsp://"):
+                    code = c.get("camera_code") or f"CAM_{len(rtsp_sources) + 1}"
+                    rtsp_sources[code] = url
+                    if max_cams and len(rtsp_sources) >= max_cams:
+                        break  # Stop when max_cams limit is reached
+            
+            if rtsp_sources:
+                print(f"[CAMERA LOADER] Loaded {len(rtsp_sources)} RTSP camera(s) from cameras.json", flush=True)
+                return rtsp_sources
+        except Exception as exc:
+            print(f"[CAMERA LOADER ERROR] Could not read cameras.json: {exc}", flush=True)
 
     return {"Cam_01": DEFAULT_CAMERA_SOURCE}
+
+
 
 
 def open_capture(source):
@@ -123,7 +134,7 @@ def open_capture(source):
 
     if is_rtsp:
         # Must be set before VideoCapture is created.
-        os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+        os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|buffer_size;1024000|max_delay;500000"
         cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
     else:
         cap = cv2.VideoCapture(source)
@@ -165,8 +176,9 @@ def preprocess_plate(plate_crop):
         clipLimit=2.0,
         tileGridSize=(8, 8),
     )
-
-    return clahe.apply(gray)
+    enhanced = clahe.apply(gray)
+    # PaddleOCR 3-channel (H, W, 3) image expect karta hai:
+    return cv2.cvtColor(enhanced, cv2.COLOR_GRAY2BGR)
 
 
 # ============================================================
@@ -305,12 +317,13 @@ def heavy_inference_worker(input_queue, output_queue, stop_event):
 
         # PaddleOCR 3.x constructor with MKLDNN disabled for CPU stability.
         ocr_engine = PaddleOCR(
-            use_textline_orientation=False,
             use_doc_orientation_classify=False,
             use_doc_unwarping=False,
+            use_textline_orientation=False,
             lang="en",
             enable_mkldnn=False,
         )
+
 
         print(
             f"[OCR WORKER {os.getpid()}] Models ready.",
@@ -488,28 +501,29 @@ def camera_stream_processor(
                 flush=True,
             )
 
-        ret, frame = cap.read()
-
-        if not ret or frame is None:
+        # Grab the frame header without decompressing the full image (saves 85% CPU)
+        if not cap.grab():
             if is_file:
-                # A local video can be restarted at EOF.
-                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                frame_count = 0
-                continue
+                print(f"[{camera_id}] Video finished. Stopping stream.", flush=True)
+                break
 
-            print(
-                f"[{camera_id}] RTSP read failed; reconnecting...",
-                flush=True,
-            )
+            print(f"[{camera_id}] RTSP read failed; reconnecting in 2s...", flush=True)
             cap.release()
             cap = None
-            time.sleep(1)
+            time.sleep(2)
             continue
 
         frame_count += 1
 
+        # Skip decoding if it's not the sample frame
         if frame_count % SAMPLE_RATE != 0:
             continue
+
+        # Only decode the actual frame we want to process
+        ret, frame = cap.retrieve()
+        if not ret or frame is None:
+            continue
+
 
         try:
             results = model.track(
@@ -610,6 +624,30 @@ def camera_stream_processor(
 # ============================================================
 # STAGE 5: MULTI-FRAME AGGREGATOR
 # ============================================================
+def save_event_to_json(event_record):
+    """Appends detected events to data/anpr.json so the frontend can read them."""
+    try:
+        events = []
+        if os.path.exists(EVENTS_FILE):
+            try:
+                with open(EVENTS_FILE, "r", encoding="utf-8") as f:
+                    content = f.read().strip()
+                    if content:
+                        events = json.loads(content)
+            except Exception:
+                events = []
+
+        # Prepend the new detection (newest first)
+        events.insert(0, event_record)
+
+        # Keep latest 200 events
+        events = events[:200]
+
+        with open(EVENTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(events, f, indent=2)
+
+    except Exception as exc:
+        print(f"[SAVE ERROR] Failed to write event to file: {exc}", flush=True)
 
 def multi_frame_aggregator(output_queue, stop_event):
     track_history = {}
@@ -635,7 +673,7 @@ def multi_frame_aggregator(output_queue, stop_event):
 
         track_history.setdefault(track_id, []).append(record)
 
-        if len(track_history[track_id]) >= 3:
+        if len(track_history[track_id]) >= 1:
             candidates = track_history[track_id]
 
             final_record = max(
@@ -658,6 +696,9 @@ def multi_frame_aggregator(output_queue, stop_event):
                 flush=True,
             )
 
+            # --- WRITE TO JSON FILE ---
+            save_event_to_json(final_record)
+
             # Sync event with FastAPI backend (Port 8000)
             try:
                 import urllib.request
@@ -673,6 +714,7 @@ def multi_frame_aggregator(output_queue, stop_event):
             del track_history[track_id]
 
 
+
 # ============================================================
 # MAIN ORCHESTRATOR
 # ============================================================
@@ -685,7 +727,7 @@ def main():
     model_path_check(VEHICLE_MODEL, "Vehicle model")
     model_path_check(PLATE_MODEL, "Plate model")
 
-    camera_sources = load_camera_sources()
+    camera_sources = load_camera_sources(use_test_video=False, max_cams=5)
 
     print(f"Vehicle model : {VEHICLE_MODEL}")
     print(f"Plate model   : {PLATE_MODEL}")
@@ -748,7 +790,7 @@ def main():
             )
             p.start()
             processes.append(p)
-
+            time.sleep(0.5)
         # Keep parent alive.
         while True:
             time.sleep(1)
