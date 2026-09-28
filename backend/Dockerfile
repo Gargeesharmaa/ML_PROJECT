@@ -16,16 +16,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install CPU-only PyTorch to minimize image size and memory overhead
+# Upgrade pip and install CPU-only PyTorch first
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
-# Copy and install python dependencies
-COPY requirements.txt .
+# Copy backend requirements and install Python dependencies
+COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all application files (code, ANPR weights, demo video, scripts)
-COPY . .
+# Copy entire backend source code, models, and demo video
+COPY backend/ .
 
 # Ensure storage directories exist for detection crops
 RUN mkdir -p /app/data/anpr_crops
